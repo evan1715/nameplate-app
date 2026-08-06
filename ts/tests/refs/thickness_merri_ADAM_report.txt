@@ -1,7 +1,7 @@
 ADAM — 4.069 x 1.020 in
 
 THINNEST PARTS OF THE ARTWORK
-    measured across the stroke at 1036 of 692 points walked around the outline
+    measured across the stroke at 1035 of 692 points walked around the outline
 
      #  letter           where          thinnest   typical   font u
      1  A (A.e5)         lower left       0.0490    0.0490     72.8
@@ -9,9 +9,9 @@ THINNEST PARTS OF THE ARTWORK
      3  M (M.e0)         upper left       0.0787    0.0787    117.0
      4  M (M.e0)         top              0.0794    0.0794    118.0
      5  A (A.e5)         bottom           0.0857    0.0892    127.3
-     6  A (A.ini)        bottom           0.0857    0.0892    127.3
+     6  A (A.ini)        bottom           0.0857    0.0858    127.3
      7  D (D.e0)         top              0.0858    0.0878    127.5
-     8  A (A.e5)         lower left       0.0881    0.0881    130.9
+     8  A (A.e5)         lower left       0.0881    0.0900    130.9
     (thinnest/typical in in; 'font u' columns are font units, which is what a font editor works in)
 
      1  A (A.e5) — lower left
@@ -34,14 +34,13 @@ THINNEST PARTS OF THE ARTWORK
           from 4 reading(s) over about 0.113 in of stroke
      6  A (A.ini) — bottom
           0.0857 in (127.3 font units) across, at 0.624, 0.054 in from the bottom-left
-          from 4 reading(s) over about 0.113 in of stroke
+          from 3 reading(s) over about 0.112 in of stroke
      7  D (D.e0) — top
           0.0858 in (127.5 font units) across, at 1.565, 0.976 in from the bottom-left
           from 183 reading(s) over about 0.199 in of stroke
      8  A (A.e5) — lower left
           0.0881 in (130.9 font units) across, at 1.902, 0.055 in from the bottom-left
-          from 1 reading(s) over about 0.088 in of stroke
-          note: a single reading with nothing beside it to corroborate — a very small feature, so confirm it on screen before acting on it
+          from 2 reading(s) over about 0.094 in of stroke
 
 Thickness is measured across the stroke: a ray is cast inward from the edge until it leaves the material.
 'thinnest' is the worst reading in that area and is the number that decides whether it snaps; 'typical' is the middle reading for the same area, so a lone freak reading is visible as one.

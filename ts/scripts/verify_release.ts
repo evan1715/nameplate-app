@@ -2,7 +2,7 @@
 /**
  * verify_release.ts — prove the shipped archive works the way a new machine sees it.
  *
- *     npx tsx scripts/verify_release.ts
+ *     node scripts/verify_release.ts
  *
  * A conversion of `verify_release.ps1`. It extracts `dist/nameplate-ts.tar.gz` into
  * a clean folder — no build tree, nothing left over from this machine — then drives

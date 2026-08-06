@@ -127,8 +127,6 @@ THE THIN AREAS, THINNEST FIRST
      now 127.5 font units across, needs 134 font units (+4.9%)
   8. glyph 'A.e5' (the letter A)  -  lower left of the letter
      now 130.9 font units across, needs 134 font units (+2.2%)
-     note: a single reading with nothing beside it to corroborate  -  a very
-           small feature, so confirm it on screen before acting on it
   ...and 3 more area(s) under the minimum, not listed one by one.
   The instruction below covers those as well  -  it is a rule, not a list.
 

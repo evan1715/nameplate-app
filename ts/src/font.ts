@@ -27,8 +27,8 @@ import {
   emptyPath,
   flatten,
   restoreStartingPoints,
-} from "./skia.js";
-import * as G from "./geom.js";
+} from "./skia.ts";
+import * as G from "./geom.ts";
 
 /** Curve → polyline steps, for measurement and engrave lines only. */
 export const FLATTEN_STEPS = 24;

@@ -135,43 +135,79 @@ they need Skia path ops, shapely geometry, font access and Python-exact number
 formatting, and `src/skia.ts`, `src/geom.ts`, `src/font.ts` and `src/pyformat.ts`
 provide all four with the parity already proven.
 
-## Thickness: ported, with one divergence that is not yet closed
+## Thickness: ported, byte-identical, and what it cost to get there
 
 `src/thickness.ts` reproduces the survey, the clustering, the report and the
 paste-ready prompt. `tests/thickness.ts` holds it to the Python's own captured
-output and passes **50 of 56** checks. What passes and what does not is worth
-stating precisely, because the failures are not cosmetic:
+output: every report is compared **character for character**, with no numeric
+tolerance and nothing excluded.
 
-**Matches exactly.** The thinnest reading on all five cases, to four decimal
-places. The three worst spots' letters, thicknesses (within 0.5%) and wall-
-parallelism ratios (within 0.02). And both figures `regression_tests.py` pins as
-double-derived truth: ADAM 72.76 font units and CHRISTOPHER 18.13, each confirmed
-as a parallel-walled web rather than a taper.
+Getting there required a change to the Python, and it is worth being explicit
+about what and why.
 
-**Does not match.** How many boundary readings survive the wedge gate:
+### The bug was in the ring labels, not the geometry
 
-| case | TS readings | Python readings | apart | areas |
-|---|---|---|---|---|
-| Merriweather ADAM | 1035 | 1036 | 0.1% | 16 vs 16 |
-| Merriweather CHRISTOPHER | 3062 | 3053 | 0.3% | 24 vs 24 |
-| Carrie Flourish "Carrie" | 586 | 596 | 1.7% | 15 vs 17 |
-| Carrie SO "Bob" | 732 | 609 | **16.8%** | 13 vs 16 |
+The survey walks the material's boundary rings and measures across the stroke at
+sampled segments. The two backends produced *bit-identical* rings — verified
+vertex for vertex, maximum coordinate deviation exactly zero — but listed them
+differently:
 
-The uniform walk itself is *identical* — same 1620 sample points, same 24786.67
-perimeter on the Bob case — so the divergence is entirely in which readings pass
-`crossWidth`'s wedge test (`room >= 0.42 x width`). A reading sitting on that
-threshold falls either side of it depending on how jsts and GEOS round the
-ray/boundary intersection. On three of the four cases that is a fraction of a
-percent; on Carrie SO "Bob" it is 17%, which is too large to call rounding and has
-not been traced yet.
+* **which vertex** each closed ring starts from, and
+* **what order** the holes come in.
 
-Consequence: the *tail* of the top-8 list reorders, because entries 4–8 are
-near-equal readings whose order depends on the surviving set. That is what the six
-failing checks are — five report-text diffs and one letter-set difference on the
-Flourish font. The thinnest reading, which is the number that decides whether a
-plate snaps, is unaffected on every case.
+Both are artefacts of the overlay algorithm. shapely drives GEOS 3.13 (OverlayNG),
+which starts each ring at a computed intersection node; jsts 2.12 still uses the
+older `OverlayOp` and starts at an original input vertex. Measured directly, *every
+overlay operation rotates the exterior ring's start by exactly one vertex* — so the
+label encodes nothing but how many booleans happened to build the mask.
 
-The test deliberately still fails rather than widening its tolerance to go green.
-Two checks it makes are recorded-not-asserted (the surviving-reading count and the
-area count), and those are labelled as such in its output; the six failures are
-real parity gaps that need the wedge-gate difference tracked down.
+That would be harmless, except `_walk` strides segments from each ring's start. The
+arbitrary label therefore decided *which segments got measured*, and a different
+subset finds a slightly different set of thin spots. The symptom was a divergence
+of 0.1% on ADAM up to 16.8% on Carrie SO "Bob".
+
+### The fix, in both implementations
+
+`_canonical_rings` (Python) / `canonicalRings` (TypeScript) anchors every ring to
+its lexicographically smallest vertex and sorts the rings by that anchor. This is
+safe because the anchor is a real vertex: distinct x values inside one ring are at
+least 1e-4 font units apart here, many orders of magnitude clear of
+double-precision noise, so either backend picks the identical vertex.
+
+The survey is now a property of the artwork rather than of the GEOS build — and
+reproducible by any second implementation.
+
+### What that changed in the Python's output
+
+Canonicalising changes which segments the *Python* samples too, so its own reported
+output moved. Unchanged: every thinnest reading, and both figures
+`regression_tests.py` pins as double-derived truth (ADAM 72.8 font units,
+CHRISTOPHER 18.1), each still a parallel-walled web. Changed:
+
+| case | areas before | after | note |
+|---|---|---|---|
+| Merriweather ADAM | 16 | 16 | reading count 1036 → 1035 |
+| Merriweather CHRISTOPHER | 24 | 23 | see the tie below |
+| Carrie Flourish "Carrie" | 17 | 15 | |
+| Carrie SO "Bob" | 16 | 12 | |
+
+The one visible change worth knowing about: CHRISTOPHER's worst spot is a genuine
+tie — two places both measuring 0.0122 in / 18.1 font units — and it is now
+reported as `C (C.ini) lower right` instead of `H (H.e3) lower left`. Which of the
+two came first was decided by ring order, i.e. by nothing. All three Python suites
+still pass unchanged (regression 27/27, acceptance 53/53, export 31/31).
+
+The baseline in `tests/refs/` was re-captured from the canonicalised Python, so it
+still records what the Python does — with one non-reproducible artefact removed.
+The re-capture also touched `gui_selftest.txt` and the `brief_*` files, which quote
+thickness numbers, and exposed a genuinely machine-dependent number in the GUI
+selftest (how many event-loop turns fit alongside a background check); that is now
+scrubbed.
+
+### The one line that cannot match
+
+The prompt's "how it will be checked" line names the tool to re-run. The Python
+prints `python nameplate_thickness.py ...`, which would send a reader to a file
+this tree no longer ships, so the TypeScript prints `node src/thickness.ts ...`.
+The test normalises exactly that one token and still requires every argument after
+it to match.

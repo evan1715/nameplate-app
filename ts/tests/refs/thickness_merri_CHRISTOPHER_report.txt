@@ -1,20 +1,20 @@
 CHRISTOPHER — 8.649 x 1.029 in
 
 THINNEST PARTS OF THE ARTWORK
-    measured across the stroke at 3053 of 847 points walked around the outline
+    measured across the stroke at 3037 of 847 points walked around the outline
 
      #  letter           where          thinnest   typical   font u
-     1  H (H.e3)         lower left       0.0122    0.0122     18.1
+     1  C (C.ini)        lower right      0.0122    0.0122     18.1
      2  I (I.e22)        upper right      0.0479    0.0479     71.2
      3  S (S.e9)         upper left       0.0499    0.0506     74.2
      4  R (R.e8)         middle           0.0808    0.0812    120.0
      5  R (R.e5)         middle           0.0808    0.0812    120.0
-     6  R (R.e8)         top              0.0817    0.0819    121.4
-     7  R (R.e5)         top              0.0817    0.0818    121.4
-     8  O (O.e22)        bottom           0.0819    0.0821    121.8
+     6  R (R.e8)         top              0.0817    0.0818    121.4
+     7  R (R.e5)         top              0.0817    0.0819    121.4
+     8  O (O.e22)        bottom           0.0819    0.0820    121.8
     (thinnest/typical in in; 'font u' columns are font units, which is what a font editor works in)
 
-     1  H (H.e3) — lower left
+     1  C (C.ini) — lower right
           0.0122 in (18.1 font units) across, at 1.336, 0.287 in from the bottom-left
           from 1 reading(s) over about 0.012 in of stroke
           note: a single reading with nothing beside it to corroborate — a very small feature, so confirm it on screen before acting on it
@@ -33,13 +33,13 @@ THINNEST PARTS OF THE ARTWORK
           from 23 reading(s) over about 0.129 in of stroke
      6  R (R.e8) — top
           0.0817 in (121.4 font units) across, at 2.550, 0.983 in from the bottom-left
-          from 90 reading(s) over about 0.107 in of stroke
+          from 88 reading(s) over about 0.106 in of stroke
      7  R (R.e5) — top
           0.0817 in (121.4 font units) across, at 8.100, 0.983 in from the bottom-left
-          from 90 reading(s) over about 0.107 in of stroke
+          from 88 reading(s) over about 0.106 in of stroke
      8  O (O.e22) — bottom
           0.0819 in (121.8 font units) across, at 5.087, 0.041 in from the bottom-left
-          from 10 reading(s) over about 0.088 in of stroke
+          from 12 reading(s) over about 0.088 in of stroke
 
 Thickness is measured across the stroke: a ray is cast inward from the edge until it leaves the material.
 'thinnest' is the worst reading in that area and is the number that decides whether it snaps; 'typical' is the middle reading for the same area, so a lone freak reading is visible as one.

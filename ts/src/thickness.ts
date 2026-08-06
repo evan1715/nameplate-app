@@ -63,14 +63,14 @@
  */
 
 import * as path from "node:path";
-import { Document, type Unit } from "./core.js";
-import { Font, shape } from "./font.js";
-import * as G from "./geom.js";
-import * as LI from "./leadin.js";
-import { glyphAreas } from "./fontcheck.js";
-import { fmtF, fmtSigned, padLeft, padRight, pyG, wrapText } from "./pyformat.js";
-import type { Point } from "./skia.js";
-import * as EY from "./eyelets.js";
+import { Document, type Unit } from "./core.ts";
+import { Font, shape } from "./font.ts";
+import * as G from "./geom.ts";
+import * as LI from "./leadin.ts";
+import { glyphAreas } from "./fontcheck.ts";
+import { fmtF, fmtSigned, padLeft, padRight, pyG, wrapText } from "./pyformat.ts";
+import type { Point } from "./skia.ts";
+import * as EY from "./eyelets.ts";
 
 /**
  * Total boundary samples for the whole artwork, split between contours by length.
@@ -220,7 +220,60 @@ export function materialRings(material: G.Geometry): Point[][] {
       continue;
     }
   }
-  return out.filter((r) => r.length >= 3);
+  return canonicalRings(out.filter((r) => r.length >= 3));
+}
+
+/** Twice the signed area of a closed ring — negative for a clockwise ring. */
+function signedArea2(ring: Point[]): number {
+  let s = 0;
+  for (let i = 0; i < ring.length; i++) {
+    const [x1, y1] = ring[i];
+    const [x2, y2] = ring[(i + 1) % ring.length];
+    s += x1 * y2 - x2 * y1;
+  }
+  return s / 2;
+}
+
+/**
+ * Put the ring set into a form that does not depend on the geometry backend.
+ *
+ * A union hands back rings that are geometrically exact but labelled arbitrarily:
+ * WHICH vertex a closed ring is listed from, and what order the holes come in, are
+ * artefacts of the overlay algorithm. GEOS 3.13 (what shapely drives) uses OverlayNG
+ * and starts each ring at a computed intersection node; jsts 2.12 still uses the
+ * older OverlayOp and starts at an original input vertex. The rings are the same
+ * closed curves to the last bit — verified vertex-for-vertex against shapely — merely
+ * rotated against each other, and measured on GEOS every overlay operation rotates
+ * the exterior start by exactly one vertex, so the label really does mean nothing
+ * beyond "how many booleans built this mask".
+ *
+ * That would not matter except that {@link walk} strides segments from the ring's
+ * start, so the arbitrary label decides WHICH segments get measured, and a different
+ * subset finds a slightly different set of thin spots. Anchoring every ring to its
+ * lexicographically smallest vertex and sorting the rings by that anchor makes the
+ * survey a property of the artwork instead of a property of the overlay build.
+ *
+ * Safe because the anchor is a real vertex: distinct x values inside one ring here
+ * are at least 1e-4 font units apart, which is many orders of magnitude clear of
+ * double-precision noise, so both backends pick the identical vertex.
+ */
+function canonicalRings(rings: Point[][]): Point[][] {
+  const rotated = rings.map((r) => {
+    let k = 0;
+    for (let i = 1; i < r.length; i++) {
+      if (r[i][0] < r[k][0] || (r[i][0] === r[k][0] && r[i][1] < r[k][1])) k = i;
+    }
+    return [...r.slice(k), ...r.slice(0, k)];
+  });
+  // Sorted too: _regions() seeds from a stable sort over the sample pool, so the
+  // order rings are appended in breaks ties between equally thin readings.
+  return rotated.sort(
+    (a, b) =>
+      a[0][0] - b[0][0] ||
+      a[0][1] - b[0][1] ||
+      a.length - b.length ||
+      signedArea2(a) - signedArea2(b),
+  );
 }
 
 /** Perimeter of a closed ring. */
@@ -1619,8 +1672,12 @@ export function claudePromptFromSpots(
 
   L.push("HOW IT WILL BE CHECKED");
   const cmd = fname ? fname : "<font>";
+  // The one line in this prompt that cannot match the Python byte for byte: it
+  // names the tool to re-run, and `python nameplate_thickness.py` would send the
+  // reader to a file this tree no longer has. Everything after the script name is
+  // identical, and the test asserts that.
   L.push(
-    `  npx tsx src/thickness.ts ${cmd} "${doc.text}" ${pyG(doc.targetHeight)} ` +
+    `  node src/thickness.ts ${cmd} "${doc.text}" ${pyG(doc.targetHeight)} ` +
       `${u} ${doc.basis} ${pyG(target)}`,
   );
   L.push(`  Every area it lists must read ${req} font units or more, and the artwork`);

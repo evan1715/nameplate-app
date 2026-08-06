@@ -14,8 +14,8 @@
  *   measures the glyphs that shaping actually chose.
  */
 
-import { Font, shape } from "./font.js";
-import * as G from "./geom.js";
+import { Font, shape } from "./font.ts";
+import * as G from "./geom.ts";
 
 /**
  * `font.filled()` memoised per glyph.

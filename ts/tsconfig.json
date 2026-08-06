@@ -3,6 +3,12 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
+    // Node 22.18+/24 runs TypeScript directly by stripping types, but its resolver
+    // does NOT map a "./x.js" specifier onto x.ts — so the sources import "./x.ts"
+    // and tsc rewrites those to "./x.js" on emit. This is what lets the tests run
+    // under plain `node` with no loader in the way.
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "lib": ["ES2022"],
     "strict": true,
     "noImplicitAny": true,

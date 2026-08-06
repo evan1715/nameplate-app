@@ -176,11 +176,55 @@ class _Solid:
         self.eps = max(span * 1e-5, 1e-12)
 
 
+def _ring_signed_area(ring) -> float:
+    """Signed area of a closed ring -- negative when it runs clockwise."""
+    s = 0.0
+    n = len(ring)
+    for i in range(n):
+        x1, y1 = ring[i]
+        x2, y2 = ring[(i + 1) % n]
+        s += x1 * y2 - x2 * y1
+    return s / 2.0
+
+
+def _canonical_rings(rings):
+    """Put the ring set into a form that does not depend on the geometry backend.
+
+    A union hands back rings that are geometrically exact but labelled
+    arbitrarily: WHICH vertex a closed ring is listed from, and what order the
+    holes come in, are artefacts of the overlay algorithm. Measured here, EVERY
+    overlay operation rotates the exterior ring's start by exactly one vertex,
+    so the label carries no meaning at all -- it just counts how many booleans
+    the mask happened to take.
+
+    That would not matter except that _walk() strides segments from the ring's
+    start, so the arbitrary label decides WHICH segments get measured, and a
+    different subset finds a slightly different set of thin spots. Anchoring
+    every ring to its lexicographically smallest vertex and sorting the rings by
+    that anchor makes the survey a property of the artwork rather than of the
+    GEOS build -- and lets a second implementation reproduce it exactly.
+
+    Safe because the anchor is a real vertex: distinct x values inside one ring
+    are at least 1e-4 font units apart here, many orders of magnitude clear of
+    double-precision noise, so any backend picks the identical vertex.
+    """
+    out = []
+    for r in rings:
+        k = min(range(len(r)), key=lambda i: (r[i][0], r[i][1]))
+        out.append(list(r[k:]) + list(r[:k]))
+    # Sorted too: _regions() seeds from a stable sort over the sample pool, so
+    # the order rings are appended in breaks ties between equally thin readings.
+    out.sort(key=lambda r: (r[0][0], r[0][1], len(r), _ring_signed_area(r)))
+    return out
+
+
 def _material_rings(material) -> list[list[tuple[float, float]]]:
     """Every boundary ring of the material: outsides and holes alike.
 
     A hole's wall is material boundary too, and the wall between a counter and
     the outside edge is exactly the kind of place that snaps.
+
+    Handed back in canonical form -- see _canonical_rings for why that matters.
     """
     geoms = material.geoms if hasattr(material, "geoms") else [material]
     out: list[list[tuple[float, float]]] = []
@@ -193,7 +237,7 @@ def _material_rings(material) -> list[list[tuple[float, float]]]:
                 out.append(list(r.coords)[:-1])
         except Exception:
             continue
-    return [r for r in out if len(r) >= 3]
+    return _canonical_rings([r for r in out if len(r) >= 3])
 
 
 def _ring_length(ring) -> float:

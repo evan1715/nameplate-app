@@ -21,7 +21,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as zlib from "node:zlib";
-import { Font } from "../src/font.js";
+import { Font } from "../src/font.ts";
 import {
   Document,
   MM_PER_IN,
@@ -33,12 +33,12 @@ import {
   summary,
   svgSheet,
   svgSingle,
-} from "../src/core.js";
-import * as LI from "../src/leadin.js";
-import * as LAY from "../src/layout.js";
-import * as G from "../src/geom.js";
-import { initSkia } from "../src/skia.js";
-import { fmtF, pyG } from "../src/pyformat.js";
+} from "../src/core.ts";
+import * as LI from "../src/leadin.ts";
+import * as LAY from "../src/layout.ts";
+import * as G from "../src/geom.ts";
+import { initSkia } from "../src/skia.ts";
+import { fmtF, pyG } from "../src/pyformat.ts";
 
 const HERE = "/home/user/nameplate-app";
 const MERRI = path.join(HERE, "fonts", "MerriweatherCut3Black-Engrave-v2.ttf");

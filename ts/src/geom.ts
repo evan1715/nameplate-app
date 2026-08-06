@@ -22,7 +22,7 @@
  *   jsts internal error escape with a different shape than the port expects.
  */
 
-import type { Point } from "./skia.js";
+import type { Point } from "./skia.ts";
 
 // jsts 2.x publishes a UMD bundle and no package entry point, so importing it
 // for its side effect and reading the global it installs is the only way in.
@@ -287,30 +287,58 @@ export function isValid(g: Geometry): boolean {
  * tests. The lead-in search runs thousands of `contains`/`intersects` calls
  * against the same material, which is why the Python code prepares it.
  *
- * jsts' published bundle does not include JTS's `geom.prep` package, so this is
- * a pass-through that keeps the call sites identical. The ANSWERS are the same —
- * a prepared geometry is purely an indexing optimisation — only the speed
- * differs. If lead-in generation ever becomes the bottleneck, this is the one
- * place to fix it.
+ * jsts' published bundle does not include JTS's `geom.prep` package, so a full
+ * PreparedGeometry is not available. It DOES ship `IndexedPointInAreaLocator`,
+ * which is the part that matters: every hot call here is `contains(a Point)` —
+ * the thickness survey alone makes two per sample, thousands of times — and an
+ * unprepared `contains` walks every edge of the polygon each time.
+ *
+ * So a point-in-area index is built once per prepared geometry and reused. This
+ * is an indexing change only, not a semantic one: `contains(point)` is true
+ * exactly when the point is INTERIOR, boundary and exterior both being false,
+ * which is what the locator returns. Verified against unprepared `contains` on
+ * interior, boundary, vertex, hole-interior, hole-boundary and exterior points.
+ *
+ * Anything that is not a Point, and any non-polygonal geometry, falls through to
+ * the plain call.
  */
 export function prep(g: Geometry): {
   contains(p: Geometry): boolean;
   intersects(p: Geometry): boolean;
 } {
-  const prepared = jsts.geom.prep
-    ? new jsts.geom.prep.PreparedGeometryFactory().create(g)
-    : null;
+  const polygonal = (() => {
+    try {
+      const t = g.getGeometryType();
+      return t === "Polygon" || t === "MultiPolygon";
+    } catch {
+      return false;
+    }
+  })();
+  const Locator = jsts.algorithm?.locate?.IndexedPointInAreaLocator;
+  const INTERIOR = jsts.geom.Location.INTERIOR;
+  // Built on first use, not here: prep() is called for geometries that never get
+  // a point test, and indexing a script font's outline is not free.
+  let index: any;
+  const locator = (): any => {
+    if (index === undefined) index = polygonal && Locator ? new Locator(g) : null;
+    return index;
+  };
+
   return {
     contains(p: Geometry) {
       try {
-        return prepared ? prepared.contains(p) : g.contains(p);
+        const loc = locator();
+        if (loc && p.getGeometryType() === "Point" && !p.isEmpty()) {
+          return loc.locate(p.getCoordinate()) === INTERIOR;
+        }
+        return g.contains(p);
       } catch {
         return false;
       }
     },
     intersects(p: Geometry) {
       try {
-        return prepared ? prepared.intersects(p) : g.intersects(p);
+        return g.intersects(p);
       } catch {
         return false;
       }

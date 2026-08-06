@@ -13,8 +13,8 @@
  * byte-for-byte as before.
  */
 
-import { Document, stack, ValueError } from "./core.js";
-import { emptyPath, type Point } from "./skia.js";
+import { Document, stack, ValueError } from "./core.ts";
+import { emptyPath, type Point } from "./skia.ts";
 
 /** Stacked top to bottom, aligned on the left. */
 export const VERTICAL = "vertical";

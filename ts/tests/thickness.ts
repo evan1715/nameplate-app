@@ -16,18 +16,16 @@
 
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
-import { Font } from "../src/font.js";
-import { buildDocument, type Basis, type Unit } from "../src/core.js";
-import * as TH from "../src/thickness.js";
-import { initSkia } from "../src/skia.js";
-import { fmtF } from "../src/pyformat.js";
+import { Font } from "../src/font.ts";
+import { buildDocument, type Basis, type Unit } from "../src/core.ts";
+import * as TH from "../src/thickness.ts";
+import { initSkia } from "../src/skia.ts";
+import { fmtF } from "../src/pyformat.ts";
 
 const REFS = "/home/user/nameplate-app/ts/tests/refs";
 const FONTS = "/home/user/nameplate-app/fonts";
 
 const results: [boolean, string, string, string][] = [];
-/** Measured differences that are recorded for the record, not asserted. */
-const notes: string[] = [];
 
 function check(name: string, expected: string, actual: string, ok?: boolean): void {
   const pass = ok === undefined ? expected === actual : ok;
@@ -96,10 +94,10 @@ for (const [label, fk, name, h, unit, basis, target] of CASES) {
   // What must not move is the order of magnitude: a port that found half as many
   // areas, or twice as many, would be measuring something else.
   check(
-    `${label} — distinct areas found is in the same ballpark`,
-    `${want.n_areas} +/- 25%`,
+    `${label} — distinct areas found`,
+    String(want.n_areas),
     String(sv.n_areas),
-    relDiff(sv.n_areas, want.n_areas) <= 0.25,
+    sv.n_areas === want.n_areas,
   );
   check(
     `${label} — spots reported`,
@@ -121,12 +119,11 @@ for (const [label, fk, name, h, unit, basis, target] of CASES) {
   );
 
   // --- the spots that are the finding -------------------------------------- //
-  // The top three are what a reader acts on and what every downstream prompt
-  // quotes, so they are asserted. Past that the readings are near-equal and their
-  // ORDER depends on which marginal samples survived the wedge gate — see the
-  // "tail ordering" note at the end of this file.
+  // Every spot is checked, not just the top three: with the ring set canonicalised
+  // (see _canonical_rings) the two implementations walk the same segments, so the
+  // whole list has to line up, in order.
   const wantSpots = want.spots as any[];
-  const top = Math.min(3, sv.spots.length, wantSpots.length);
+  const top = Math.min(sv.spots.length, wantSpots.length);
   let letterMismatch = 0;
   let thickMismatch = 0;
   let clearMismatch = 0;
@@ -138,19 +135,19 @@ for (const [label, fk, name, h, unit, basis, target] of CASES) {
     if (Math.abs(g.clearance - w.clearance) > 0.02) clearMismatch += 1;
   }
   check(
-    `${label} — the three worst spots name the same letters`,
+    `${label} — every reported spot names the same letter`,
     `${top}/${top} letters match`,
     `${top - letterMismatch}/${top} match`,
     letterMismatch === 0,
   );
   check(
-    `${label} — the three worst thicknesses agree to 0.5%`,
+    `${label} — every thickness agrees to 0.5%`,
     `${top}/${top} within 0.5%`,
     `${top - thickMismatch}/${top} within 0.5%`,
     thickMismatch === 0,
   );
   check(
-    `${label} — the three worst wall-parallelism ratios agree to 0.02`,
+    `${label} — every wall-parallelism ratio agrees to 0.02`,
     `${top}/${top} within 0.02`,
     `${top - clearMismatch}/${top} within 0.02`,
     clearMismatch === 0,
@@ -165,11 +162,13 @@ for (const [label, fk, name, h, unit, basis, target] of CASES) {
     [...wantLetters].every((l) => gotLetters.has(l as string)) &&
       [...gotLetters].every((l) => wantLetters.has(l)),
   );
-  // Recorded, not asserted: how many boundary readings survived the wedge gate.
-  notes.push(
-    `${label}: ${sv.samples_used} readings survived the gate, Python ${want.samples_used}` +
-      ` (${fmtF(relDiff(sv.samples_used, want.samples_used) * 100, 1)}% apart);` +
-      ` ${sv.n_areas} areas vs ${want.n_areas}`,
+  // How many boundary readings survived the wedge gate. This was the one number
+  // that used to drift between the two implementations, so it is asserted exactly.
+  check(
+    `${label} — readings that survived the wedge gate`,
+    String(want.samples_used),
+    String(sv.samples_used),
+    sv.samples_used === want.samples_used,
   );
 
   // --- the report text ----------------------------------------------------- //
@@ -216,19 +215,6 @@ for (const [name, wantFu] of [["ADAM", 72.76], ["CHRISTOPHER", 18.13]] as [strin
   );
 }
 
-console.log("-".repeat(78));
-console.log("recorded, not asserted — the surviving-sample count and the area count");
-console.log("-".repeat(78));
-for (const n of notes) console.log(`  ${n}`);
-console.log(
-  "  Cause: jsts and GEOS round a ray/boundary intersection differently, so a\n" +
-  "  reading that sits exactly on the wedge gate (room == 0.42 x width) can fall\n" +
-  "  either side of it. That changes how many THICKER readings survive, which\n" +
-  "  reorders near-equal entries in the tail of the top-8 list. It does not move\n" +
-  "  the thinnest reading, which is what the module exists to report, and both\n" +
-  "  double-derived fixtures below are unaffected.",
-);
-
 console.log("=".repeat(78));
 const nOk = results.filter((r) => r[0]).length;
 console.log(`${nOk}/${results.length} passed`);
@@ -237,73 +223,36 @@ console.log("=".repeat(78));
 process.exit(nOk === results.length ? 0 : 1);
 
 /**
- * Compare two reports line by line.
+ * Compare two reports — exactly, character for character.
  *
- * A report is mostly prose with numbers in it, and the numbers can move in the last
- * place. So the structure — every line, every label, every column position — must be
- * identical, and only the numeric tokens are allowed to differ, by a relative 2%.
+ * This used to allow the numbers to drift by 2% and skipped three "how many samples
+ * fell in this cluster" lines, because the two implementations walked different
+ * segments of the outline. Canonicalising the ring set removed that difference at
+ * source (see `_canonical_rings`), so the report is now held to the only standard
+ * worth holding it to: the Python's bytes.
  */
 function reportDiff(label: string, got: string, want: string): void {
-  let gl = got.split("\n");
-  let wl = want.split("\n");
-  // A cluster of exactly one carries an extra "single reading" note line, so the
-  // two reports can differ by a line or two without differing in substance. Drop
-  // those note lines from both before lining the rest up.
-  const dropNote = (ls: string[]) =>
-    ls.filter((l) => !/^ +note: a single reading with nothing beside it/.test(l));
-  if (gl.length !== wl.length) {
-    gl = dropNote(gl);
-    wl = dropNote(wl);
-  }
-  if (Math.abs(gl.length - wl.length) > 2) {
-    check(label, `${wl.length} lines (+/- 2)`, `${gl.length} lines`, false);
-    // show the first structural divergence, which is what a reader needs
-    for (let i = 0; i < Math.min(gl.length, wl.length); i++) {
-      if (gl[i] !== wl[i]) {
-        console.log(`        first differing line ${i + 1}:`);
-        console.log(`        want: ${JSON.stringify(wl[i])}`);
-        console.log(`        got : ${JSON.stringify(gl[i])}`);
-        break;
-      }
-    }
-    return;
-  }
-  const numeric = /-?\d+\.?\d*/g;
-  let structural = 0;
-  let excluded = 0;
-  let numericOff = 0;
+  const gl = got.split("\n");
+  const wl = want.split("\n");
   let firstBad = -1;
-  for (let i = 0; i < wl.length; i++) {
+  let nDiff = 0;
+  for (let i = 0; i < Math.max(gl.length, wl.length); i++) {
     if (gl[i] === wl[i]) continue;
-    // Two lines restate which samples fell into a cluster rather than what was
-    // measured: the reading count/extent line, and the "single reading with
-    // nothing beside it" note that appears only for a cluster of exactly one.
-    // Both move when one marginal sample lands on the other side of the wedge
-    // gate, and neither changes the thickness being reported.
-    if (/^ +from \d+ reading\(s\) over about /.test(wl[i]) ||
-        /^ +(note: )?a single reading with nothing beside it/.test(wl[i]) ||
-        /^ +measured across the stroke at /.test(wl[i])) {
-      excluded += 1;
-      continue;
-    }
-    if (gl[i].replace(numeric, "#") !== wl[i].replace(numeric, "#")) {
-      structural += 1;
-      if (firstBad < 0) firstBad = i;
-      continue;
-    }
-    const a = gl[i].match(numeric)!.map(Number);
-    const b = wl[i].match(numeric)!.map(Number);
-    if (a.some((v, k) => relDiff(v, b[k]) > 0.02)) {
-      numericOff += 1;
-      if (firstBad < 0) firstBad = i;
-    }
+    // The single unavoidable exception: the "how it will be checked" line names
+    // the tool to re-run. The Python names a .py file that this tree does not
+    // ship any more, so the script name is allowed to change — and ONLY the
+    // script name. Every argument after it still has to match exactly.
+    const norm = (s: string | undefined) =>
+      (s ?? "").replace(/^ {2}(?:python nameplate_thickness\.py|node src\/thickness\.ts) /, "  <TOOL> ");
+    if (norm(gl[i]) === norm(wl[i]) && norm(wl[i]).startsWith("  <TOOL> ")) continue;
+    nDiff += 1;
+    if (firstBad < 0) firstBad = i;
   }
   check(
     label,
-    `${wl.length} lines, identical structure, numbers within 2%`,
-    `${structural} structural difference(s), ${numericOff} number(s) out of ` +
-      `tolerance, ${excluded} cluster-membership line(s) excluded`,
-    structural === 0 && numericOff === 0,
+    `${wl.length} lines, byte-identical to the Python`,
+    nDiff === 0 ? `${gl.length} lines, byte-identical` : `${nDiff} line(s) differ`,
+    nDiff === 0,
   );
   if (firstBad >= 0) {
     console.log(`        first differing line ${firstBad + 1}:`);

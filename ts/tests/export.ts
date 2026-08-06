@@ -16,14 +16,14 @@
  */
 
 import * as zlib from "node:zlib";
-import { Font } from "../src/font.js";
-import { buildDocument } from "../src/core.js";
-import * as EX from "../src/exporters.js";
-import * as LAY from "../src/layout.js";
-import * as LI from "../src/leadin.js";
-import * as G from "../src/geom.js";
-import { initSkia } from "../src/skia.js";
-import { fmtF } from "../src/pyformat.js";
+import { Font } from "../src/font.ts";
+import { buildDocument } from "../src/core.ts";
+import * as EX from "../src/exporters.ts";
+import * as LAY from "../src/layout.ts";
+import * as LI from "../src/leadin.ts";
+import * as G from "../src/geom.ts";
+import { initSkia } from "../src/skia.ts";
+import { fmtF } from "../src/pyformat.ts";
 
 const results: [boolean, string, string, string][] = [];
 

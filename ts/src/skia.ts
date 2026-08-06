@@ -41,15 +41,24 @@ export type Point = [number, number];
  * Skia path verbs, with the number of points each one carries in the *compact*
  * point array (the one `toCmds()` produces — a MOVE owns 1 point, a LINE owns
  * its endpoint only, and CLOSE owns none).
+ *
+ * A frozen object rather than a TypeScript `enum`: Node runs these files by
+ * stripping types, and an `enum` is the one construct that has to EMIT code, so it
+ * is rejected outright ("not supported in strip-only mode"). `as const` plus the
+ * companion union type below gives the same call sites and the same exhaustiveness
+ * checking with nothing left to emit.
  */
-export const enum Verb {
-  Move = 0,
-  Line = 1,
-  Quad = 2,
-  Conic = 3,
-  Cubic = 4,
-  Close = 5,
-}
+export const Verb = {
+  Move: 0,
+  Line: 1,
+  Quad: 2,
+  Conic: 3,
+  Cubic: 4,
+  Close: 5,
+} as const;
+
+/** Any one of the {@link Verb} values. */
+export type Verb = (typeof Verb)[keyof typeof Verb];
 
 /** POINTS_IN_VERB from _pathops.pyx — how many points each verb consumes. */
 const POINTS_IN_VERB = [1, 1, 2, 2, 3, 0] as const;

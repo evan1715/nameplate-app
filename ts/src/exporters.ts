@@ -33,11 +33,11 @@
  */
 
 import * as zlib from "node:zlib";
-import { Document, HAIRLINE_IN, MM_PER_IN, PT_PER_IN, ValueError, type Unit } from "./core.js";
-import * as LAY from "./layout.js";
-import * as LI from "./leadin.js";
-import { fmtF } from "./pyformat.js";
-import type { Point } from "./skia.js";
+import { Document, HAIRLINE_IN, MM_PER_IN, PT_PER_IN, ValueError, type Unit } from "./core.ts";
+import * as LAY from "./layout.ts";
+import * as LI from "./leadin.ts";
+import { fmtF } from "./pyformat.ts";
+import type { Point } from "./skia.ts";
 
 /** A contour and whether it is written open (because it carries a lead-in). */
 export type Geom = [pts: Point[], isOpen: boolean];

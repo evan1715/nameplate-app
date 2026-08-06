@@ -53,6 +53,11 @@ def scrub(text: str) -> str:
     text = re.sub(r"\d{4}-\d{2}-\d{2}", "<DATE>", text)
     # python version strings and build ids
     text = re.sub(r"3\.1[0-9]\.\d+", "<PYVER>", text)
+    # How many event-loop turns the GUI managed while a background check ran. It
+    # counts iterations of a real event loop against real wall-clock, so it lands
+    # on a different number every run and on every machine; what the check is
+    # actually asserting is "more than zero, and the report still arrived".
+    text = re.sub(r"\b\d+ event-loop turns\b", "<N> event-loop turns", text)
     return text
 
 

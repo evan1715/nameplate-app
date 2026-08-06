@@ -22,7 +22,7 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { Font } from "./font.js";
+import { Font } from "./font.ts";
 import {
   buildDocument,
   safeFilename,
@@ -31,11 +31,11 @@ import {
   type Basis,
   type Unit,
   type Document,
-} from "./core.js";
-import { exportPdf, exportSvg } from "./exporters.js";
-import { DIRECTIONS, overlaps, VERTICAL, type Direction } from "./layout.js";
-import { initSkia } from "./skia.js";
-import { pyG } from "./pyformat.js";
+} from "./core.ts";
+import { exportPdf, exportSvg } from "./exporters.ts";
+import { DIRECTIONS, overlaps, VERTICAL, type Direction } from "./layout.ts";
+import { initSkia } from "./skia.ts";
+import { pyG } from "./pyformat.ts";
 
 /**
  * Below this the 4-decimal numbers in the SVG/PDF all round to 0.0000, so the file
@@ -118,17 +118,12 @@ function namesFromFile(p: string): { names: string[]; problem: string | null } {
  * is a convenience, and a missing or broken module must not turn a clear font
  * error into an import crash.
  *
- * NOT YET PORTED — `nameplate_fontcheck.py` (the defect detector) has no
- * TypeScript equivalent in this tree yet, so this returns "" and the caller falls
- * back to reporting the parse error on its own. The specifier is built at runtime
- * so the compiler does not treat the absent module as an error; drop in
- * `src/fontcheck.ts` exporting `checkFont(path, opts).text()` and this starts
- * working with no other change.
+ * Loaded lazily: the defect detector pulls in the whole geometry stack, and a CLI
+ * run that never hits a bad font should not pay for it.
  */
 async function fontReport(p: string): Promise<string> {
   try {
-    const specifier = "./" + "fontcheck.js";
-    const fc: any = await import(specifier);
+    const fc = await import("./fontcheck.ts");
     return fc.checkFont(p, { joinScanBudget: 0 }).text();
   } catch {
     return "";

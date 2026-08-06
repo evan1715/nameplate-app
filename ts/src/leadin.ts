@@ -64,9 +64,9 @@ import {
   pdfDocument,
   stack,
   svgSingle,
-} from "./core.js";
-import * as G from "./geom.js";
-import type { Point } from "./skia.js";
+} from "./core.ts";
+import * as G from "./geom.ts";
+import type { Point } from "./skia.ts";
 
 /** A sane default lead-in, in inches. */
 export const DEFAULT_LEN_IN = 0.1;

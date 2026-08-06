@@ -2,7 +2,7 @@
 /**
  * verify_install.ts — prove package.json alone is enough to install and run.
  *
- *     npx tsx scripts/verify_install.ts
+ *     node scripts/verify_install.ts
  *
  * A conversion of `verify_venv.ps1`. That script built a throwaway virtual
  * environment with nothing in it, installed ONLY what `requirements.txt` asked for,
@@ -67,9 +67,9 @@ if (install.status !== 0) process.exit(1);
 console.log("\n=== engine works in the clean install =====================");
 const outDir = path.join(STAGE, "out");
 const cli = spawnSync(
-  "npx",
+  "node",
   [
-    "tsx", "src/cli.ts",
+    "src/cli.ts",
     "--font", path.join(REPO, "fonts", "MerriweatherCut3Black-Engrave-v2.ttf"),
     "--height", "1", "--unit", "in", "--basis", "cap",
     "--format", "both", "--mode", "per-name", "--out", outDir, "ADAM",
@@ -88,12 +88,12 @@ for (const mod of [
   "src/skia.ts", "src/geom.ts", "src/pyformat.ts", "src/font.ts", "src/core.ts",
   "src/layout.ts", "src/leadin.ts", "src/exporters.ts", "src/eyelets.ts",
 ]) {
-  // A probe FILE, not `tsx -e`: the inline form compiles to CommonJS, which
+  // A probe FILE, not `node --eval`: the inline form is treated as CommonJS, which
   // rejects the top-level await these modules use (geom.ts awaits the jsts UMD
   // bundle, and every module that touches Skia awaits its WASM).
   const probe = path.join(STAGE, "_probe.mts");
   fs.writeFileSync(probe, `await import("./${mod}");\n`, "utf8");
-  const r = spawnSync("npx", ["tsx", probe], {
+  const r = spawnSync("node", [probe], {
     cwd: STAGE,
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
@@ -104,7 +104,7 @@ for (const mod of [
 
 console.log("\n=== the suites pass in the clean install ==================");
 for (const suite of ["tests/parity.ts", "tests/acceptance.ts", "tests/export.ts"]) {
-  const r = spawnSync("npx", ["tsx", suite], {
+  const r = spawnSync("node", [suite], {
     cwd: STAGE,
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,

@@ -31,11 +31,11 @@
  */
 
 import * as path from "node:path";
-import { Document, ValueError, type Unit } from "./core.js";
-import * as G from "./geom.js";
-import * as LI from "./leadin.js";
-import { fmtF, fmtSigned, padLeft, padRight, pyG } from "./pyformat.js";
-import type { Point } from "./skia.js";
+import { Document, ValueError, type Unit } from "./core.ts";
+import * as G from "./geom.ts";
+import * as LI from "./leadin.ts";
+import { fmtF, fmtSigned, padLeft, padRight, pyG } from "./pyformat.ts";
+import type { Point } from "./skia.ts";
 
 /** 4·pi·A / P² ; a perfect circle is 1.0. */
 export const CIRCULARITY_MIN = 0.72;

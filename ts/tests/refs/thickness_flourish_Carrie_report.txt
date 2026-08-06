@@ -1,17 +1,17 @@
 Carrie — 106.769 x 24.808 mm
 
 THINNEST PARTS OF THE ARTWORK
-    measured across the stroke at 596 of 842 points walked around the outline
+    measured across the stroke at 589 of 842 points walked around the outline
 
      #  letter           where          thinnest   typical   font u
      1  C (Cleftring)    top              1.4172    1.8214     81.2
      2  e (eflourishrig… middle           1.7850    1.7850    102.3
      3  C (Cleftring)    top              2.1376    2.2210    122.5
-     4  a (a.eng6)       bottom           2.2184    2.7031    127.2
-     5  e (eflourishrig… middle           2.6563    2.7056    152.3
-     6  C (Cleftring)    middle           2.6771    2.7777    153.5
-     7  C (Cleftring)    upper right      2.7006    2.7189    154.8
-     8  C (Cleftring)    bottom           2.7016    2.7029    154.9
+     4  a (a.eng6)       bottom           2.2184    2.7029    127.2
+     5  C (Cleftring)    middle           2.5799    2.7046    147.9
+     6  e (eflourishrig… middle           2.6553    2.7059    152.2
+     7  C (Cleftring)    upper right      2.7013    2.7173    154.8
+     8  r                top              3.0339    3.2201    173.9
     (thinnest/typical in mm; 'font u' columns are font units, which is what a font editor works in)
 
      1  C (Cleftring) — top
@@ -26,19 +26,19 @@ THINNEST PARTS OF THE ARTWORK
           from 11 reading(s) over about 4.466 mm of stroke
      4  a (a.eng6) — bottom
           2.2184 mm (127.2 font units) across, at 33.324, 3.612 mm from the bottom-left
-          from 21 reading(s) over about 8.162 mm of stroke
-     5  e (eflourishrightring) — middle
-          2.6563 mm (152.3 font units) across, at 89.694, 8.709 mm from the bottom-left
-          from 42 reading(s) over about 15.690 mm of stroke
-     6  C (Cleftring) — middle
-          2.6771 mm (153.5 font units) across, at 18.912, 11.393 mm from the bottom-left
-          from 41 reading(s) over about 27.525 mm of stroke
+          from 23 reading(s) over about 8.281 mm of stroke
+     5  C (Cleftring) — middle
+          2.5799 mm (147.9 font units) across, at 20.008, 8.994 mm from the bottom-left
+          from 45 reading(s) over about 21.483 mm of stroke
+     6  e (eflourishrightring) — middle
+          2.6553 mm (152.2 font units) across, at 88.516, 7.625 mm from the bottom-left
+          from 40 reading(s) over about 14.634 mm of stroke
      7  C (Cleftring) — upper right
-          2.7006 mm (154.8 font units) across, at 28.756, 23.407 mm from the bottom-left
-          from 47 reading(s) over about 11.585 mm of stroke
-     8  C (Cleftring) — bottom
-          2.7016 mm (154.9 font units) across, at 16.680, 1.430 mm from the bottom-left
-          from 6 reading(s) over about 8.052 mm of stroke
+          2.7013 mm (154.8 font units) across, at 28.730, 23.411 mm from the bottom-left
+          from 49 reading(s) over about 12.695 mm of stroke
+     8  r — top
+          3.0339 mm (173.9 font units) across, at 64.267, 10.974 mm from the bottom-left
+          from 9 reading(s) over about 10.091 mm of stroke
 
 Thickness is measured across the stroke: a ray is cast inward from the edge until it leaves the material.
 'thinnest' is the worst reading in that area and is the number that decides whether it snaps; 'typical' is the middle reading for the same area, so a lone freak reading is visible as one.

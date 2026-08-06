@@ -2,7 +2,7 @@
 /**
  * make_manifest.ts — stamp the build so a shipped bundle can prove which code it is.
  *
- *     npx tsx scripts/make_manifest.ts        # writes assets/build_manifest.json
+ *     node scripts/make_manifest.ts        # writes assets/build_manifest.json
  *
  * There is no git in the original project, so "which version is on that shop PC?"
  * had no answer: two builds with the same file size could differ by a fix, and a

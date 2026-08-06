@@ -5,11 +5,11 @@
  * any conversion happened (see `scratchpad/dump_ref.py`). A mismatch here means
  * the port has drifted, not that the numbers are stale.
  */
-import { initSkia } from "../src/skia.js";
-import { Font, shape } from "../src/font.js";
+import { initSkia } from "../src/skia.ts";
+import { Font, shape } from "../src/font.ts";
 import {
   buildDocument, capReference, svgSingle, svgSheet, pdfDocument, summary,
-} from "../src/core.js";
+} from "../src/core.ts";
 import { readFileSync } from "node:fs";
 import * as zlib from "node:zlib";
 

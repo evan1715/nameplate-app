@@ -65,7 +65,7 @@ icon      = <ROOT>/assets/icon.ico exists=True
 [PASS] a four-letter cell is drawn at its own smaller scale: 2-letter=0.027317 4-letter=0.013023
 [PASS] flagged pairs are walked in reading order, top to bottom: 0 flagged: []
 [PASS] the flagged count matches the number the header shows: 0 vs 0
-[PASS] the GUI event loop keeps running while a font check is in flight: 509 event-loop turns during the check, report arrived
+[PASS] the GUI event loop keeps running while a font check is in flight: 506 event-loop turns during the check, report arrived
 [PASS] the button that started a report is re-enabled when it finishes: enabled=True text='Check font'
 [PASS] the health check names the build and reports no problems here: build            e51b440f3a76 | [ok] fonts folder exists | [ok] fonts present (3) | [ok] app folder is writable | [ok] path length under 240 chars
 [PASS] empty name box disables export: zip=False sheet=False

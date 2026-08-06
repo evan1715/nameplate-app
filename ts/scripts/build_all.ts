@@ -2,7 +2,7 @@
 /**
  * build_all.ts — produce every shippable artifact from a clean state.
  *
- *     npx tsx scripts/build_all.ts
+ *     node scripts/build_all.ts
  *
  * A conversion of `build_all.ps1`. The Python original's pipeline was
  *
@@ -49,7 +49,7 @@ function run(cmd: string, args: string[], tailLines = 3): void {
 }
 
 say("0. stamp the build so the bundle can prove which code it is");
-run("npx", ["tsx", "scripts/make_manifest.ts"], 1);
+run("node", ["scripts/make_manifest.ts"], 1);
 
 say("1. tests must pass before anything is built");
 // ALL of them. The PowerShell original used to run the acceptance suite only,
@@ -57,7 +57,7 @@ say("1. tests must pass before anything is built");
 // groups, cut order engrave -> inner -> outline) never ran before packaging.
 for (const suite of ["tests/parity.ts", "tests/acceptance.ts", "tests/export.ts"]) {
   console.log(`  ${suite}`);
-  run("npx", ["tsx", suite], 3);
+  run("node", [suite], 3);
 }
 
 say("2. typecheck");

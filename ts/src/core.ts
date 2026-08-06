@@ -31,8 +31,8 @@
  */
 
 import * as zlib from "node:zlib";
-import { Font, type Placed, shape } from "./font.js";
-import * as G from "./geom.js";
+import { Font, type Placed, shape } from "./font.ts";
+import * as G from "./geom.ts";
 import {
   type Point,
   type SkPathData,
@@ -42,8 +42,8 @@ import {
   op as skOp,
   segments,
   translatePath,
-} from "./skia.js";
-import { fmtF, pyFloat, pyG } from "./pyformat.js";
+} from "./skia.ts";
+import { fmtF, pyFloat, pyG } from "./pyformat.ts";
 
 export const MM_PER_IN = 25.4;
 export const PT_PER_IN = 72.0;
