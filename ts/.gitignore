@@ -1,0 +1,10 @@
+node_modules/
+out/
+
+# build output — scripts/build_all.ts regenerates all of this
+dist/
+dist_bundle/
+
+# stamped at build time by scripts/make_manifest.ts; embeds a hostname and a
+# timestamp, so tracking it would churn on every build
+assets/build_manifest.json

@@ -1,0 +1,15 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Node dependencies and build output (see ts/.gitignore for the rest)
+node_modules/
+
+# scratch output from the CLI and the test suites
+out/
+
+# runtime files the app writes next to itself; build_all.ps1 deletes these
+# before packaging, so they must never be committed either
+settings.json
+startup.log
+crash-*.txt
