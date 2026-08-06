@@ -78,3 +78,59 @@ src/eyelets.ts    measures the hanging eyelet (ID / OD / wall)
 src/cli.ts        batch export without a GUI
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
+
+## Build and verify scripts (the PowerShell conversions)
+
+| PowerShell | TypeScript | Notes |
+|---|---|---|
+| `build_all.ps1` | `scripts/build_all.ts` | manifest → all suites → typecheck → esbuild bundle → stage fonts/docs → prove the bundle → tar.gz. Refuses to package if any suite fails, same as the original. |
+| `verify_release.ps1` | `scripts/verify_release.ts` | extracts the archive into a clean folder and drives it with a minimal environment. 21 checks pass; the 15 that exercise the Qt window are reported as SKIP rather than dropped. |
+| `verify_venv.ps1` | `scripts/verify_install.ts` | throwaway directory, `npm install` from `package.json` alone, then the CLI, every module and all three suites inside it. |
+| `make_manifest.py` | `scripts/make_manifest.ts` | content hash of every source + dependency versions → `assets/build_manifest.json`. |
+| `verify_corel.ps1`, `verify_corel_order.ps1` | **not converted** | These drive CorelDRAW itself over COM to confirm what it actually imported. That is Windows-only automation against an installed, signed-in CorelDRAW; there is no Node binding for it, and the checks are meaningless without the application. The promises they verify (open lead-in paths, pierce points as start nodes, engrave at the bottom of the stack, one group/layer per name) are asserted structurally by `tests/export.ts` and `scripts/verify_release.ts` instead. |
+| `make_assets.py` | **not converted** | Generates the `.ico` and the splash PNG for the Qt build. Both are desktop-window artefacts with nothing to serve here. |
+
+```
+npx tsx scripts/build_all.ts        # tests, bundle, archive
+npx tsx scripts/verify_release.ts   # drive the archive from a raw extraction
+npx tsx scripts/verify_install.ts   # prove package.json alone is enough
+```
+
+## What is NOT converted yet
+
+Being explicit, because the line count is lopsided: the engine and the whole
+shipping path are done and verified, and the measurement/reporting tools are not.
+
+| Python module | Lines | Status |
+|---|---|---|
+| `nameplate_core.py` | 802 | ✅ `src/core.ts` — byte-identical output |
+| `nameplate_layout.py` | 97 | ✅ `src/layout.ts` |
+| `nameplate_leadin.py` | 627 | ✅ `src/leadin.ts` |
+| `nameplate_export.py` | 267 | ✅ `src/exporters.ts` — byte-identical output |
+| `nameplate_eyelets.py` | 538 | ✅ `src/eyelets.ts` |
+| `nameplate_cli.py` | 274 | ✅ `src/cli.ts` |
+| `nameplate_thickness.py` | 1502 | ⬜ not converted — finds where a name will snap |
+| `nameplate_fontcheck.py` | 1896 | ⬜ not converted — the font defect detector |
+| `nameplate_pairsheet.py` | 1162 | ⬜ not converted — every letter pair, every position |
+| `nameplate_brief.py` | 730 | ⬜ not converted — the CLI an AI agent drives |
+| `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
+| `regression_tests.py` | 483 | ⬜ not converted — one test per fixed bug |
+| `stress_test.py` | 346 | ⬜ not converted |
+
+`src/cli.ts` already has the hook for `fontcheck`: it imports `./fontcheck.js`
+lazily and falls back to reporting the parse error on its own, so dropping in
+`src/fontcheck.ts` with `checkFont(path, opts).text()` needs no other change.
+
+**The GUI is a framework port, not a language port.** `nameplate_gui.py` is 4,404
+lines of PySide6 widgets, three threads and a custom-painted preview canvas. There
+is no PySide6 for TypeScript, so converting it means choosing a new UI stack
+(Electron, or a browser front end over a local server) and rebuilding the window
+against that stack's own painting and threading model. That is a rewrite decision
+to take deliberately, not something to smuggle into a conversion — so the Python
+GUI is untouched and still runs (`python nameplate_gui.py`, 60/60 on its own
+selftest) against the Python engine, which is also untouched.
+
+The four measurement modules are ordinary ports, and the hard part is already done:
+they need Skia path ops, shapely geometry, font access and Python-exact number
+formatting, and `src/skia.ts`, `src/geom.ts`, `src/font.ts` and `src/pyformat.ts`
+provide all four with the parity already proven.
