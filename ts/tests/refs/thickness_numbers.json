@@ -1,6 +1,6 @@
 {
  "carrie_Bob": {
-  "letters_known": false,
+  "letters_known": true,
   "n_areas": 16,
   "n_below_target": 0,
   "n_spots": 8,
@@ -20,11 +20,11 @@
       0.7309809933568903
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.4216658143507034,
     "extent": 0.03919312871654376,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 2,
     "note": "",
     "parallel_walls": false,
@@ -48,11 +48,11 @@
       0.2717324341416608
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.42057956238851396,
     "extent": 0.0881453098048129,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 32,
     "note": "",
     "parallel_walls": false,
@@ -76,11 +76,11 @@
       0.25958339189023283
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.4404041331305745,
     "extent": 0.10420928769707852,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 26,
     "note": "",
     "parallel_walls": false,
@@ -104,11 +104,11 @@
       0.7967890925393374
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.47146107743352694,
     "extent": 0.7046380422623583,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 64,
     "note": "",
     "parallel_walls": true,
@@ -119,7 +119,7 @@
     "thickness": 0.08647170969251951,
     "thickness_fu": 123.91395998938046,
     "thickness_typical": 0.10793609292353297,
-    "where": "upper left"
+    "where": "top"
    },
    {
     "across": [
@@ -132,11 +132,11 @@
       0.0009415416913239131
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.49995490215815896,
     "extent": 0.22641731225371634,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 8,
     "note": "",
     "parallel_walls": true,
@@ -160,11 +160,11 @@
       0.643905340810403
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.4999605838535674,
     "extent": 0.2525813237626917,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 24,
     "note": "",
     "parallel_walls": true,
@@ -175,7 +175,7 @@
     "thickness": 0.10787140660805565,
     "thickness_fu": 154.57972566934376,
     "thickness_typical": 0.1081176284713889,
-    "where": "middle"
+    "where": "right side"
    },
    {
     "across": [
@@ -188,11 +188,11 @@
       0.47790033138216015
      ]
     ],
-    "char": null,
+    "char": "o",
     "clearance": 0.49999919566887235,
     "extent": 0.5459457425620252,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "o",
+    "letter": "o",
     "n_samples": 46,
     "note": "",
     "parallel_walls": true,
@@ -203,7 +203,7 @@
     "thickness": 0.10794928814848734,
     "thickness_fu": 154.69132991678237,
     "thickness_typical": 0.1095064654836479,
-    "where": "middle"
+    "where": "top"
    },
    {
     "across": [
@@ -216,11 +216,11 @@
       0.17125694893629137
      ]
     ],
-    "char": null,
+    "char": "B",
     "clearance": 0.49989792857309645,
     "extent": 0.11426157441517601,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Bleftring",
+    "letter": "B (Bleftring)",
     "n_samples": 12,
     "note": "",
     "parallel_walls": true,
@@ -238,8 +238,8 @@
   "thinnest_fu": 52.757600438009426
  },
  "flourish_Carrie": {
-  "letters_known": false,
-  "n_areas": 15,
+  "letters_known": true,
+  "n_areas": 17,
   "n_below_target": 0,
   "n_spots": 8,
   "note": "",
@@ -258,11 +258,11 @@
       24.329287505896076
      ]
     ],
-    "char": null,
+    "char": "C",
     "clearance": 0.42906411084396234,
     "extent": 2.7114426712491566,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Cleftring",
+    "letter": "C (Cleftring)",
     "n_samples": 31,
     "note": "",
     "parallel_walls": false,
@@ -273,7 +273,7 @@
     "thickness": 1.417150084469489,
     "thickness_fu": 81.23104284179111,
     "thickness_typical": 1.8214147261460951,
-    "where": "upper left"
+    "where": "top"
    },
    {
     "across": [
@@ -286,11 +286,11 @@
       14.677739927809442
      ]
     ],
-    "char": null,
+    "char": "e",
     "clearance": 0.4203703817777231,
     "extent": 1.7850121906362963,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "eflourishrightring",
+    "letter": "e (eflourishrightring)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": false,
@@ -301,7 +301,7 @@
     "thickness": 1.7850121906362963,
     "thickness_fu": 102.3168987672725,
     "thickness_typical": 1.7850121906362963,
-    "where": "right side"
+    "where": "middle"
    },
    {
     "across": [
@@ -314,11 +314,11 @@
       22.697138869504535
      ]
     ],
-    "char": null,
+    "char": "C",
     "clearance": 0.4313321702086765,
     "extent": 4.46627089340021,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Cleftring",
+    "letter": "C (Cleftring)",
     "n_samples": 11,
     "note": "",
     "parallel_walls": false,
@@ -329,7 +329,7 @@
     "thickness": 2.137644210142041,
     "thickness_fu": 122.52976612534178,
     "thickness_typical": 2.2210138556155092,
-    "where": "upper left"
+    "where": "top"
    },
    {
     "across": [
@@ -342,11 +342,11 @@
       4.398481117993231
      ]
     ],
-    "char": null,
+    "char": "a",
     "clearance": 0.4999999999999997,
     "extent": 8.161936416822977,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "a.eng6",
+    "letter": "a (a.eng6)",
     "n_samples": 21,
     "note": "",
     "parallel_walls": true,
@@ -370,11 +370,11 @@
       9.635765552793462
      ]
     ],
-    "char": null,
+    "char": "e",
     "clearance": 0.4999997986453164,
     "extent": 15.690213359778602,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "eflourishrightring",
+    "letter": "e (eflourishrightring)",
     "n_samples": 42,
     "note": "",
     "parallel_walls": true,
@@ -385,7 +385,7 @@
     "thickness": 2.65626317347637,
     "thickness_fu": 152.25700510366553,
     "thickness_typical": 2.7056230482276957,
-    "where": "right side"
+    "where": "middle"
    },
    {
     "across": [
@@ -398,11 +398,11 @@
       10.099619276627156
      ]
     ],
-    "char": null,
+    "char": "C",
     "clearance": 0.4756802879791296,
     "extent": 27.525239511672297,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Cleftring",
+    "letter": "C (Cleftring)",
     "n_samples": 41,
     "note": "",
     "parallel_walls": true,
@@ -413,7 +413,7 @@
     "thickness": 2.6770901455761984,
     "thickness_fu": 153.4508071444277,
     "thickness_typical": 2.777721065522491,
-    "where": "left side"
+    "where": "middle"
    },
    {
     "across": [
@@ -426,11 +426,11 @@
       24.744606145764585
      ]
     ],
-    "char": null,
+    "char": "C",
     "clearance": 0.4999450858620306,
     "extent": 11.58476518372451,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Cleftring",
+    "letter": "C (Cleftring)",
     "n_samples": 47,
     "note": "",
     "parallel_walls": true,
@@ -441,7 +441,7 @@
     "thickness": 2.700625595833736,
     "thickness_fu": 154.79985915318974,
     "thickness_typical": 2.7188620853634484,
-    "where": "upper left"
+    "where": "upper right"
    },
    {
     "across": [
@@ -454,11 +454,11 @@
       2.769662327265504
      ]
     ],
-    "char": null,
+    "char": "C",
     "clearance": 0.49998325905803304,
     "extent": 8.052202460515565,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "Cleftring",
+    "letter": "C (Cleftring)",
     "n_samples": 6,
     "note": "",
     "parallel_walls": true,
@@ -469,15 +469,15 @@
     "thickness": 2.701580361190579,
     "thickness_fu": 154.854586303444,
     "thickness_typical": 2.7028862916982535,
-    "where": "lower left"
+    "where": "bottom"
    }
   ],
   "thinnest": 1.417150084469489,
   "thinnest_fu": 81.23104284179111
  },
  "merri_ADAM": {
-  "letters_known": false,
-  "n_areas": 15,
+  "letters_known": true,
+  "n_areas": 16,
   "n_below_target": 0,
   "n_spots": 8,
   "note": "",
@@ -496,13 +496,13 @@
       0.09886490833390289
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.5,
-    "extent": 0.05224039961619048,
-    "glyph": "?",
-    "letter": "?",
-    "n_samples": 3,
-    "note": "",
+    "extent": 0.04896175420591811,
+    "glyph": "A.e5",
+    "letter": "A (A.e5)",
+    "n_samples": 1,
+    "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
     "pos": [
      1.8817513261797612,
@@ -510,8 +510,36 @@
     ],
     "thickness": 0.04896175420591811,
     "thickness_fu": 72.75716674999431,
-    "thickness_typical": 0.04902399863453578,
-    "where": "bottom"
+    "thickness_typical": 0.04896175420591811,
+    "where": "lower left"
+   },
+   {
+    "across": [
+     [
+      1.8616579391504593,
+      0.07071142419849577
+     ],
+     [
+      1.9017918870394515,
+      0.09886490833390289
+     ]
+    ],
+    "char": "D",
+    "clearance": 0.4987303295957235,
+    "extent": 0.05224039961619048,
+    "glyph": "D.e0",
+    "letter": "D (D.e0)",
+    "n_samples": 2,
+    "note": "",
+    "parallel_walls": true,
+    "pos": [
+     1.8817249130949554,
+     0.08478816626619932
+    ],
+    "thickness": 0.04902399863453578,
+    "thickness_fu": 72.84966197092017,
+    "thickness_typical": 0.05060108281273534,
+    "where": "lower right"
    },
    {
     "across": [
@@ -524,11 +552,11 @@
       1.0107671601615074
      ]
     ],
-    "char": null,
+    "char": "M",
     "clearance": 0.5,
     "extent": 0.07873485868102288,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "M.e0",
+    "letter": "M (M.e0)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
@@ -539,7 +567,7 @@
     "thickness": 0.07873485868102288,
     "thickness_fu": 117.0,
     "thickness_typical": 0.07873485868102288,
-    "where": "upper right"
+    "where": "upper left"
    },
    {
     "across": [
@@ -552,11 +580,11 @@
       1.0107671601615074
      ]
     ],
-    "char": null,
+    "char": "M",
     "clearance": 0.5,
     "extent": 0.07940780619111709,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "M.e0",
+    "letter": "M (M.e0)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
@@ -567,7 +595,7 @@
     "thickness": 0.07940780619111709,
     "thickness_fu": 118.0,
     "thickness_typical": 0.07940780619111709,
-    "where": "upper right"
+    "where": "top"
    },
    {
     "across": [
@@ -580,11 +608,11 @@
       0.09646309276188147
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.4958360367626208,
     "extent": 0.11290108621477302,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "A.e5",
+    "letter": "A (A.e5)",
     "n_samples": 4,
     "note": "",
     "parallel_walls": true,
@@ -608,11 +636,11 @@
       0.09646309276188147
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.4958360367626208,
     "extent": 0.11290108621477311,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "A.ini",
+    "letter": "A (A.ini)",
     "n_samples": 4,
     "note": "",
     "parallel_walls": true,
@@ -623,7 +651,7 @@
     "thickness": 0.08569593260037406,
     "thickness_fu": 127.34415584415585,
     "thickness_typical": 0.08923574631159209,
-    "where": "lower left"
+    "where": "bottom"
    },
    {
     "across": [
@@ -636,11 +664,11 @@
       1.0190845179434906
      ]
     ],
-    "char": null,
+    "char": "D",
     "clearance": 0.49999999999999983,
     "extent": 0.19856368839782873,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "D.e0",
+    "letter": "D (D.e0)",
     "n_samples": 183,
     "note": "",
     "parallel_walls": true,
@@ -664,11 +692,11 @@
       0.010767160161507403
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.45185963889794556,
     "extent": 0.08809774817239549,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "A.e5",
+    "letter": "A (A.e5)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": false,
@@ -679,44 +707,16 @@
     "thickness": 0.08809774817239549,
     "thickness_fu": 130.9132537841797,
     "thickness_typical": 0.08809774817239549,
-    "where": "bottom"
-   },
-   {
-    "across": [
-     [
-      2.9840735755944374,
-      0.010767160161507403
-     ],
-     [
-      2.9840735755944374,
-      0.09937649353146372
-     ]
-    ],
-    "char": null,
-    "clearance": 0.49629319434770347,
-    "extent": 0.09134365202539325,
-    "glyph": "?",
-    "letter": "?",
-    "n_samples": 2,
-    "note": "",
-    "parallel_walls": true,
-    "pos": [
-     2.9840735755944374,
-     0.05507182684648556
-    ],
-    "thickness": 0.08860933336995631,
-    "thickness_fu": 131.6734693877551,
-    "thickness_typical": 0.08938992065474402,
-    "where": "lower right"
+    "where": "lower left"
    }
   ],
   "thinnest": 0.04896175420591811,
   "thinnest_fu": 72.75716674999431
  },
  "merri_ADAM_t": {
-  "letters_known": false,
-  "n_areas": 15,
-  "n_below_target": 1,
+  "letters_known": true,
+  "n_areas": 16,
+  "n_below_target": 2,
   "n_spots": 8,
   "note": "",
   "reach": 0.75,
@@ -734,13 +734,13 @@
       0.09886490833390289
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.5,
-    "extent": 0.05224039961619048,
-    "glyph": "?",
-    "letter": "?",
-    "n_samples": 3,
-    "note": "",
+    "extent": 0.04896175420591811,
+    "glyph": "A.e5",
+    "letter": "A (A.e5)",
+    "n_samples": 1,
+    "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
     "pos": [
      1.8817513261797612,
@@ -748,8 +748,36 @@
     ],
     "thickness": 0.04896175420591811,
     "thickness_fu": 72.75716674999431,
-    "thickness_typical": 0.04902399863453578,
-    "where": "bottom"
+    "thickness_typical": 0.04896175420591811,
+    "where": "lower left"
+   },
+   {
+    "across": [
+     [
+      1.8616579391504593,
+      0.07071142419849577
+     ],
+     [
+      1.9017918870394515,
+      0.09886490833390289
+     ]
+    ],
+    "char": "D",
+    "clearance": 0.4987303295957235,
+    "extent": 0.05224039961619048,
+    "glyph": "D.e0",
+    "letter": "D (D.e0)",
+    "n_samples": 2,
+    "note": "",
+    "parallel_walls": true,
+    "pos": [
+     1.8817249130949554,
+     0.08478816626619932
+    ],
+    "thickness": 0.04902399863453578,
+    "thickness_fu": 72.84966197092017,
+    "thickness_typical": 0.05060108281273534,
+    "where": "lower right"
    },
    {
     "across": [
@@ -762,11 +790,11 @@
       1.0107671601615074
      ]
     ],
-    "char": null,
+    "char": "M",
     "clearance": 0.5,
     "extent": 0.07873485868102288,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "M.e0",
+    "letter": "M (M.e0)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
@@ -777,7 +805,7 @@
     "thickness": 0.07873485868102288,
     "thickness_fu": 117.0,
     "thickness_typical": 0.07873485868102288,
-    "where": "upper right"
+    "where": "upper left"
    },
    {
     "across": [
@@ -790,11 +818,11 @@
       1.0107671601615074
      ]
     ],
-    "char": null,
+    "char": "M",
     "clearance": 0.5,
     "extent": 0.07940780619111709,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "M.e0",
+    "letter": "M (M.e0)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
@@ -805,7 +833,7 @@
     "thickness": 0.07940780619111709,
     "thickness_fu": 118.0,
     "thickness_typical": 0.07940780619111709,
-    "where": "upper right"
+    "where": "top"
    },
    {
     "across": [
@@ -818,11 +846,11 @@
       0.09646309276188147
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.4958360367626208,
     "extent": 0.11290108621477302,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "A.e5",
+    "letter": "A (A.e5)",
     "n_samples": 4,
     "note": "",
     "parallel_walls": true,
@@ -846,11 +874,11 @@
       0.09646309276188147
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.4958360367626208,
     "extent": 0.11290108621477311,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "A.ini",
+    "letter": "A (A.ini)",
     "n_samples": 4,
     "note": "",
     "parallel_walls": true,
@@ -861,7 +889,7 @@
     "thickness": 0.08569593260037406,
     "thickness_fu": 127.34415584415585,
     "thickness_typical": 0.08923574631159209,
-    "where": "lower left"
+    "where": "bottom"
    },
    {
     "across": [
@@ -874,11 +902,11 @@
       1.0190845179434906
      ]
     ],
-    "char": null,
+    "char": "D",
     "clearance": 0.49999999999999983,
     "extent": 0.19856368839782873,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "D.e0",
+    "letter": "D (D.e0)",
     "n_samples": 183,
     "note": "",
     "parallel_walls": true,
@@ -902,11 +930,11 @@
       0.010767160161507403
      ]
     ],
-    "char": null,
+    "char": "A",
     "clearance": 0.45185963889794556,
     "extent": 0.08809774817239549,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "A.e5",
+    "letter": "A (A.e5)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": false,
@@ -917,43 +945,15 @@
     "thickness": 0.08809774817239549,
     "thickness_fu": 130.9132537841797,
     "thickness_typical": 0.08809774817239549,
-    "where": "bottom"
-   },
-   {
-    "across": [
-     [
-      2.9840735755944374,
-      0.010767160161507403
-     ],
-     [
-      2.9840735755944374,
-      0.09937649353146372
-     ]
-    ],
-    "char": null,
-    "clearance": 0.49629319434770347,
-    "extent": 0.09134365202539325,
-    "glyph": "?",
-    "letter": "?",
-    "n_samples": 2,
-    "note": "",
-    "parallel_walls": true,
-    "pos": [
-     2.9840735755944374,
-     0.05507182684648556
-    ],
-    "thickness": 0.08860933336995631,
-    "thickness_fu": 131.6734693877551,
-    "thickness_typical": 0.08938992065474402,
-    "where": "lower right"
+    "where": "lower left"
    }
   ],
   "thinnest": 0.04896175420591811,
   "thinnest_fu": 72.75716674999431
  },
  "merri_CHRISTOPHER": {
-  "letters_known": false,
-  "n_areas": 10,
+  "letters_known": true,
+  "n_areas": 24,
   "n_below_target": 0,
   "n_spots": 8,
   "note": "",
@@ -972,11 +972,11 @@
       0.29352878657837733
      ]
     ],
-    "char": null,
+    "char": "H",
     "clearance": 0.5,
     "extent": 0.012203088198183042,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "H.e3",
+    "letter": "H (H.e3)",
     "n_samples": 1,
     "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
@@ -1000,13 +1000,13 @@
       0.9254705703755889
      ]
     ],
-    "char": null,
+    "char": "I",
     "clearance": 0.5,
-    "extent": 0.054665226094605654,
-    "glyph": "?",
-    "letter": "?",
-    "n_samples": 4,
-    "note": "",
+    "extent": 0.04790681978220044,
+    "glyph": "I.e22",
+    "letter": "I (I.e22)",
+    "n_samples": 1,
+    "note": "a single reading with nothing beside it to corroborate \u2014 a very small feature, so confirm it on screen before acting on it",
     "parallel_walls": true,
     "pos": [
      3.374283678919919,
@@ -1014,8 +1014,36 @@
     ],
     "thickness": 0.04790681978220044,
     "thickness_fu": 71.18953419634985,
-    "thickness_typical": 0.05027881339086862,
-    "where": "top"
+    "thickness_typical": 0.04790681978220044,
+    "where": "upper right"
+   },
+   {
+    "across": [
+     [
+      3.354842656464861,
+      0.9239998904867559
+     ],
+     [
+      3.392328398384926,
+      0.956976375862214
+     ]
+    ],
+    "char": "S",
+    "clearance": 0.4595594579406482,
+    "extent": 0.054665226094605654,
+    "glyph": "S.e9",
+    "letter": "S (S.e9)",
+    "n_samples": 3,
+    "note": "",
+    "parallel_walls": false,
+    "pos": [
+     3.3735855274248934,
+     0.940488133174485
+    ],
+    "thickness": 0.049926239944697984,
+    "thickness_fu": 74.1903925578212,
+    "thickness_typical": 0.050631386837039265,
+    "where": "upper left"
    },
    {
     "across": [
@@ -1028,11 +1056,11 @@
       0.4407806191117093
      ]
     ],
-    "char": null,
+    "char": "R",
     "clearance": 0.5,
     "extent": 0.12867212860371055,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "R.e8",
+    "letter": "R (R.e8)",
     "n_samples": 23,
     "note": "",
     "parallel_walls": true,
@@ -1043,7 +1071,7 @@
     "thickness": 0.08075370121130551,
     "thickness_fu": 119.99999999999999,
     "thickness_typical": 0.08115560041872286,
-    "where": "left side"
+    "where": "middle"
    },
    {
     "across": [
@@ -1056,11 +1084,11 @@
       0.4407806191117093
      ]
     ],
-    "char": null,
+    "char": "R",
     "clearance": 0.5,
     "extent": 0.1286721286037103,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "R.e5",
+    "letter": "R (R.e5)",
     "n_samples": 23,
     "note": "",
     "parallel_walls": true,
@@ -1071,7 +1099,7 @@
     "thickness": 0.08075370121130551,
     "thickness_fu": 119.99999999999999,
     "thickness_typical": 0.08115560041872286,
-    "where": "right side"
+    "where": "middle"
    },
    {
     "across": [
@@ -1084,11 +1112,11 @@
       1.0233883891359463
      ]
     ],
-    "char": null,
+    "char": "R",
     "clearance": 0.4999999999999987,
     "extent": 0.1073644932957332,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "R.e8",
+    "letter": "R (R.e8)",
     "n_samples": 90,
     "note": "",
     "parallel_walls": true,
@@ -1099,7 +1127,7 @@
     "thickness": 0.08166404177406804,
     "thickness_fu": 121.3527660762651,
     "thickness_typical": 0.08185339114216207,
-    "where": "upper left"
+    "where": "top"
    },
    {
     "across": [
@@ -1112,11 +1140,11 @@
       1.0233883891359463
      ]
     ],
-    "char": null,
+    "char": "R",
     "clearance": 0.4999999999999983,
     "extent": 0.1073644932957332,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "R.e5",
+    "letter": "R (R.e5)",
     "n_samples": 90,
     "note": "",
     "parallel_walls": true,
@@ -1127,7 +1155,7 @@
     "thickness": 0.08166404177406807,
     "thickness_fu": 121.35276607626514,
     "thickness_typical": 0.08184762922868911,
-    "where": "upper right"
+    "where": "top"
    },
    {
     "across": [
@@ -1140,11 +1168,11 @@
       0.0002931907489400667
      ]
     ],
-    "char": null,
+    "char": "O",
     "clearance": 0.4999999999999999,
     "extent": 0.08797573733543763,
-    "glyph": "?",
-    "letter": "?",
+    "glyph": "O.e22",
+    "letter": "O (O.e22)",
     "n_samples": 10,
     "note": "",
     "parallel_walls": true,
@@ -1156,34 +1184,6 @@
     "thickness_fu": 121.75083837322146,
     "thickness_typical": 0.08208604060753599,
     "where": "bottom"
-   },
-   {
-    "across": [
-     [
-      5.0769157974428,
-      0.9467553648870943
-     ],
-     [
-      5.074571595027809,
-      1.0287160840596203
-     ]
-    ],
-    "char": null,
-    "clearance": 0.49999999999999967,
-    "extent": 0.08856692095849096,
-    "glyph": "?",
-    "letter": "?",
-    "n_samples": 10,
-    "note": "",
-    "parallel_walls": true,
-    "pos": [
-     5.075743696235305,
-     0.9877357244733573
-    ],
-    "thickness": 0.08199423621352983,
-    "thickness_fu": 121.84343501330532,
-    "thickness_typical": 0.08211502666877157,
-    "where": "top"
    }
   ],
   "thinnest": 0.012203088198183042,

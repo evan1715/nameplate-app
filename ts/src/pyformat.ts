@@ -160,3 +160,38 @@ export function padLeft(s: string, width: number): string {
 export function padRight(s: string, width: number): string {
   return s.length >= width ? s : s + " ".repeat(width - s.length);
 }
+
+/**
+ * Python's `textwrap.wrap(text, width, initial_indent, subsequent_indent)`.
+ *
+ * Greedy, breaking only on whitespace, with the indent counted inside the width —
+ * which is what makes the wrapped notes in a report line up under their label.
+ * Long single words are left to overflow rather than split, matching textwrap's
+ * default `break_long_words=False`… except that Python's default is True. It is
+ * set explicitly here because a glyph name like 'eflourishrightring' is one word
+ * and splitting it mid-name would make it unsearchable.
+ */
+export function wrapText(
+  text: string,
+  width: number,
+  initialIndent = "",
+  subsequentIndent = "",
+): string[] {
+  const words = text.split(/\s+/).filter((w) => w);
+  if (words.length === 0) return [];
+  const lines: string[] = [];
+  let indent = initialIndent;
+  let cur = "";
+  for (const word of words) {
+    const candidate = cur ? `${cur} ${word}` : word;
+    if (indent.length + candidate.length <= width || cur === "") {
+      cur = candidate;
+    } else {
+      lines.push(indent + cur);
+      indent = subsequentIndent;
+      cur = word;
+    }
+  }
+  if (cur) lines.push(indent + cur);
+  return lines;
+}

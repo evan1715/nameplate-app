@@ -445,5 +445,5 @@
     "note": "NOT a target — nothing here can fail. The cap LINE is set to the asked height for every name, which is what makes two names match. Individual capitals read OVER that line on purpose (overshoot): a round O and a pointed A both exceed it, a flat H E I T sit on it, and a J or Q hangs below the baseline so its ink is taller still. Do not 'correct' any of that — flattening overshoot damages the font and changes nothing about the size that is cut."
   },
   "targets_text": "                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      1.4619      0.5000    -65.80%         83.8 -> 28.7         MET",
-  "seconds": 24.9
+  "seconds": 24.0
 }

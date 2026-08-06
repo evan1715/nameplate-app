@@ -317,3 +317,98 @@ export function prep(g: Geometry): {
     },
   };
 }
+
+/** `geom.boundary` — the rings of an area, or the endpoints of a line. */
+export function boundary(g: Geometry): Geometry {
+  try {
+    return g.getBoundary();
+  } catch {
+    return lineString([]);
+  }
+}
+
+/** A polygon's interior rings — shapely's `poly.interiors`. */
+export function interiors(g: Geometry): Geometry[] {
+  const out: Geometry[] = [];
+  try {
+    const n = g.getNumInteriorRing();
+    for (let i = 0; i < n; i++) out.push(g.getInteriorRingN(i));
+  } catch {
+    /* not a polygon */
+  }
+  return out;
+}
+
+/**
+ * `shapely.strtree.STRtree` — an R-tree over a fixed set of geometries.
+ *
+ * shapely's `query(geom, predicate="dwithin", distance=d)` has no jsts
+ * equivalent: jsts' STRtree indexes envelopes and queries envelopes only. So the
+ * envelope is grown by `d` and the candidates it returns are filtered by real
+ * distance — which is what shapely does internally anyway, and gives the same
+ * answers.
+ */
+export class SpatialIndex {
+  private tree: any;
+  private items: Geometry[];
+
+  constructor(geoms: readonly Geometry[]) {
+    this.items = geoms.slice();
+    this.tree = new jsts.index.strtree.STRtree();
+    this.items.forEach((g, i) => {
+      if (!isEmpty(g)) this.tree.insert(g.getEnvelopeInternal(), i);
+    });
+  }
+
+  /** Indices of every indexed geometry within `distance` of `g`. */
+  withinDistance(g: Geometry, distance: number): number[] {
+    const env = g.getEnvelopeInternal().copy();
+    env.expandBy(distance);
+    let hits: any[] = [];
+    try {
+      hits = this.tree.query(env);
+    } catch {
+      return [];
+    }
+    const out: number[] = [];
+    for (const raw of hits) {
+      const idx = typeof raw === "number" ? raw : raw?.getItem?.();
+      if (typeof idx !== "number") continue;
+      out.push(idx);
+    }
+    return out;
+  }
+}
+
+/** `line.project(point)` then `line.interpolate(...)` — the perpendicular foot. */
+export function nearestPointOnLine(line: Geometry, p: Geometry): Point | null {
+  try {
+    const lil = new jsts.linearref.LengthIndexedLine(line);
+    const idx = lil.indexOf(p.getCoordinate());
+    const c = lil.extractPoint(idx);
+    return [c.x, c.y];
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * `geom.buffer(d, join_style=2, mitre_limit=…)` — a buffer with MITRED joins.
+ *
+ * The thicken preview needs this rather than the default round join: these are
+ * letterforms, and rounding every serif and corner makes the overlay read as a
+ * different typeface instead of as this one thickened. The mitre limit keeps it
+ * honest — at a very sharp apex an unlimited mitre shoots a spike far outside the
+ * letter, so it is capped and the apex is bevelled instead.
+ */
+export function bufferMitre(g: Geometry, d: number, mitreLimit: number): Geometry {
+  try {
+    const params = new jsts.operation.buffer.BufferParameters();
+    params.setJoinStyle(jsts.operation.buffer.BufferParameters.JOIN_MITRE);
+    params.setMitreLimit(mitreLimit);
+    return jsts.operation.buffer.BufferOp.bufferOp(g, d, params);
+  } catch {
+    // a mitred buffer is a presentation choice, not a correctness one
+    return buffer(g, d);
+  }
+}

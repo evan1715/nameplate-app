@@ -101,7 +101,7 @@ THICK_CASES = [
 thick_numbers = {}
 for label, fk, name, h, unit, basis, target in THICK_CASES:
     doc = build_document(_fonts[fk], name, h, unit, basis)
-    sv = TH.survey(doc, target)
+    sv = TH.survey(doc, target, font=_fonts[fk])
     thick_numbers[label] = {
         "thinnest": sv.thinnest,
         "thinnest_fu": sv.thinnest / doc.scale if sv.thinnest else None,
@@ -124,7 +124,7 @@ for label, fk, name, h, unit, basis, target in THICK_CASES:
                   for s in sv.spots],
     }
     write(f"thickness_{label}_report.txt",
-          scrub(TH.report_text(doc, target, font=_fonts[fk])))
+          scrub(TH.report_text(doc, target, font=_fonts[fk], sv=sv)))
     if target:
         write(f"thickness_{label}_prompt.txt",
               scrub(TH.claude_prompt(doc, target, font_path=FONTS[fk])))

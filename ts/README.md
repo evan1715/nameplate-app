@@ -109,8 +109,8 @@ shipping path are done and verified, and the measurement/reporting tools are not
 | `nameplate_export.py` | 267 | ✅ `src/exporters.ts` — byte-identical output |
 | `nameplate_eyelets.py` | 538 | ✅ `src/eyelets.ts` |
 | `nameplate_cli.py` | 274 | ✅ `src/cli.ts` |
-| `nameplate_thickness.py` | 1502 | ⬜ not converted — finds where a name will snap |
-| `nameplate_fontcheck.py` | 1896 | ⬜ not converted — the font defect detector |
+| `nameplate_thickness.py` | 1502 | 🟡 `src/thickness.ts` — ported, 50/56 parity (see below) |
+| `nameplate_fontcheck.py` | 1896 | 🟡 `src/fontcheck.ts` — shaping/area layer only; detector, join scan and report writer still to do |
 | `nameplate_pairsheet.py` | 1162 | ⬜ not converted — every letter pair, every position |
 | `nameplate_brief.py` | 730 | ⬜ not converted — the CLI an AI agent drives |
 | `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
@@ -134,3 +134,44 @@ The four measurement modules are ordinary ports, and the hard part is already do
 they need Skia path ops, shapely geometry, font access and Python-exact number
 formatting, and `src/skia.ts`, `src/geom.ts`, `src/font.ts` and `src/pyformat.ts`
 provide all four with the parity already proven.
+
+## Thickness: ported, with one divergence that is not yet closed
+
+`src/thickness.ts` reproduces the survey, the clustering, the report and the
+paste-ready prompt. `tests/thickness.ts` holds it to the Python's own captured
+output and passes **50 of 56** checks. What passes and what does not is worth
+stating precisely, because the failures are not cosmetic:
+
+**Matches exactly.** The thinnest reading on all five cases, to four decimal
+places. The three worst spots' letters, thicknesses (within 0.5%) and wall-
+parallelism ratios (within 0.02). And both figures `regression_tests.py` pins as
+double-derived truth: ADAM 72.76 font units and CHRISTOPHER 18.13, each confirmed
+as a parallel-walled web rather than a taper.
+
+**Does not match.** How many boundary readings survive the wedge gate:
+
+| case | TS readings | Python readings | apart | areas |
+|---|---|---|---|---|
+| Merriweather ADAM | 1035 | 1036 | 0.1% | 16 vs 16 |
+| Merriweather CHRISTOPHER | 3062 | 3053 | 0.3% | 24 vs 24 |
+| Carrie Flourish "Carrie" | 586 | 596 | 1.7% | 15 vs 17 |
+| Carrie SO "Bob" | 732 | 609 | **16.8%** | 13 vs 16 |
+
+The uniform walk itself is *identical* — same 1620 sample points, same 24786.67
+perimeter on the Bob case — so the divergence is entirely in which readings pass
+`crossWidth`'s wedge test (`room >= 0.42 x width`). A reading sitting on that
+threshold falls either side of it depending on how jsts and GEOS round the
+ray/boundary intersection. On three of the four cases that is a fraction of a
+percent; on Carrie SO "Bob" it is 17%, which is too large to call rounding and has
+not been traced yet.
+
+Consequence: the *tail* of the top-8 list reorders, because entries 4–8 are
+near-equal readings whose order depends on the surviving set. That is what the six
+failing checks are — five report-text diffs and one letter-set difference on the
+Flourish font. The thinnest reading, which is the number that decides whether a
+plate snaps, is unaffected on every case.
+
+The test deliberately still fails rather than widening its tolerance to go green.
+Two checks it makes are recorded-not-asserted (the surviving-reading count and the
+area count), and those are labelled as such in its output; the six failures are
+real parity gaps that need the wedge-gate difference tracked down.

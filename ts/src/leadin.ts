@@ -273,7 +273,7 @@ class Void {
 // --------------------------------------------------------------------------- //
 
 /** One place a lead-in could enter, with the direction it would come from. */
-interface Candidate {
+export interface Candidate {
   anchor: Point;
   normal: Point;
   /** Index into the RAW ring of the edge this anchor sits on. */
@@ -291,7 +291,7 @@ interface Candidate {
  * Each sample uses its own edge's true perpendicular, which is also a better entry
  * direction than a corner's bisector.
  */
-function candidates(ring: Point[], maxPts = 56): Candidate[] {
+export function candidates(ring: Point[], maxPts = 56): Candidate[] {
   const n = ring.length;
   const segs: { a: Point; b: Point; L: number; ringIdx: number }[] = [];
   let perimeter = 0;

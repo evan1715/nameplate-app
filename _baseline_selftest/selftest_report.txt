@@ -1,25 +1,25 @@
-report location: <ROOT>/_baseline_selftest/selftest_report.txt
-build     = e51b440f3a76  built <TIME>
+report location: /home/user/nameplate-app/_baseline_selftest/selftest_report.txt
+build     = e51b440f3a76  built 2026-08-06 10:27:34Z
 frozen=False
 executable= /usr/bin/python3.12
-BASE      = <ROOT>
-FONTS_DIR = <ROOT>/fonts
-settings  = <ROOT>/settings.json
+BASE      = /home/user/nameplate-app
+FONTS_DIR = /home/user/nameplate-app/fonts
+settings  = /home/user/nameplate-app/settings.json
 platform  = offscreen
 splash    = not in this build (normal when running from source)
-icon      = <ROOT>/assets/icon.ico exists=True
+icon      = /home/user/nameplate-app/assets/icon.ico exists=True
 [PASS] exe lists fonts in fonts\: 3 -> ['Merriweather-Cut3 Engrave v2 Black', 'TG Carrie SO FLOURISH v2 Regular', 'TG Carrie SO v2 Regular']
 [PASS] selected Merriweather: Merriweather-Cut3 Engrave v2 Black
-[PASS] font detail reports engrave capability: MerriweatherCut3Black-Engrave-v2.ttf · <DATE> 13:29 · carries engrave lines · no problems found
+[PASS] font detail reports engrave capability: MerriweatherCut3Black-Engrave-v2.ttf · 2026-08-06 13:29 · carries engrave lines · no problems found
 [PASS] preview size label: ADAM — 4.069 × 1.020 in
 [PASS] preview counts: 6 cut contours, 10 engrave lines
-[PASS] canvas painted cut (black) + engrave (red): 837 dark px, 47 red px, 662x641 -> <ROOT>/_baseline_selftest/selftest_preview.png
-       full window image -> <ROOT>/_baseline_selftest/selftest_window.png
+[PASS] canvas painted cut (black) + engrave (red): 837 dark px, 47 red px, 662x641 -> /home/user/nameplate-app/_baseline_selftest/selftest_preview.png
+       full window image -> /home/user/nameplate-app/_baseline_selftest/selftest_window.png
 [PASS] per-name zip export: ['ADAM.pdf', 'ADAM.svg', 'Mary_Jane.pdf', 'Mary_Jane.svg', 'OLIVIA.pdf', 'OLIVIA.svg'] (testzip=None)
 [PASS] one-sheet export: sheet.svg=65571 B, sheet.pdf=27510 B
 [PASS] in -> mm converts the number: 25.4 mm
 [PASS] preview after unit switch is the same physical size: ADAM — 103.361 × 25.896 mm
-[PASS] settings.json written next to exe: <ROOT>/settings.json -> font_path=MerriweatherCut3Black-Engrave-v2.ttf
+[PASS] settings.json written next to exe: /home/user/nameplate-app/settings.json -> font_path=MerriweatherCut3Black-Engrave-v2.ttf
 [PASS] lead-ins appear and the stated height does NOT change: '6 cut contours, 10 engrave lines, 6 lead-ins'; size 'ADAM — 4.069 × 1.020 in' -> 'ADAM — 4.069 × 1.020 in'
 [PASS] lead-in export is written in cutting order, outline last: groups ['ADAM', 'ADAM__1_engrave', 'ADAM__2_cut_inner', 'ADAM__3_cut_outline']; 16 open path(s); order engrave->inner->outline: True; no <text>/<rect>: True
 [PASS] a cut-only font does NOT warn in amber, and still exports: counts='7 cut contours, 0 engrave lines' amber_visible=False amber='' zip=True
