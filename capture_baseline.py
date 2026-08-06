@@ -33,6 +33,15 @@ os.makedirs(REFS, exist_ok=True)
 
 
 def write(name: str, text: str) -> None:
+    # A .json reference has to still BE json after scrubbing. A placeholder
+    # substituted where a bare number was ("seconds": <T>) parses fine as prose and
+    # not at all as json, and the corruption is silent until something downstream
+    # tries to read it -- so it is caught here, at the moment of writing.
+    if name.endswith(".json"):
+        try:
+            json.loads(text)
+        except Exception as exc:
+            raise SystemExit(f"refusing to write malformed json to {name}: {exc}")
     path = os.path.join(REFS, name)
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)
@@ -58,6 +67,15 @@ def scrub(text: str) -> str:
     # on a different number every run and on every machine; what the check is
     # actually asserting is "more than zero, and the report still arrived".
     text = re.sub(r"\b\d+ event-loop turns\b", "<N> event-loop turns", text)
+    # A timing carried as a JSON field rather than as "1.2s" prose, which the rule
+    # above cannot see: brief's own elapsed measurement. The placeholder is QUOTED
+    # because these files are parsed as JSON downstream, and a bare <T> where a
+    # number was makes the whole document unparseable.
+    text = re.sub(r'("seconds":\s*)[\d.]+', r'\1"<T>"', text)
+    # How many letter pairs the join scan did NOT reach. It is whatever did not fit
+    # in the wall-clock budget, so it drifts by a few every run. The contract being
+    # captured is "unmeasured pairs block a ready verdict", not the exact count.
+    text = re.sub(r"\buntested=\d+", "untested=<N>", text)
     return text
 
 
@@ -232,6 +250,15 @@ for label, fk, extra in BRIEF_CASES:
     for p in (jpath, mpath):
         if os.path.exists(p):
             txt = scrub(open(p, encoding="utf-8").read())
+            # brief writes its own files, so these do not go through write() -- but
+            # the same rule applies: a scrubbed .json has to still parse.
+            if p.endswith(".json"):
+                try:
+                    json.loads(txt)
+                except Exception as exc:
+                    raise SystemExit(
+                        f"refusing to write malformed json to "
+                        f"{os.path.basename(p)}: {exc}")
             with open(p, "w", encoding="utf-8", newline="\n") as fh:
                 fh.write(txt)
             print(f"  wrote {os.path.basename(p)} ({len(txt)} chars)")

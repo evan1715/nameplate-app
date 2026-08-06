@@ -1,0 +1,44 @@
+Bob — 2.567 x 0.997 in
+
+THINNEST PARTS OF THE ARTWORK
+    measured across the stroke at 609 of 810 points walked around the outline
+
+     #  letter           where          thinnest   typical   font u
+     1  B (Bleftring)    top              0.0368    0.0380     52.8
+     2  B (Bleftring)    middle           0.0441    0.0590     63.2
+     3  B (Bleftring)    middle           0.0662    0.0709     94.9
+     4  B (Bleftring)    top              0.0865    0.1079    123.9
+     5  B (Bleftring)    lower left       0.1051    0.1072    150.7
+     6  B (Bleftring)    right side       0.1079    0.1081    154.6
+     7  o                top              0.1079    0.1095    154.7
+     8  B (Bleftring)    bottom           0.1081    0.1081    154.8
+    (thinnest/typical in in; 'font u' columns are font units, which is what a font editor works in)
+
+     1  B (Bleftring) — top
+          0.0368 in (52.8 font units) across, at 0.821, 0.736 in from the bottom-left
+          from 2 reading(s) over about 0.039 in of stroke
+     2  B (Bleftring) — middle
+          0.0441 in (63.2 font units) across, at 0.925, 0.293 in from the bottom-left
+          from 32 reading(s) over about 0.088 in of stroke
+     3  B (Bleftring) — middle
+          0.0662 in (94.9 font units) across, at 0.895, 0.281 in from the bottom-left
+          from 26 reading(s) over about 0.104 in of stroke
+     4  B (Bleftring) — top
+          0.0865 in (123.9 font units) across, at 0.752, 0.782 in from the bottom-left
+          from 64 reading(s) over about 0.705 in of stroke
+     5  B (Bleftring) — lower left
+          0.1051 in (150.7 font units) across, at 0.339, 0.054 in from the bottom-left
+          from 8 reading(s) over about 0.226 in of stroke
+     6  B (Bleftring) — right side
+          0.1079 in (154.6 font units) across, at 1.217, 0.598 in from the bottom-left
+          from 24 reading(s) over about 0.253 in of stroke
+     7  o — top
+          0.1079 in (154.7 font units) across, at 1.619, 0.528 in from the bottom-left
+          from 46 reading(s) over about 0.546 in of stroke
+     8  B (Bleftring) — bottom
+          0.1081 in (154.8 font units) across, at 0.811, 0.176 in from the bottom-left
+          from 12 reading(s) over about 0.114 in of stroke
+
+Thickness is measured across the stroke: a ray is cast inward from the edge until it leaves the material.
+'thinnest' is the worst reading in that area and is the number that decides whether it snaps; 'typical' is the middle reading for the same area, so a lone freak reading is visible as one.
+Readings that cross a wedge rather than a stroke — a serif tip, an apex, the end of a swash — are dropped, because thickening the font would not fix them.

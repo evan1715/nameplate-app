@@ -15,9 +15,9 @@
       "ADAM",
       "Adam"
     ],
-    "eyelet_inner_diameter": null,
-    "eyelet_wall": null,
-    "min_thickness": 0.001
+    "eyelet_inner_diameter": 0.4,
+    "eyelet_wall": 0.2,
+    "min_thickness": 0.09
   },
   "font_check": {
     "usable": true,
@@ -109,7 +109,7 @@
   "thickness": {
     "unit": "in",
     "areas_found": 16,
-    "areas_below_target": 0,
+    "areas_below_target": 11,
     "spots_shown": 8,
     "samples_taken": 692,
     "thinnest": 0.04896175420591811,
@@ -130,8 +130,8 @@
         "extent": 0.04896175420591811,
         "clearance": 0.5,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -97.95758951814858
+        "meets_target": false,
+        "needs_pct": 83.8169433666278
       },
       {
         "rank": 2,
@@ -148,8 +148,8 @@
         "extent": 0.05224039961619048,
         "clearance": 0.4987303295957235,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -97.96018271080904
+        "meets_target": false,
+        "needs_pct": 83.5835560271862
       },
       {
         "rank": 3,
@@ -166,8 +166,8 @@
         "extent": 0.07873485868102288,
         "clearance": 0.5,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -98.72991452991454
+        "meets_target": false,
+        "needs_pct": 14.30769230769231
       },
       {
         "rank": 4,
@@ -184,8 +184,8 @@
         "extent": 0.07940780619111709,
         "clearance": 0.5,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -98.7406779661017
+        "meets_target": false,
+        "needs_pct": 13.338983050847464
       },
       {
         "rank": 5,
@@ -202,8 +202,8 @@
         "extent": 0.11290108621477302,
         "clearance": 0.4958360367626208,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -98.83308347356076
+        "meets_target": false,
+        "needs_pct": 5.022487379531881
       },
       {
         "rank": 6,
@@ -212,16 +212,16 @@
         "where": "bottom",
         "thickness": 0.08569593260037406,
         "thickness_font_units": 127.34415584415585,
-        "typical": 0.08584275215525779,
+        "typical": 0.08923574631159209,
         "at": [
           0.6236541049798116,
           0.05361512646169444
         ],
-        "extent": 0.11180958825138765,
+        "extent": 0.11290108621477311,
         "clearance": 0.4958360367626208,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -98.83308347356076
+        "meets_target": false,
+        "needs_pct": 5.022487379531881
       },
       {
         "rank": 7,
@@ -238,8 +238,8 @@
         "extent": 0.19856368839782873,
         "clearance": 0.49999999999999983,
         "parallel_walls": true,
-        "meets_target": true,
-        "needs_pct": -98.83442923096524
+        "meets_target": false,
+        "needs_pct": 4.901369213128226
       },
       {
         "rank": 8,
@@ -248,65 +248,74 @@
         "where": "lower left",
         "thickness": 0.08809774817239549,
         "thickness_font_units": 130.9132537841797,
-        "typical": 0.08999239320730157,
+        "typical": 0.08809774817239549,
         "at": [
           1.9017918870394515,
           0.05481603424770515
         ],
-        "extent": 0.09441864853513705,
+        "extent": 0.08809774817239549,
         "clearance": 0.45185963889794556,
         "parallel_walls": false,
-        "meets_target": true,
-        "needs_pct": -98.86489720708511
+        "meets_target": false,
+        "needs_pct": 2.1592513623413634
       }
     ],
-    "below_target": []
+    "below_target": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
   },
   "targets": [
     {
       "what": "eyelet inner diameter",
       "measured": 0.3447679444134717,
-      "target": null,
+      "target": 0.4,
       "unit": "in",
-      "verdict": "not judged",
+      "verdict": "NOT MET",
       "font_units": {
         "measured": 512.3251653984189,
-        "target": null
+        "target": 594.4
       },
-      "change_pct": null
+      "change_pct": 16.020066970115376
     },
     {
       "what": "eyelet wall",
       "measured": 0.15507827511333616,
-      "target": null,
+      "target": 0.2,
       "unit": "in",
-      "verdict": "not judged",
+      "verdict": "MET",
       "font_units": {
         "measured": 230.44631681841753,
-        "target": null
+        "target": 297.2
       },
-      "change_pct": null
+      "change_pct": 28.96712956978249
     },
     {
       "what": "thinnest part of the letters",
       "measured": 0.04896175420591811,
-      "target": 0.001,
+      "target": 0.09,
       "unit": "in",
-      "verdict": "MET",
+      "verdict": "NOT MET",
       "font_units": {
         "measured": 72.75716674999431,
-        "target": 1.486
+        "target": 133.73999999999998
       },
-      "change_pct": -97.95758951814858
+      "change_pct": 83.8169433666278
     }
   ],
   "prompts": {
     "font_defects": "",
     "letter_pairs": "",
-    "eyelet_size": "",
-    "thin_areas": "Every thin area of 'ADAM' is already at or above 0.0010 in (1.5 font units), so the font needs no change for this name at this size."
+    "eyelet_size": "Edit the eyelet in the font Merriweather-Cut3 Engrave v2 Black (MerriweatherCut3Black-Engrave-v2.ttf) so it comes out at the size below.\n\nMeasured from the name 'ADAM' set to 1 in cap height.\n\nLEFT EYELET\n  inner diameter  0.3448 -> 0.4000 in   (+16.02%)\n  wall thickness  0.1551 -> 0.2000 in   (+28.97%)\n  outer diameter  0.6549 -> 0.8000 in   (+22.15%)\n  In FONT UNITS (what your editor works in, and what actually has to change):\n    hole diameter  512.3 -> 594.4\n    wall           230.4 -> 297.2\n    outer diameter 973.2 -> 1188.8\n\nHOW TO MAKE THE CHANGE\n  Resize the eyelet hole and the ring around it to the font-unit sizes above. Keep the eyelet concentric and keep its centre where it is, so the letters do not move.\n  Do not change the cap height, the x-height, unitsPerEm, the advance widths, or any letter outline. Do not add, delete or reorder glyphs - this app addresses glyphs by ID.\n  The eyelet is a contextual form on the first and last letter, so change it in EVERY glyph that carries one, or the two ends of a name will no longer match.\n\nWHY FONT UNITS  Everything scales linearly with the height, so a font-unit size holds at every cutting height - set it once and the eyelet is right at 1 in and at any other height.",
+    "thin_areas": "FONT THICKENING REQUEST  -  ShineOn nameplate, laser-cut sheet metal\n\nFONT FILE      MerriweatherCut3Black-Engrave-v2.ttf\nunitsPerEm     2000\nNAME TESTED    ADAM\nCUT AT         1 in cap height\n\nTHE PROBLEM\n  This name is cut out of sheet metal. Any part of a letter that is too\n  thin snaps off when the plate is handled. At the size above, the thinnest\n  material in the artwork measures 0.0490 in and it has to be at\n  least 0.0900 in. 11 separate area(s) are under that, of 16 measured.\n\nALL SIZES BELOW ARE IN FONT UNITS\n  A font editor works in font units, not in inches or millimetres, so every\n  size here is in font units of this font's 2000-unit em square.\n  The conversion used is the one for this job: 1 in of cap height is\n  1486 font units, so 1 font unit = 0.000673 in, and the\n  0.0900 in minimum is 133.7 font units  -  round up to 134.\n  A thickness in font units is a proportion of the letter, so fixing it\n  here fixes it at every size the name is ever cut. Do not convert these\n  numbers back into inches or millimetres.\n\nTHE THIN AREAS, THINNEST FIRST\n  1. glyph 'A.e5' (the letter A)  -  lower left of the letter\n     now 72.8 font units across, needs 134 font units (+83.8%)\n     note: a single reading with nothing beside it to corroborate  -  a very\n           small feature, so confirm it on screen before acting on it\n  2. glyph 'D.e0' (the letter D)  -  lower right of the letter\n     now 72.8 font units across, needs 134 font units (+83.6%)\n  3. glyph 'M.e0' (the letter M)  -  upper left of the letter\n     now 117.0 font units across, needs 134 font units (+14.3%)\n     note: a single reading with nothing beside it to corroborate  -  a very\n           small feature, so confirm it on screen before acting on it\n  4. glyph 'M.e0' (the letter M)  -  top of the letter\n     now 118.0 font units across, needs 134 font units (+13.3%)\n     note: a single reading with nothing beside it to corroborate  -  a very\n           small feature, so confirm it on screen before acting on it\n  5. glyph 'A.e5' (the letter A)  -  bottom of the letter\n     now 127.3 font units across, needs 134 font units (+5.0%)\n  6. glyph 'A.ini' (the letter A)  -  bottom of the letter\n     now 127.3 font units across, needs 134 font units (+5.0%)\n  7. glyph 'D.e0' (the letter D)  -  top of the letter\n     now 127.5 font units across, needs 134 font units (+4.9%)\n  8. glyph 'A.e5' (the letter A)  -  lower left of the letter\n     now 130.9 font units across, needs 134 font units (+2.2%)\n     note: a single reading with nothing beside it to corroborate  -  a very\n           small feature, so confirm it on screen before acting on it\n  ...and 3 more area(s) under the minimum, not listed one by one.\n  The instruction below covers those as well  -  it is a rule, not a list.\n\nTHE INSTRUCTION\n  Thicken every stroke thinner than 134 font units up to 134 font units\n  (an increase of up to 84% at the worst place), keeping the outer\n  silhouette and the counters' positions.\n\n  In plain terms: measure across each stroke listed above; where that\n  measurement is under 134 font units, move the INNER wall of the stroke\n  (the counter side) until it measures 134. The outside edge of the letter\n  stays exactly where it is, and each counter stays in the same place and\n  keeps its shape  -  it may end up slightly smaller, and that is expected.\n  Blend into the thicker part of the same stroke either side of the thin\n  place so there is no step, kink or lump where the change ends.\n  Leave every stroke that already measures 134 font units or more alone.\n\nWHAT MUST NOT CHANGE\n  * the advance width of any glyph, and all kerning and spacing: the name\n    must occupy exactly the same width, so the cut file does not resize\n  * the cap height, x-height, ascender, descender and baseline\n  * the outer silhouette of each letter  -  no letter may get taller, wider\n    or a different shape; this is a local thickening, not a new weight\n  * the eyelet holes: their diameter, roundness and position are set by the\n    hanging hardware. Do not resize, move or reshape any eyelet hole, and do\n    not thicken a stroke by eating into one\n  * the contextual and alternate glyph set: keep every alternate and eyelet\n    form (.eyeL / .eyeR and similar), keep every glyph name, and do not add,\n    remove or re-order glyphs. Leave the GSUB/calt/liga/kern rules exactly as\n    they are, so the same name still shapes to the same glyphs\n  * the colour/engrave layers (COLR and CPAL) and the unitsPerEm\n  * anything not on the list above. Do not tidy, redraw, re-interpolate or\n    otherwise improve the font while you are in there  -  the only change is\n    the thickness of the strokes named above.\n\nHOW IT WILL BE CHECKED\n  python nameplate_thickness.py MerriweatherCut3Black-Engrave-v2.ttf \"ADAM\" 1 in cap 0.09\n  Every area it lists must read 134 font units or more, and the artwork\n  size it prints must be unchanged from before the edit."
   },
-  "verdict": "ready",
+  "verdict": "needs work",
   "report_text": "MerriweatherCut3Black-Engrave-v2.ttf\n  Merriweather-Cut3 Engrave v2 Black\n\nUsable, but check the warnings below\n\n[NOTE] This font is caps-only: lowercase draws the capitals\n    what:  Every lowercase character maps to the same glyph as its capital, so 'adam' and 'ADAM' cut identically. Nothing is wrong with the font; it simply has no separate lowercase.\n    fix:   Nothing required. Expect the letter-pair sheet's lowercase rows to show capitals, because that is what they are.\n\nFont facts:\n  units per em: 2000\n  glyphs: 9571\n  outline format: TrueType (glyf)\n  no punctuation glyphs (expected): \"'\" '-'\n  post table format: 2.0\n  COLR: v0  CPAL palettes: 2\n  OS/2 sxHeight: 1097\n  test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type\n  test name 'ADAM' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)\n  test name 'Adam' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)\n  caps-only font: all 26 lowercase map to the capital glyphs\n  winding check: 0 glyph(s) whose counters would cancel in the cut\n  letter-join scan: 8788 of 8788 combinations tested, 0 junction(s) disconnected",
   "measured_on": {
     "name": "ADAM",
@@ -315,6 +324,9 @@
     "basis": "cap",
     "units_per_in": 0.0006729475100942127
   },
+  "blocking": [
+    "11 thin areas are under the target but only the worst 8 are listed - fix these, then re-run; do not treat the list as complete."
+  ],
   "cap_height_check": {
     "asked": 1.0,
     "unit": "in",
@@ -366,6 +378,6 @@
     "warnings": [],
     "note": "NOT a target — nothing here can fail. The cap LINE is set to the asked height for every name, which is what makes two names match. Individual capitals read OVER that line on purpose (overshoot): a round O and a pointed A both exceed it, a flat H E I T sit on it, and a J or Q hangs below the baseline so its ink is taller still. Do not 'correct' any of that — flattening overshoot damages the font and changes nothing about the size that is cut."
   },
-  "targets_text": "                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      0.0490      0.0010    -97.96%         72.8 -> 1.5          MET",
-  "seconds": "<T>"
+  "targets_text": "                                     now      target     change      font units now -> want  verdict\neyelet inner diameter             0.3448      0.4000    +16.02%        512.3 -> 594.4        NOT MET\neyelet wall                       0.1551      0.2000    +28.97%        230.4 -> 297.2        MET\nthinnest part of the letters      0.0490      0.0900    +83.82%         72.8 -> 133.7        NOT MET",
+  "seconds": 5.2
 }

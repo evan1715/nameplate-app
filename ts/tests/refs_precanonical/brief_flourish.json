@@ -200,12 +200,12 @@
         "where": "right side",
         "thickness": 1.4619308551308356,
         "thickness_font_units": 83.7978766160995,
-        "typical": 1.8960363469091417,
+        "typical": 1.906612833048001,
         "at": [
           130.87469570604276,
           14.719114668139879
         ],
-        "extent": 2.5432600057529346,
+        "extent": 2.590620208951134,
         "clearance": 0.43685248460581794,
         "parallel_walls": false,
         "meets_target": true,
@@ -254,7 +254,7 @@
         "where": "top",
         "thickness": 2.0002498820467025,
         "thickness_font_units": 114.65432323891699,
-        "typical": 2.052649017464463,
+        "typical": 2.0492920291403434,
         "at": [
           46.21814365844932,
           18.27764143106601
@@ -272,7 +272,7 @@
         "where": "lower left",
         "thickness": 2.0196595062346376,
         "thickness_font_units": 115.76688289736943,
-        "typical": 2.027087679180271,
+        "typical": 2.0271272185683813,
         "at": [
           35.131116993894814,
           4.889089063778511
@@ -445,5 +445,5 @@
     "note": "NOT a target — nothing here can fail. The cap LINE is set to the asked height for every name, which is what makes two names match. Individual capitals read OVER that line on purpose (overshoot): a round O and a pointed A both exceed it, a flat H E I T sit on it, and a J or Q hangs below the baseline so its ink is taller still. Do not 'correct' any of that — flattening overshoot damages the font and changes nothing about the size that is cut."
   },
   "targets_text": "                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      1.4619      0.5000    -65.80%         83.8 -> 28.7         MET",
-  "seconds": "<T>"
+  "seconds": 24.0
 }

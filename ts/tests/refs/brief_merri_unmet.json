@@ -379,5 +379,5 @@
     "note": "NOT a target — nothing here can fail. The cap LINE is set to the asked height for every name, which is what makes two names match. Individual capitals read OVER that line on purpose (overshoot): a round O and a pointed A both exceed it, a flat H E I T sit on it, and a J or Q hangs below the baseline so its ink is taller still. Do not 'correct' any of that — flattening overshoot damages the font and changes nothing about the size that is cut."
   },
   "targets_text": "                                     now      target     change      font units now -> want  verdict\neyelet inner diameter             0.3448      0.4000    +16.02%        512.3 -> 594.4        NOT MET\neyelet wall                       0.1551      0.2000    +28.97%        230.4 -> 297.2        MET\nthinnest part of the letters      0.0490      0.0900    +83.82%         72.8 -> 133.7        NOT MET",
-  "seconds": 5.6
+  "seconds": "<T>"
 }

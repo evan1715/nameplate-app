@@ -9,7 +9,7 @@ not re-derived: it is reproduced, and the tests prove it against the same
 ```
 cd ts
 npm install
-npm test                       # parity + acceptance + export suites
+npm test                       # canonicalisation + parity + acceptance + export + thickness
 npm run cli -- --font ../fonts/MerriweatherCut3Black-Engrave-v2.ttf \
     --height 1 --unit in --basis cap --format both --mode per-name --out out ADAM
 ```
@@ -44,6 +44,13 @@ passes are ported line for line from `_pathops.pyx`.
 | `acceptance_tests.py` / `tests/acceptance.ts` | 53/53 | 53/53 |
 | `export_tests.py` / `tests/export.ts` | 31/31 | 31/31 |
 | `tests/parity.ts` (new: TS vs Python, value by value) | — | 68/68 |
+| `tests/thickness.ts` (reports compared character for character) | — | 61/61 |
+| `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 58/58 |
+
+Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
+Node 22.18+/24 strips TypeScript types natively. That is why the sources import
+`"./x.ts"` and why there are no `enum`s anywhere: an `enum` is the one construct that
+must emit code, so it is rejected outright in strip-only mode.
 
 `golden/ADAM_cap1in.svg`, `OLIVIA_cap1in.svg` and `sheet_ADAM_OLIVIA.svg` come out
 **byte-identical**. So do the shipping exporter's SVG files and the PDF content
@@ -199,10 +206,63 @@ still pass unchanged (regression 27/27, acceptance 53/53, export 31/31).
 
 The baseline in `tests/refs/` was re-captured from the canonicalised Python, so it
 still records what the Python does — with one non-reproducible artefact removed.
-The re-capture also touched `gui_selftest.txt` and the `brief_*` files, which quote
-thickness numbers, and exposed a genuinely machine-dependent number in the GUI
-selftest (how many event-loop turns fit alongside a background check); that is now
-scrubbed.
+
+### The circularity, and how it is closed
+
+Re-capturing from a Python I had just modified makes one pairing circular: for the
+numbers that moved, `tests/thickness.ts` proves only that the TypeScript agrees
+with a *changed* Python, not that either agrees with the original. Both sides could
+have drifted together.
+
+`tests/refs_precanonical/` and `tests/canonicalisation.ts` close that. The
+directory holds the baseline exactly as captured **before** the ring set was
+canonicalised (from commit `2e07c61`), and the test compares the two directories to
+pin what moved. It runs no geometry and loads no font — it compares committed text —
+so it is deterministic everywhere and finishes instantly. **58/58.**
+
+What it enforces:
+
+* the thinnest reading and its font-unit figure are **bit-for-bit identical** on all
+  five cases, as is letter attribution and the number of points walked;
+* the delta is exactly the audited one — areas `16→12`, `17→15`, `16→16`, `24→23`
+  and readings `609→674`, `596→589`, `1036→1035`, `3053→3037`, no more and no less;
+* every moved line in every report is one of seven allowed kinds (the reading-count
+  line, a top-8 table row, a spot's own measurement, a spot heading, a cluster's
+  reading count, and the two lines of the singleton note) — a moved heading, units
+  legend, prose line or target verdict fails;
+* ADAM_t's paste-ready prompt — the artefact that actually leaves the building — is
+  **byte-identical**, and every line mentioning the target is unchanged;
+* the `brief_*` refs moved only where they quote a thickness number, and every
+  `"thinnest"` value in them is unchanged.
+
+It is verified to actually bite: changing one digit of one thickness in one ref
+makes it fail. And one of its own checks was silently vacuous at first — the
+column-header pattern matched nothing on the target-form report, so it compared an
+empty list to an empty list — so the test now also asserts that each structural
+line it looks for was *found*.
+
+Writing it caught a real mistake, too. The obvious pre-change baseline was commit
+`2541163`, but that one predates a separate fix (`capture_baseline.py` was not
+passing `font=` to `survey`, so letters were unattributed and its numbers came from
+a different run than its report text). Pinning against it would have blamed
+canonicalisation for that fix as well.
+
+### Reproducibility of the oracle itself
+
+The re-capture exposed three values that could never have matched twice, on any
+machine: how many event-loop turns the GUI managed alongside a background check, a
+`"seconds"` timing in the brief's JSON, and the join scan's `untested=` count
+(whatever did not fit in the wall-clock budget). All three are now scrubbed, and
+`capture_baseline.py` was run **twice end to end** to confirm two independent
+captures agree byte for byte.
+
+Scrubbing the `"seconds"` field then broke something quietly, which is worth
+recording: substituting a bare placeholder where a *number* had been left
+`"seconds": <T>`, and that is not JSON. The reference files still looked plausible
+and only failed when something tried to parse one. `capture_baseline.py` now
+refuses to write a `.json` reference that does not parse — checked at the moment of
+writing, on both paths that produce one, since the brief writes its own files
+rather than going through the shared writer.
 
 ### The one line that cannot match
 

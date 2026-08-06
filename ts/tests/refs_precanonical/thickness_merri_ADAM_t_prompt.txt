@@ -1,0 +1,67 @@
+FONT THICKENING REQUEST  -  ShineOn nameplate, laser-cut sheet metal
+
+FONT FILE      MerriweatherCut3Black-Engrave-v2.ttf
+unitsPerEm     2000
+NAME TESTED    ADAM
+CUT AT         1 in cap height
+
+THE PROBLEM
+  This name is cut out of sheet metal. Any part of a letter that is too
+  thin snaps off when the plate is handled. At the size above, the thinnest
+  material in the artwork measures 0.0490 in and it has to be at
+  least 0.0500 in. 2 separate area(s) are under that, of 16 measured.
+
+ALL SIZES BELOW ARE IN FONT UNITS
+  A font editor works in font units, not in inches or millimetres, so every
+  size here is in font units of this font's 2000-unit em square.
+  The conversion used is the one for this job: 1 in of cap height is
+  1486 font units, so 1 font unit = 0.000673 in, and the
+  0.0500 in minimum is 74.3 font units  -  round up to 75.
+  A thickness in font units is a proportion of the letter, so fixing it
+  here fixes it at every size the name is ever cut. Do not convert these
+  numbers back into inches or millimetres.
+
+THE THIN AREAS, THINNEST FIRST
+  1. glyph 'A.e5' (the letter A)  -  lower left of the letter
+     now 72.8 font units across, needs 75 font units (+2.1%)
+     note: a single reading with nothing beside it to corroborate  -  a very
+           small feature, so confirm it on screen before acting on it
+  2. glyph 'D.e0' (the letter D)  -  lower right of the letter
+     now 72.8 font units across, needs 75 font units (+2.0%)
+
+THE INSTRUCTION
+  Thicken every stroke thinner than 75 font units up to 75 font units
+  (an increase of up to 2% at the worst place), keeping the outer
+  silhouette and the counters' positions.
+
+  In plain terms: measure across each stroke listed above; where that
+  measurement is under 75 font units, move the INNER wall of the stroke
+  (the counter side) until it measures 75. The outside edge of the letter
+  stays exactly where it is, and each counter stays in the same place and
+  keeps its shape  -  it may end up slightly smaller, and that is expected.
+  Blend into the thicker part of the same stroke either side of the thin
+  place so there is no step, kink or lump where the change ends.
+  Leave every stroke that already measures 75 font units or more alone.
+
+WHAT MUST NOT CHANGE
+  * the advance width of any glyph, and all kerning and spacing: the name
+    must occupy exactly the same width, so the cut file does not resize
+  * the cap height, x-height, ascender, descender and baseline
+  * the outer silhouette of each letter  -  no letter may get taller, wider
+    or a different shape; this is a local thickening, not a new weight
+  * the eyelet holes: their diameter, roundness and position are set by the
+    hanging hardware. Do not resize, move or reshape any eyelet hole, and do
+    not thicken a stroke by eating into one
+  * the contextual and alternate glyph set: keep every alternate and eyelet
+    form (.eyeL / .eyeR and similar), keep every glyph name, and do not add,
+    remove or re-order glyphs. Leave the GSUB/calt/liga/kern rules exactly as
+    they are, so the same name still shapes to the same glyphs
+  * the colour/engrave layers (COLR and CPAL) and the unitsPerEm
+  * anything not on the list above. Do not tidy, redraw, re-interpolate or
+    otherwise improve the font while you are in there  -  the only change is
+    the thickness of the strokes named above.
+
+HOW IT WILL BE CHECKED
+  python nameplate_thickness.py MerriweatherCut3Black-Engrave-v2.ttf "ADAM" 1 in cap 0.05
+  Every area it lists must read 75 font units or more, and the artwork
+  size it prints must be unchanged from before the edit.

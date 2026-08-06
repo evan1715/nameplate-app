@@ -51,7 +51,7 @@
 [PASS] #14b  a same-direction counter really does cancel in the cut path
         skia union of outer+same-direction-counter -> 1 contour(s); parity would say 2, so the hole vanishes in metal
 [PASS] #15  an unmeasured pair scan cannot be reported as ready
-        verdict='needs work', untested=5388, blocking=1 line(s)
+        verdict='needs work', untested=<N>, blocking=1 line(s)
 ==============================================================================
 27/27 regressions fixed
 ==============================================================================
