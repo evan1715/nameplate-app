@@ -1,0 +1,48 @@
+{
+  "app": "Sean's Font Prototyping Friend",
+  "build_id": "e51b440f3a76",
+  "built_utc": "2026-08-06 10:27:34Z",
+  "built_on": "ProductionManagerVivobook",
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "dependencies": {
+    "PySide6": "6.11.1",
+    "fontTools": "4.63.0",
+    "shapely": "2.1.2",
+    "uharfbuzz": "0.56.0",
+    "pathops": "0.9.2",
+    "numpy": "2.5.1"
+  },
+  "sources": {
+    "nameplate_core.py": "8de44f1ca4f11c1c",
+    "nameplate_gui.py": "dae331864c4e5950",
+    "nameplate_export.py": "5a8db45deda6f3a3",
+    "nameplate_layout.py": "5dc9850a435e99d8",
+    "nameplate_leadin.py": "caaa20ae17eb566f",
+    "nameplate_eyelets.py": "82303ffa65589fde",
+    "nameplate_thickness.py": "183c08fe7f8aec46",
+    "nameplate_fontcheck.py": "c871d36d736943bf",
+    "nameplate_pairsheet.py": "13bf4a78a4844a52",
+    "nameplate_brief.py": "7885023a9ee76e43",
+    "nameplate_cli.py": "b240050aaf94005d",
+    "acceptance_tests.py": "d90f89fa180ee9e4",
+    "export_tests.py": "357914bbdf6ef3a0",
+    "regression_tests.py": "073f61d2017064f8",
+    "README_APP.txt": "f3c1b930bf95a7c7",
+    "INSTALL.txt": "0a5c92cd9a9a4791"
+  },
+  "fonts_shipped": [
+    {
+      "file": "MerriweatherCut3Black-Engrave-v2.ttf",
+      "sha256_16": "a4777d4ea9f514fa"
+    },
+    {
+      "file": "TGCarrieSO-v2.otf",
+      "sha256_16": "34cb1da212fb54d2"
+    },
+    {
+      "file": "TGCarrieSOFlourish-v2.otf",
+      "sha256_16": "8d338c81f8e4c361"
+    }
+  ]
+}

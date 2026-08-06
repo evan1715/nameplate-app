@@ -1,0 +1,6 @@
+# Extra packages needed only to RUN THE TESTS, never to run the app.
+# The shipped exe and a plain `pip install -r requirements.txt` do not
+# need any of this.
+-r requirements.txt
+# libqpdf bindings: provides the real `qpdf --check` the spec asks for
+pikepdf>=9

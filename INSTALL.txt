@@ -1,0 +1,207 @@
+Sean's Font Prototyping Friend — INSTALL
+=======================================
+
+There is no installer and nothing to register. The app is a folder. You copy
+the folder, you double-click the .exe. That is the whole install.
+
+It needs no Python, no admin rights, and no internet.
+
+
+-----------------------------------------------------------------------------
+ON THIS COMPUTER
+-----------------------------------------------------------------------------
+
+The built app is already here:
+
+  C:\Users\Zack\Documents\Calude Code Apps\nameplate-app\dist\SeansFontPrototypingFriend\
+
+1. Copy that SeansFontPrototypingFriend folder somewhere you keep programs,
+   for example:
+       C:\Users\Zack\Documents\SeansFontPrototypingFriend\
+   (Running it straight out of dist\ works too, but dist\ gets replaced every
+   time the app is rebuilt, so anything you put in its fonts\ folder would be
+   overwritten. Copy it out first.)
+
+2. Double-click SeansFontPrototypingFriend.exe
+
+3. Optional — right-click the .exe > "Pin to Start", or "Show more options" >
+   "Create shortcut" and drag the shortcut to your Desktop.
+   Make the SHORTCUT, not a copy of the .exe. The .exe cannot run on its own;
+   it needs the _internal folder sitting next to it.
+
+
+-----------------------------------------------------------------------------
+ON ANY OTHER COMPUTER
+-----------------------------------------------------------------------------
+
+1. Copy SeansFontPrototypingFriend.zip to the other PC
+   (USB stick, network share, OneDrive — whatever is easiest).
+
+2. Right-click the zip > Extract All.
+   IMPORTANT: extract it. Do not run the .exe from inside the zip preview —
+   Windows unpacks only the one file and the app will fail to start.
+
+3. Open the extracted SeansFontPrototypingFriend folder and double-click
+   SeansFontPrototypingFriend.exe
+
+That is it. Requirements on the target PC: 64-bit Windows 10 or 11, about
+200 MB of disk, and permission to write inside the app's own folder (needed
+for fonts\ and settings.json).
+
+FIRST LAUNCH WARNINGS
+  Windows may show "Windows protected your PC" (SmartScreen), because the exe
+  is not code-signed. Click "More info" > "Run anyway". It appears once per
+  machine. If your antivirus quarantines it, allow it — PyInstaller-built exes
+  are a common false positive.
+
+DO NOT
+  * Don't move the .exe out of its folder. It needs _internal\ beside it.
+  * Don't install it into C:\Program Files. That folder is read-only for normal
+    users, so the app could not save settings.json or accept new fonts. Put it
+    somewhere under your user folder, or on a data drive.
+
+
+-----------------------------------------------------------------------------
+ADDING YOUR FONTS
+-----------------------------------------------------------------------------
+
+The app ships with the three production fonts already in place. To add more:
+
+  Either  click "Add font…" in the app (it copies the file into fonts\ for you)
+  Or      drop the .ttf/.otf/.ttc into the fonts\ folder next to the .exe and
+          click "Refresh"
+
+Refresh also picks up a replaced font while the app is open — no restart. If
+two files report the same font name, the app uses the newest and shows each
+one's date so you can tell them apart.
+
+Because fonts live inside the app folder, they travel with it. Copy the folder
+to another PC and your fonts go too.
+
+
+-----------------------------------------------------------------------------
+MAKING SURE THE SIZE IS EXACT IN CORELDRAW
+-----------------------------------------------------------------------------
+
+The exported files carry real physical size, and the geometry has been measured
+to confirm it rather than assumed:
+
+  PDF   accurate to 0.0003 pt  (0.000005 in)  <-- use this when size matters
+  SVG   accurate to 0.00005 in (12 parts per million)
+
+Both are far finer than any laser kerf. Nothing is scaled, stretched or
+rounded to a different aspect ratio: changing the height scales the width by
+exactly the same factor.
+
+TO VERIFY IT YOURSELF, ONCE, ON A NEW PC:
+
+1. In the app, type ADAM, set Height 1.000 in, Measured from = cap height.
+   The app reports:  ADAM — 4.069 x 1.020 in
+2. Export as PDF.
+3. In CorelDRAW: File > Import, place it, then Edit > Select All.
+4. Read the Object Size boxes in the property bar. They must read
+   4.069 x 1.020 in.
+5. Check the letters too, but know what to expect. "Cap height 1.000 in" means
+   the CAP LINE is at exactly 1.000 in, and it lands there for every name you
+   ever type. Individual letters read slightly over that on purpose, because
+   type designers overshoot: this font's A measures 1.004 in (its pointed apex
+   passes the cap line), a round O about 1.029 in. A flat-topped capital — H, E,
+   I, T — is the one that measures exactly 1.000 in. The 1.020 total height
+   includes the eyelet sitting above the letters.
+
+   That is also why a name starting with J or Q is no longer smaller than one
+   starting with A: the scale comes from the font's cap line, not from whichever
+   capital happens to be first. A descender just hangs lower and makes the piece
+   taller; it never shrinks the letters.
+
+USE PDF IF YOU CAN for size. CorelDRAW's PDF import always honours physical
+units. The SVG is equally exact and additionally keeps the CUT and ENGRAVE group
+names and the 0.001 in hairlines, which the PDF does not — but some Corel
+versions offer a resolution/DPI box on SVG import, and PDF avoids that question.
+
+Set Corel's ruler units to inches (or mm) to match what you typed in the app,
+or the numbers will look wrong when they are actually right.
+
+WHAT IS AND ISN'T IN THE FILE
+  In the file:   the cut outline, the red engrave centerlines, and lead-in
+                 lines if you turned them on. Nothing else.
+  NOT in it:     the dashed size box and the dimension labels you see in the
+                 preview. Those are on-screen guides only, so there is nothing
+                 extra for the laser to mistake for a cut. This is checked
+                 automatically on every build.
+
+Cut and engrave arrive as separate groups, CUT (black) and ENGRAVE (red), so
+you can assign them to different laser layers. Lines are hairline, no fill.
+
+
+-----------------------------------------------------------------------------
+IF IT WON'T START
+-----------------------------------------------------------------------------
+
+THE SPLASH SHOWS AND THEN NO WINDOW EVER APPEARS
+  Every launch now writes startup.log next to the .exe (or, if that folder is
+  read-only, in %LOCALAPPDATA%\SeansFontPrototypingFriend\). The last line
+  names the step that failed.
+
+  1. Open startup.log and read the last few lines.
+  2. For a fuller report, open a Command Prompt in the app folder and run:
+
+         SeansFontPrototypingFriend.exe --diagnose
+
+     It walks the whole startup one step at a time, logging each, and pops up
+     a box telling you where the file is. Send that file back.
+
+  Common causes, in the order worth checking:
+    * The folder sits too deep. Windows silently drops files past ~260
+      characters of path, so _internal ends up incomplete. Extract to
+      something short like C:\Apps\ and try again.
+    * Antivirus quarantined part of _internal after extraction. Check its
+      history and allow the folder.
+    * The app was run from inside the zip preview instead of being extracted.
+    * Windows 8.1 or older. This build needs 64-bit Windows 10 or 11.
+  startup.log will say which of these it is rather than leaving you guessing.
+
+Nothing happens when I double-click it
+  The _internal folder is missing or got separated from the .exe. Re-extract
+  the zip, keeping the folder intact. Check startup.log as above.
+
+"Windows protected your PC"
+  More info > Run anyway. Not code-signed; expected.
+
+No fonts in the dropdown
+  The fonts\ folder isn't next to the .exe, or it's empty. Put at least one
+  .ttf/.otf there and click Refresh.
+
+It starts but won't save settings, or "Add font…" fails
+  The folder is read-only. Move the app out of Program Files to somewhere
+  under your user folder.
+
+Errors are shown in a dialog with the real message — if you hit one, the text
+in that dialog is what to report.
+
+
+-----------------------------------------------------------------------------
+REBUILDING (only if the code changes)
+-----------------------------------------------------------------------------
+
+From C:\Users\Zack\Documents\Calude Code Apps\nameplate-app :
+
+  python -m PyInstaller --noconfirm --onedir --windowed ^
+      --name SeansFontPrototypingFriend ^
+      --icon assets/icon.ico --splash assets/splash.png ^
+      --add-data "fonts;fonts" --add-data "assets;assets" ^
+      nameplate_gui.py
+
+Then copy fonts\ and README_APP.txt (as README.txt) into
+dist\SeansFontPrototypingFriend\ — PyInstaller puts its own copy of the fonts
+inside _internal, but the app reads the writable fonts\ next to the .exe.
+
+Verify before handing it out:
+  python acceptance_tests.py                    (37 checks)
+  python stress_test.py --font "fonts\<any>.ttf" (size + lead-in matrix)
+  dist\SeansFontPrototypingFriend\SeansFontPrototypingFriend.exe --selftest out
+      ^ drives the real window offscreen and writes out\selftest_report.txt,
+        which is the only way to see inside the windowed exe.
+
+To change the logo: replace assets\logo.png, run `python make_assets.py`, then
+rebuild. That regenerates both the exe icon and the splash screen.

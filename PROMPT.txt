@@ -1,0 +1,36 @@
+PASTE THIS TO CLAUDE CODE (with this folder as the working directory)
+====================================================================
+
+Build the ShineOn Nameplate Cut-File app described in SPEC.md in this folder.
+Read SPEC.md in full first, then README.txt.
+
+Key points so we start aligned:
+
+1. nameplate_core.py is a FINISHED, TESTED engine — font shaping, merging the
+   letters into one cut path, extracting the red engrave lines, and the SVG and
+   PDF writers. Do not rewrite or "improve" the geometry. Section 8 of SPEC.md
+   lists five real bugs already found and fixed in it; reintroducing any of them
+   silently produces garbage artwork.
+
+2. What is missing is exactly two things:
+      a) nameplate_gui.py — a PySide6 window, laid out and specified in SPEC.md
+         section 4, that calls the engine API in section 3
+      b) a portable Windows build: PyInstaller --onedir, per SPEC.md section 6,
+         producing a folder with an .exe that I can copy to any PC and run with
+         no Python and no installer
+
+3. Verify before you tell me it's done: run every acceptance test in SPEC.md
+   section 7 and show me the actual output next to the expected numbers. Then
+   confirm the built .exe launches from the dist folder, lists the fonts in
+   fonts\, draws a preview, and exports both a per-name zip and a one-sheet file.
+
+4. First run these two commands and paste the output, so we know the engine works
+   on this machine before any GUI code exists:
+
+      pip install -r requirements.txt
+      python nameplate_cli.py --font fonts/MerriweatherCut3Black-Engrave-v2.ttf --height 1 --unit in --basis cap --format both --mode per-name --out out ADAM
+
+   Expected: ADAM: 4.053 x 1.015 in | 6 cut contour(s), 10 engrave line(s)
+
+5. Ask me before deviating from SPEC.md. If something in the spec turns out to be
+   wrong or impossible, tell me what and why rather than quietly substituting.

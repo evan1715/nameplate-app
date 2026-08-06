@@ -1,0 +1,11 @@
+Reference output from the engine — compare visually after any change.
+
+ADAM: 4.069 x 1.020 in  |  6 cut contour(s), 10 engrave line(s)
+OLIVIA: 4.365 x 1.029 in  |  4 cut contour(s), 13 engrave line(s)
+Carrie: 106.769 x 24.808 mm  |  8 cut contour(s), 1 engrave line(s)
+
+Cap height is the font's own cap line, measured from its flat-topped
+capitals, so every name scales identically. Descenders hang below it
+and make the piece taller without changing the size of the letters.
+The previous references, which scaled by whichever capital came
+first, are kept in superseded_first_capital_basis/.
