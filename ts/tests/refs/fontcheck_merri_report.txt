@@ -1,0 +1,23 @@
+MerriweatherCut3Black-Engrave-v2.ttf
+  Merriweather-Cut3 Engrave v2 Black
+
+Usable, but check the warnings below
+
+[NOTE] This font is caps-only: lowercase draws the capitals
+    what:  Every lowercase character maps to the same glyph as its capital, so 'adam' and 'ADAM' cut identically. Nothing is wrong with the font; it simply has no separate lowercase.
+    fix:   Nothing required. Expect the letter-pair sheet's lowercase rows to show capitals, because that is what they are.
+
+Font facts:
+  units per em: 2000
+  glyphs: 9571
+  outline format: TrueType (glyf)
+  no punctuation glyphs (expected): "'" '-'
+  post table format: 2.0
+  COLR: v0  CPAL palettes: 2
+  OS/2 sxHeight: 1097
+  test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type
+  test name 'ADAM' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)
+  test name 'Adam' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)
+  caps-only font: all 26 lowercase map to the capital glyphs
+  winding check: 0 glyph(s) whose counters would cancel in the cut
+  letter-join scan: 8788 of 8788 combinations tested, 0 junction(s) disconnected

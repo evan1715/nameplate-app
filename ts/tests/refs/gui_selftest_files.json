@@ -1,0 +1,54 @@
+[
+ {
+  "bytes": 12905,
+  "name": "selftest_leadin.zip"
+ },
+ {
+  "bytes": 51780,
+  "name": "selftest_per_name.zip"
+ },
+ {
+  "bytes": 29615,
+  "name": "selftest_preview.png"
+ },
+ {
+  "bytes": 7388,
+  "name": "selftest_report.txt"
+ },
+ {
+  "bytes": 27510,
+  "name": "selftest_sheet.pdf"
+ },
+ {
+  "bytes": 65571,
+  "name": "selftest_sheet.svg"
+ },
+ {
+  "bytes": 291294,
+  "name": "selftest_sheet_horizontal.svg"
+ },
+ {
+  "bytes": 139047,
+  "name": "selftest_window.png"
+ },
+ {
+  "bytes": 160608,
+  "name": "selftest_window_eyelet.png"
+ },
+ {
+  "bytes": 141946,
+  "name": "selftest_window_leadin.png"
+ },
+ {
+  "bytes": 188144,
+  "name": "selftest_window_thin.png"
+ },
+ {
+  "bytes": 167535,
+  "name": "selftest_window_thinmarks.png"
+ },
+ {
+  "bytes": 143887,
+  "name": "selftest_window_warning.png"
+ }
+]

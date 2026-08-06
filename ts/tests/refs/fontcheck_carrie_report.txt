@@ -1,0 +1,23 @@
+TGCarrieSO-v2.otf
+  TG Carrie SO v2 Regular
+
+Usable, but check the warnings below
+
+[NOTE] The font carries no glyph names
+    what:  Its post table is format 3.0, so glyphs have no names and tools refer to them as glyph00131 or gid131. The app handles this by using glyph IDs, but font editors will show unhelpful names.
+    fix:   Nothing required. To get readable names, re-export with post format 2.0 ('keep glyph names' in most editors).
+
+Font facts:
+  units per em: 2048
+  glyphs: 458
+  outline format: PostScript (CFF)
+  no punctuation glyphs (expected): '-'
+  post table format: 3.0
+  COLR: none  CPAL palettes: 0
+  cut-only font (no COLR table, so no engrave lines) - normal, the outline still cuts
+  OS/2 sxHeight: 1024
+  test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type
+  test name 'ADAM' at 1.000 in cap height: 5.246 x 1.006 in, 1 piece(s), 14 hole(s), 0 engrave line(s)
+  test name 'Adam' at 1.000 in cap height: 3.767 x 1.005 in, 1 piece(s), 8 hole(s), 0 engrave line(s)
+  winding check: 0 glyph(s) whose counters would cancel in the cut
+  letter-join scan: 8788 of 8788 combinations tested, 0 junction(s) disconnected

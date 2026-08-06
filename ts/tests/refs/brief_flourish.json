@@ -1,0 +1,449 @@
+{
+  "tool": "nameplate_brief",
+  "font": {
+    "path": "<ROOT>/fonts/TGCarrieSOFlourish-v2.otf",
+    "file": "TGCarrieSOFlourish-v2.otf",
+    "family": "TG Carrie SO FLOURISH v2 Regular",
+    "upem": 2048,
+    "has_engrave_lines": true
+  },
+  "asked_for": {
+    "cap_height": 25.0,
+    "unit": "mm",
+    "basis": "cap",
+    "test_names": [
+      "ADAM",
+      "Adam"
+    ],
+    "eyelet_inner_diameter": null,
+    "eyelet_wall": null,
+    "min_thickness": 0.5
+  },
+  "font_check": {
+    "usable": true,
+    "family": "TG Carrie SO FLOURISH v2 Regular",
+    "upem": 2048,
+    "n_errors": 0,
+    "n_warnings": 1,
+    "findings": [
+      {
+        "severity": "WARNING",
+        "code": "letter-gaps",
+        "title": "2 letter junction(s) do not join",
+        "what": "Each of these leaves a gap, so a name containing it cuts as loose pieces instead of one plate: Dleftring→d (type 'Dda'); Dleftring→dflourishrightring (type 'dd'). Type the example next to a junction to see it in the preview.",
+        "fix": "Extend the left glyph's exit stroke until it crosses into the next letter. Note some junctions only appear mid-word because the font swaps in a contextual form — 'go' can be fine while 'ego' is not, so fix the form the example actually uses."
+      },
+      {
+        "severity": "NOTE",
+        "code": "no-glyph-names",
+        "title": "The font carries no glyph names",
+        "what": "Its post table is format 3.0, so glyphs have no names and tools refer to them as glyph00131 or gid131. The app handles this by using glyph IDs, but font editors will show unhelpful names.",
+        "fix": "Nothing required. To get readable names, re-export with post format 2.0 ('keep glyph names' in most editors)."
+      }
+    ],
+    "facts": [
+      "units per em: 2048",
+      "glyphs: 6649",
+      "outline format: PostScript (CFF)",
+      "no punctuation glyphs (expected): '-'",
+      "post table format: 3.0",
+      "COLR: v0  CPAL palettes: 2",
+      "OS/2 sxHeight: 1024",
+      "test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type",
+      "test name 'ADAM' at 1.000 in cap height: 5.826 x 1.006 in, 1 piece(s), 14 hole(s), 0 engrave line(s)",
+      "test name 'Adam' at 1.000 in cap height: 4.254 x 1.005 in, 1 piece(s), 9 hole(s), 2 engrave line(s)",
+      "winding check: 0 glyph(s) whose counters would cancel in the cut",
+      "letter-join scan: 8788 of 8788 combinations tested, 2 junction(s) disconnected"
+    ]
+  },
+  "pairs": {
+    "flagged": 5,
+    "tested": 5408,
+    "untested": 0,
+    "total": 5408,
+    "budget_hit": false,
+    "budget_s": 30.0,
+    "worst_first": [
+      {
+        "pair": "dd",
+        "left": "d",
+        "right": "d",
+        "group": "firstlower",
+        "position": "start of a word",
+        "shaped_from": "dda",
+        "status": "gap",
+        "gap_em": 0.0008409295967042421
+      },
+      {
+        "pair": "Dd",
+        "left": "D",
+        "right": "d",
+        "group": "firstcaplower",
+        "position": "start of a word",
+        "shaped_from": "Dda",
+        "status": "gap",
+        "gap_em": 0.0008409295967042421
+      },
+      {
+        "pair": "Dd",
+        "left": "D",
+        "right": "d",
+        "group": "midcaplower",
+        "position": "middle of a word",
+        "shaped_from": "ADda",
+        "status": "gap",
+        "gap_em": 0.0008409295967041465
+      },
+      {
+        "pair": "dd",
+        "left": "d",
+        "right": "d",
+        "group": "lower",
+        "position": "start of a word",
+        "shaped_from": "dd",
+        "status": "gap",
+        "gap_em": 0.0004233086150078076
+      },
+      {
+        "pair": "Dd",
+        "left": "D",
+        "right": "d",
+        "group": "caplower",
+        "position": "start of a word",
+        "shaped_from": "Dd",
+        "status": "gap",
+        "gap_em": 0.0004233086150078076
+      }
+    ]
+  },
+  "names": [
+    {
+      "name": "ADAM",
+      "width": 145.63852058618284,
+      "height": 25.13956734124215,
+      "unit": "mm",
+      "engrave_lines": 0,
+      "scale_units_per_mm": 0.017445917655268667,
+      "warnings": [
+        "No engrave lines for this name — cut path only."
+      ],
+      "pieces": 1,
+      "holes": 14,
+      "cuts_as_one_piece": true
+    },
+    {
+      "name": "Adam",
+      "width": 106.3503140265178,
+      "height": 25.122121423586883,
+      "unit": "mm",
+      "engrave_lines": 2,
+      "scale_units_per_mm": 0.017445917655268667,
+      "warnings": [],
+      "pieces": 1,
+      "holes": 9,
+      "cuts_as_one_piece": true
+    }
+  ],
+  "eyelets": [
+    {
+      "side": "left",
+      "unit": "mm",
+      "inner_diameter": 2.7718841528490095,
+      "outer_diameter": 8.886526840033076,
+      "wall_avg": 3.057321343592033,
+      "wall_thinnest": 3.0379518521983675,
+      "roundness": 0.9993844404615138,
+      "centre": [
+        4.4555923599205824,
+        18.09829996634069
+      ],
+      "font_units": {
+        "inner_diameter": 158.8843996413052,
+        "outer_diameter": 509.3757184706959,
+        "wall_avg": 175.24565941469533
+      },
+      "note": ""
+    },
+    {
+      "side": "right",
+      "unit": "mm",
+      "inner_diameter": 2.7718841528490095,
+      "outer_diameter": 8.883198953605845,
+      "wall_avg": 3.0556574003784176,
+      "wall_thinnest": 3.0373121882632828,
+      "roundness": 0.9993844404615142,
+      "centre": [
+        141.1966949419164,
+        18.063408131030144
+      ],
+      "font_units": {
+        "inner_diameter": 158.8843996413052,
+        "outer_diameter": 509.184964020687,
+        "wall_avg": 175.1502821896909
+      },
+      "note": ""
+    }
+  ],
+  "thickness": {
+    "unit": "mm",
+    "areas_found": 8,
+    "areas_below_target": 0,
+    "spots_shown": 8,
+    "samples_taken": 836,
+    "thinnest": 1.4619308551308356,
+    "thinnest_font_units": 83.7978766160995,
+    "spots": [
+      {
+        "rank": 1,
+        "letter": "M (Mflourishrightring)",
+        "glyph": "Mflourishrightring",
+        "where": "right side",
+        "thickness": 1.4619308551308356,
+        "thickness_font_units": 83.7978766160995,
+        "typical": 1.906612833048001,
+        "at": [
+          130.87469570604276,
+          14.719114668139879
+        ],
+        "extent": 2.590620208951134,
+        "clearance": 0.43685248460581794,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -65.79865605509417
+      },
+      {
+        "rank": 2,
+        "letter": "D",
+        "glyph": "D",
+        "where": "upper right",
+        "thickness": 1.5046259827188178,
+        "thickness_font_units": 86.24516132944264,
+        "typical": 1.830593595790968,
+        "at": [
+          57.52783459311436,
+          22.70625935900791
+        ],
+        "extent": 2.5301066685264684,
+        "clearance": 0.42636694358549604,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -66.76915022452864
+      },
+      {
+        "rank": 3,
+        "letter": "M (Mflourishrightring)",
+        "glyph": "Mflourishrightring",
+        "where": "left side",
+        "thickness": 1.9262595078846665,
+        "thickness_font_units": 110.41319499194908,
+        "typical": 1.982324854012005,
+        "at": [
+          92.88006721625345,
+          9.273555219560105
+        ],
+        "extent": 2.0831168229092727,
+        "clearance": 0.4246529377833767,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -74.04295745441496
+      },
+      {
+        "rank": 4,
+        "letter": "D",
+        "glyph": "D",
+        "where": "top",
+        "thickness": 2.0002498820467025,
+        "thickness_font_units": 114.65432323891699,
+        "typical": 2.0492920291403434,
+        "at": [
+          46.21814365844932,
+          18.27764143106601
+        ],
+        "extent": 2.3500858153390665,
+        "clearance": 0.43794117344517564,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -75.00312313537604
+      },
+      {
+        "rank": 5,
+        "letter": "D",
+        "glyph": "D",
+        "where": "lower left",
+        "thickness": 2.0196595062346376,
+        "thickness_font_units": 115.76688289736943,
+        "typical": 2.0271272185683813,
+        "at": [
+          35.131116993894814,
+          4.889089063778511
+        ],
+        "extent": 5.682481216701116,
+        "clearance": 0.49999999999999967,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -75.24335174040414
+      },
+      {
+        "rank": 6,
+        "letter": "D",
+        "glyph": "D",
+        "where": "middle",
+        "thickness": 2.020264382304827,
+        "thickness_font_units": 115.80155439371268,
+        "typical": 2.020264382304827,
+        "at": [
+          44.757501744591764,
+          12.011514305652478
+        ],
+        "extent": 2.020264382304827,
+        "clearance": 0.5,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -75.25076399012822
+      },
+      {
+        "rank": 7,
+        "letter": "A (Aleftring)",
+        "glyph": "Aleftring",
+        "where": "lower left",
+        "thickness": 2.188467266557431,
+        "thickness_font_units": 125.44294371907193,
+        "typical": 2.1986398534028506,
+        "at": [
+          7.070639610956037,
+          5.7801868893928825
+        ],
+        "extent": 2.213093400593986,
+        "clearance": 0.43277892634263865,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -77.1529596242705
+      },
+      {
+        "rank": 8,
+        "letter": "A",
+        "glyph": "A",
+        "where": "lower left",
+        "thickness": 2.188467266557431,
+        "thickness_font_units": 125.44294371907193,
+        "typical": 2.198639853402851,
+        "at": [
+          62.51376591939986,
+          5.7801868893928825
+        ],
+        "extent": 2.213093400593987,
+        "clearance": 0.43277892634263865,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -77.1529596242705
+      }
+    ],
+    "below_target": []
+  },
+  "targets": [
+    {
+      "what": "eyelet inner diameter",
+      "measured": 2.7718841528490095,
+      "target": null,
+      "unit": "mm",
+      "verdict": "not judged",
+      "font_units": {
+        "measured": 158.8843996413052,
+        "target": null
+      },
+      "change_pct": null
+    },
+    {
+      "what": "eyelet wall",
+      "measured": 3.057321343592033,
+      "target": null,
+      "unit": "mm",
+      "verdict": "not judged",
+      "font_units": {
+        "measured": 175.24565941469533,
+        "target": null
+      },
+      "change_pct": null
+    },
+    {
+      "what": "thinnest part of the letters",
+      "measured": 1.4619308551308356,
+      "target": 0.5,
+      "unit": "mm",
+      "verdict": "MET",
+      "font_units": {
+        "measured": 83.7978766160995,
+        "target": 28.66
+      },
+      "change_pct": -65.79865605509417
+    }
+  ],
+  "prompts": {
+    "font_defects": "FONT REPAIR REQUEST - TGCarrieSOFlourish-v2.otf\n\nYou are editing the font file TGCarrieSOFlourish-v2.otf. Make the\nnumbered changes below and nothing else. This font is used to laser cut\nnames out of sheet metal, so a letter that does not physically touch the\nnext one becomes a piece of metal on the floor.\n\nTHE FONT\n  file                TGCarrieSOFlourish-v2.otf\n  family (name ID 4)  TG Carrie SO FLOURISH v2 Regular\n  unitsPerEm          2048\n  outlines            PostScript 'CFF ' outlines\n  glyph names         post table format 3.0 - this font stores NO glyph\n                      names. Names like glyph00174 below are placeholders\n                      generated from the glyph order, so look every glyph\n                      up by its glyph ID, which is the number in the name\n                      and is given explicitly each time.\n  colour layers       COLR v0, 2 CPAL palette(s) - the engrave lines come\n                      from these\n  glyph count         6649\n  shaping             the app shapes text with calt, kern, liga, rlig\n                      switched on, which is what picks the contextual\n                      alternates named below\n\nSIZES ARE IN FONT UNITS - READ THIS BEFORE MEASURING ANYTHING\n  Every size in this request is in FONT UNITS, relative to unitsPerEm =\n  2048. Work in font units. A font editor measures in font units and\n  Sean's app measures in inches because it cuts metal, and every earlier\n  attempt at these fixes went wrong at that boundary - an inch number\n  treated as a font-unit number is roughly 1433 times too small, which\n  looks like nothing happened at all.\n  So each size is given twice: font units first, then the same size in\n  inches in brackets. The inch figures use the size the font was checked\n  at, 1.000 in cap height, where 1 font unit = 0.000698 in (0.0177 mm)\n  and 1 in = 1433 font units. Only the font-unit numbers are the\n  instruction; the inch numbers are there to be sanity-checked.\n  A plate cut larger than that makes every font unit physically bigger,\n  so an overlap stated in font units holds at every larger size. That is\n  the other reason the instruction is in font units and not in inches.\n\nWHAT TO CHANGE - 1 item, and nothing else\n\n1. Close the 2 letter junction(s) that leave a gap. Each one makes any name\n   containing it cut as loose pieces instead of one plate. They come to 2\n   separate edit(s) below, because several of these junctions are the same\n   stroke stopping short. Do not touch a glyph that is not named here.\n     (a) junction Dleftring -> d (1 of 2), produced by typing \"Dda\"\n         EDIT THIS GLYPH: Dleftring (glyph ID 271), the form this font uses\n           for 'D' in \"Dda\". This is a contextual alternate, NOT the plain\n           'D' that the cmap points at (D, glyph ID 37). Edit Dleftring.\n           Leave D alone.\n         IT MUST REACH: d (glyph ID 64), the form this font uses for 'd' in\n           \"Dda\", encoded at U+0064. Do not edit that glyph for this item.\n         GAP NOW: 1.7 font units (0.0012 in) of empty space between the ink\n           of Dleftring and the next glyph.\n         DO THIS: in Dleftring's own coordinates its ink stops at (1753.1,\n           436.5), and the next glyph's ink begins at (1754.6, 435.7) in\n           those same coordinates. Carry that exit stroke on from where it\n           ends, keeping its existing width and following the curve it is\n           already on, until it passes (1754.6, 435.7) and reaches at least\n           (1782.3, 421.8) - 32.7 font units (0.023 in) of travel, leaving\n           31 font units (0.022 in) of real overlap. Do it ONCE. Change\n           nothing else in the glyph, and do not widen its advance to\n           contain the longer stroke - the ink is supposed to hang past the\n           advance, that is how the letters overlap.\n         WHY THIS GLYPH: Dleftring is only chosen in contexts like \"Dda\", so\n           editing it cannot disturb any other pair. That is exactly why the\n           edit belongs here and not on the plain 'D'.\n     (b) junction Dleftring -> dflourishrightring (2 of 2), produced by\n         typing \"dd\"\n         EDIT THIS GLYPH: Dleftring (glyph ID 271), the form this font uses\n           for 'd' in \"dd\". This is a contextual alternate, NOT the plain\n           'd' that the cmap points at (d, glyph ID 64). Edit Dleftring.\n           Leave d alone.\n         IT MUST REACH: dflourishrightring (glyph ID 437), the form this\n           font uses for 'd' in \"dd\" - itself a contextual alternate, not\n           the plain 'd' (d, glyph ID 64). Do not edit that glyph for this\n           item.\n         GAP NOW: 0.9 font units (0.0006 in) of empty space between the ink\n           of Dleftring and the next glyph.\n         DO THIS: in Dleftring's own coordinates its ink stops at (1757.8,\n           445.9), and the next glyph's ink begins at (1758.6, 445.5) in\n           those same coordinates. Carry that exit stroke on from where it\n           ends, keeping its existing width and following the curve it is\n           already on, until it passes (1758.6, 445.5) and reaches at least\n           (1786.3, 431.6) - 31.9 font units (0.022 in) of travel, leaving\n           31 font units (0.022 in) of real overlap. Do it ONCE. Change\n           nothing else in the glyph, and do not widen its advance to\n           contain the longer stroke - the ink is supposed to hang past the\n           advance, that is how the letters overlap.\n         WHY THIS GLYPH: Dleftring is only chosen in contexts like \"dd\", so\n           editing it cannot disturb any other pair. That is exactly why the\n           edit belongs here and not on the plain 'd'.\n\nGLYPHS IN SCOPE - 1 existing glyph(s), and no others\n\n   Dleftring (glyph ID 271).\n   Also in scope: where an item offers a choice of which side to edit,\n   the partner glyph that item names - one side or the other, never both.\n   Every other glyph in the font must come back byte for byte identical.\n\nBACKGROUND, NOT TASKS - do not change anything for these\n\n   - The font carries no glyph names: Its post table is format 3.0, so\n     glyphs have no names and tools refer to them as glyph00131 or\n     gid131. The app handles this by using glyph IDs, but font editors\n     will show unhelpful names.\n\nDO NOT CHANGE - anything here that moves is a defect you introduced\n\n   - unitsPerEm - it is 2048 and it stays exactly that. Every number in\n     this request assumes it.\n   - cap height, and OS/2 sCapHeight / sTypoAscender / sTypoDescender /\n     hhea ascent and descent. Sean's app scales a name by cap height, so\n     moving it silently resizes every nameplate ever cut from this font.\n   - x-height - OS/2 sxHeight is 1024 and stays 1024.\n   - every glyph's advance width, left side bearing and right side\n     bearing. Widening a glyph to contain a stroke you extended is\n     exactly the wrong fix: in a joining font the ink is supposed to hang\n     past the advance. Extend the ink, leave the advance.\n   - kerning, and any GPOS table. The gaps above are closed by drawing,\n     not by moving letters closer together.\n   - the contextual alternate set and its feature rules - GSUB, calt,\n     liga, rlig, ccmp. Do not add, remove, re-point or re-order a\n     substitution, and do not make a substitution fire in a new context.\n     Where a defect is in an alternate, edit that alternate's outline in\n     place.\n   - the glyph order and therefore every glyph ID. Do not add, delete,\n     merge or reorder glyphs. The app addresses glyphs by ID. Do not\n     subset, do not remove unused glyphs, do not decompose or recompose\n     composites.\n   - the eyelet holes and their diameters, and every other existing\n     counter or hole. If a glyph already has a hole in it, that hole\n     keeps its size and position.\n   - the COLR layers and the CPAL palette - the engrave lines come from\n     them and they are already correct.\n   - the family name and every other name-table record, the font version,\n     the outline format, and hinting. No autohinting, no 'clean up\n     outlines', no rounding coordinates to the grid, no reinterpolation.\n   - every glyph that is not in the GLYPHS IN SCOPE list above. If you\n     are unsure whether a glyph is in scope, it is not.\n\nWHAT TO SEND BACK\n\n   1. Re-export the edited font as an OTF with 'CFF ' outlines - the same\n      format it arrived in - with the family name still exactly TG Carrie\n      SO FLOURISH v2 Regular, unitsPerEm still 2048, and the same glyph\n      inventory in the same order.\n   2. Name the file TGCarrieSOFlourish-v3.otf so it cannot be confused\n      with TGCarrieSOFlourish-v2.otf.\n   3. List what you changed: for each glyph, its name and glyph ID, which\n      contour and which points moved, and the before and after\n      coordinates in font units. One line per glyph.\n   4. For every junction you closed, check it: set the two glyphs side by\n      side at their existing advance widths and confirm the outlines\n      genuinely overlap rather than touch - the union of the two shapes\n      has to be one closed region, not two regions meeting at a point.\n      Say that you checked it.\n   5. State how many glyphs you edited and confirm it matches that list\n      and the GLYPHS IN SCOPE count above. If you changed anything that\n      was not asked for, say so plainly rather than leaving it to be\n      found on the laser bed.\n   6. If any instruction here cannot be carried out as written, stop and\n      say which one and why. Do not substitute a different fix.",
+    "letter_pairs": "FONT TO EDIT\n  file name    : TGCarrieSOFlourish-v2.otf\n  full path    : <ROOT>/fonts/TGCarrieSOFlourish-v2.otf\n  family name  : TG Carrie SO FLOURISH v2 Regular\n  unitsPerEm   : 2048\n\nEvery size below is in FONT UNITS on this font's 2048-unit em.\nFor scale: 1% of the em is 20 units. Do not read the numbers as\npoints, pixels, millimetres or percentages.\n\nWHY THIS MATTERS\n  These letters get laser-cut out of one piece of sheet metal. The cutting\n  app unions all the letters of a name into ONE closed path. Wherever two\n  neighbouring letters do not overlap, the union leaves two separate\n  islands and that letter drops out of the sheet as a loose piece.\n\nFAILING PAIRS: 5 of 5408 tested pairs have a\ngap between the two letters. They are grouped by their LEFT letter,\nbecause the left letter's exit stroke is usually the single thing that\nhas to change to fix the whole group.\n\n--- START OF A WORD: LOWERCASE + LOWERCASE --- 1 of 676 tested pairs failed\n  LEFT LETTER 'd'  (1 failing pair)\n    'd' + 'd'   glyphs: Dleftring -> dflourishrightring\n        gap 0.9 units (0.00042 em) - close it and then overlap: extend by >= 21 units\n\n--- START OF A WORD: CAPITAL + LOWERCASE --- 1 of 676 tested pairs failed\n  LEFT LETTER 'D'  (1 failing pair)\n    'D' + 'd'   glyphs: Dleftring -> dflourishrightring\n        gap 0.9 units (0.00042 em) - close it and then overlap: extend by >= 21 units\n\n--- START OF A WORD: CAPITAL + CAPITAL --- 0 of 676 tested pairs failed\n  none failed in this group.\n\n--- MIDDLE OF A WORD: LOWERCASE + LOWERCASE --- 0 of 676 tested pairs failed\n  none failed in this group.\n\n--- MIDDLE OF A WORD: CAPITAL + LOWERCASE --- 1 of 676 tested pairs failed\n  LEFT LETTER 'D'  (1 failing pair)\n    'D' + 'd'   glyphs: Aleftring -> D -> d -> aflourishrightring\n        gap 1.7 units (0.00084 em) - close it and then overlap: extend by >= 22 units\n\n--- FIRST LETTER OF A WORD: LOWERCASE + LOWERCASE --- 1 of 676 tested pairs failed\n  LEFT LETTER 'd'  (1 failing pair)\n    'd' + 'd'   glyphs: Dleftring -> d -> aflourishrightring\n        gap 1.7 units (0.00084 em) - close it and then overlap: extend by >= 22 units\n\n--- FIRST LETTER OF A WORD: CAPITAL + LOWERCASE --- 1 of 676 tested pairs failed\n  LEFT LETTER 'D'  (1 failing pair)\n    'D' + 'd'   glyphs: Dleftring -> d -> aflourishrightring\n        gap 1.7 units (0.00084 em) - close it and then overlap: extend by >= 22 units\n\n--- LAST LETTER OF A WORD: LOWERCASE + LOWERCASE --- 0 of 676 tested pairs failed\n  none failed in this group.\n\nWHAT TO CHANGE\n  For each failing pair, extend the LEFT glyph's exit stroke (or, where\n  that would distort the letter, the RIGHT glyph's entry stroke) along the\n  natural direction of the stroke until the two outlines OVERLAP by at\n  least 20 font units measured across the join.\n  A hairline touch is NOT enough. The app unions the letters into one cut\n  path, and two outlines that only graze each other can union into a\n  pinch that the laser cuts straight through. Aim for a real overlap.\n  Keep the extension on the stroke's own path and weight so the letter\n  still reads as the same letter - do not add a straight connector bar.\n  Every gap above was measured with this font's own kerning applied, the\n  same way the cutting app shapes a name. Some of these pairs are pushed\n  apart by a positive kern; close them by extending the outline anyway.\n  The spacing is the design and the app depends on it, so do not buy the\n  overlap by re-kerning the pair.\n\nEDIT THE GLYPH THAT IS NAMED, NOT THE BASE LETTER\n  This font uses contextual alternates, so the glyph that actually draws\n  in a pair is often NOT the plain base glyph. The 'glyphs:' line above\n  gives the real shaped glyph names, in order, as the shaper chose them\n  (names like 'g.alt3' or 'bflourishrightring.eng3' are alternates).\n  Make each edit on the glyph named there. Editing the plain base glyph\n  instead changes something nobody sees and leaves the gap exactly as it\n  is. If one alternate is shared by several failing pairs, fixing it once\n  fixes all of them - check before editing the same outline twice.\n\nDO NOT CHANGE\n  - unitsPerEm\n  - cap height, x-height, ascender, descender, or any vertical metric\n  - advance widths and side bearings (the letters must not re-space)\n  - kerning values\n  - eyelet hole sizes, shapes or positions\n  - the set of alternate glyphs, or the feature rules that pick them\n    (calt, liga, rlig, kern) - the same alternate must still be chosen\n    for the same pair after the edit\n  - the colour layers / engrave lines\n  - ANY glyph not named in the list above\n\nHOW IT WILL BE CHECKED\n  Every pair is re-shaped and the two filled outlines are tested for\n  intersection. A pair passes only when the ink actually overlaps, and no\n  pair that passes today may start failing.",
+    "eyelet_size": "",
+    "thin_areas": "Every thin area of 'ADAM' is already at or above 0.5000 mm (28.7 font units), so the font needs no change for this name at this size."
+  },
+  "verdict": "needs work",
+  "report_text": "TGCarrieSOFlourish-v2.otf\n  TG Carrie SO FLOURISH v2 Regular\n\nUsable, but check the warnings below\n\n[WARNING] 2 letter junction(s) do not join\n    what:  Each of these leaves a gap, so a name containing it cuts as loose pieces instead of one plate: Dleftring→d (type 'Dda'); Dleftring→dflourishrightring (type 'dd'). Type the example next to a junction to see it in the preview.\n    fix:   Extend the left glyph's exit stroke until it crosses into the next letter. Note some junctions only appear mid-word because the font swaps in a contextual form — 'go' can be fine while 'ego' is not, so fix the form the example actually uses.\n\n[NOTE] The font carries no glyph names\n    what:  Its post table is format 3.0, so glyphs have no names and tools refer to them as glyph00131 or gid131. The app handles this by using glyph IDs, but font editors will show unhelpful names.\n    fix:   Nothing required. To get readable names, re-export with post format 2.0 ('keep glyph names' in most editors).\n\nFont facts:\n  units per em: 2048\n  glyphs: 6649\n  outline format: PostScript (CFF)\n  no punctuation glyphs (expected): '-'\n  post table format: 3.0\n  COLR: v0  CPAL palettes: 2\n  OS/2 sxHeight: 1024\n  test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type\n  test name 'ADAM' at 1.000 in cap height: 5.826 x 1.006 in, 1 piece(s), 14 hole(s), 0 engrave line(s)\n  test name 'Adam' at 1.000 in cap height: 4.254 x 1.005 in, 1 piece(s), 9 hole(s), 2 engrave line(s)\n  winding check: 0 glyph(s) whose counters would cancel in the cut\n  letter-join scan: 8788 of 8788 combinations tested, 2 junction(s) disconnected",
+  "measured_on": {
+    "name": "ADAM",
+    "cap_height": 25.0,
+    "unit": "mm",
+    "basis": "cap",
+    "units_per_mm": 0.017445917655268667
+  },
+  "cap_height_check": {
+    "asked": 25.0,
+    "unit": "mm",
+    "basis": "cap",
+    "cap_line_font_units": 1433.0,
+    "cap_line_lands_at": 25.0,
+    "per_letter": {
+      "H": {
+        "ink_top_font_units": 1433.0,
+        "over_cap_line_font_units": 0.0,
+        "ink_height_at_asked_cap": 25.0
+      },
+      "E": {
+        "ink_top_font_units": 1444.0,
+        "over_cap_line_font_units": 11.0,
+        "ink_height_at_asked_cap": 28.68108862526169
+      },
+      "I": {
+        "ink_top_font_units": 1023.0,
+        "over_cap_line_font_units": -410.0,
+        "ink_height_at_asked_cap": 25.174459176552688
+      },
+      "T": {
+        "ink_top_font_units": 1440.0,
+        "over_cap_line_font_units": 7.0,
+        "ink_height_at_asked_cap": 25.12212142358688
+      },
+      "A": {
+        "ink_top_font_units": 1426.0,
+        "over_cap_line_font_units": -7.0,
+        "ink_height_at_asked_cap": 25.05233775296581
+      },
+      "O": {
+        "ink_top_font_units": 1424.0,
+        "over_cap_line_font_units": -9.0,
+        "ink_height_at_asked_cap": 24.84298674110258
+      },
+      "J": {
+        "ink_top_font_units": 1104.0,
+        "over_cap_line_font_units": -329.0,
+        "ink_height_at_asked_cap": 30.2337752965806
+      },
+      "Q": {
+        "ink_top_font_units": 1425.0,
+        "over_cap_line_font_units": -8.0,
+        "ink_height_at_asked_cap": 24.86043265875785
+      }
+    },
+    "warnings": [],
+    "note": "NOT a target — nothing here can fail. The cap LINE is set to the asked height for every name, which is what makes two names match. Individual capitals read OVER that line on purpose (overshoot): a round O and a pointed A both exceed it, a flat H E I T sit on it, and a J or Q hangs below the baseline so its ink is taller still. Do not 'correct' any of that — flattening overshoot damages the font and changes nothing about the size that is cut."
+  },
+  "targets_text": "                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      1.4619      0.5000    -65.80%         83.8 -> 28.7         MET",
+  "seconds": 24.9
+}

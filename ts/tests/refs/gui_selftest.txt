@@ -1,0 +1,74 @@
+report location: <ROOT>/_baseline_selftest/selftest_report.txt
+build     = e51b440f3a76  built <TIME>
+frozen=False
+executable= /usr/bin/python3.12
+BASE      = <ROOT>
+FONTS_DIR = <ROOT>/fonts
+settings  = <ROOT>/settings.json
+platform  = offscreen
+splash    = not in this build (normal when running from source)
+icon      = <ROOT>/assets/icon.ico exists=True
+[PASS] exe lists fonts in fonts\: 3 -> ['Merriweather-Cut3 Engrave v2 Black', 'TG Carrie SO FLOURISH v2 Regular', 'TG Carrie SO v2 Regular']
+[PASS] selected Merriweather: Merriweather-Cut3 Engrave v2 Black
+[PASS] font detail reports engrave capability: MerriweatherCut3Black-Engrave-v2.ttf · <DATE> 13:29 · carries engrave lines · no problems found
+[PASS] preview size label: ADAM — 4.069 × 1.020 in
+[PASS] preview counts: 6 cut contours, 10 engrave lines
+[PASS] canvas painted cut (black) + engrave (red): 837 dark px, 47 red px, 662x641 -> <ROOT>/_baseline_selftest/selftest_preview.png
+       full window image -> <ROOT>/_baseline_selftest/selftest_window.png
+[PASS] per-name zip export: ['ADAM.pdf', 'ADAM.svg', 'Mary_Jane.pdf', 'Mary_Jane.svg', 'OLIVIA.pdf', 'OLIVIA.svg'] (testzip=None)
+[PASS] one-sheet export: sheet.svg=65571 B, sheet.pdf=27510 B
+[PASS] in -> mm converts the number: 25.4 mm
+[PASS] preview after unit switch is the same physical size: ADAM — 103.361 × 25.896 mm
+[PASS] settings.json written next to exe: <ROOT>/settings.json -> font_path=MerriweatherCut3Black-Engrave-v2.ttf
+[PASS] lead-ins appear and the stated height does NOT change: '6 cut contours, 10 engrave lines, 6 lead-ins'; size 'ADAM — 4.069 × 1.020 in' -> 'ADAM — 4.069 × 1.020 in'
+[PASS] lead-in export is written in cutting order, outline last: groups ['ADAM', 'ADAM__1_engrave', 'ADAM__2_cut_inner', 'ADAM__3_cut_outline']; 16 open path(s); order engrave->inner->outline: True; no <text>/<rect>: True
+[PASS] a cut-only font does NOT warn in amber, and still exports: counts='7 cut contours, 0 engrave lines' amber_visible=False amber='' zip=True
+[PASS] the engrave count is still stated honestly as 0: n_engrave=0 counts='7 cut contours, 0 engrave lines'
+[PASS] the checker calls ADAM/Adam test names, never the font's own name: unlabelled lines=[]
+[PASS] side-by-side sheet export: 18.267 x 1.427 in (wide, so laid out in a row)
+[PASS] thin areas are found and summarised: 15 cut contours, 0 engrave lines  ·  thinnest 0.0602 in (86 font units) on D, upper right
+[PASS] a target thickness draws a comparison overlay: 1 overlay(s): ['letters at target thickness']
+[PASS] Reload font re-reads the file and rebuilds the preview: status='Re-read MerriweatherCut3Black-Engrave-v2.ttf from disk.' size='ADAM — 4.069 × 1.020 in'
+[PASS] Reload font and Check font buttons present: reload=True check=True
+[PASS] eyelet measurement returns ID < OD: ID=0.3448 OD=0.6549 in
+[PASS] eyelet toggle fills actual, leaves want/change blank: {'id': ['0.3448', '', ''], 'od': ['0.6549', '', ''], 'wall': ['0.1551', '', ''], 'wall_min': ['0.1548', '', '']}
+[PASS] the canvas gets eyelets and the thinnest-wall point to draw: show=True n=1 wall_at=(0.2172153578972437, 0.6432850754879189)
+[PASS] a wanted eyelet ID draws the target ring on the preview: want=0.3793 overlays=['eyelet at target inner diameter']
+[PASS] the want and change columns fill in: actual=0.3448 want=0.3793 change=+10.02%
+[PASS] a wanted wall draws the target outer ring too: overlays=['eyelet at target inner diameter', 'eyelet at target outer diameter']
+[PASS] the wanted-size toggle hides the rings but keeps the numbers: overlays=[] want cell='0.3793'
+[PASS] ticking it back brings the rings back: 
+[PASS] clearing a target box reads as nothing, not a number: target=0.0 blank=True
+[PASS] clearing it drops the ring and blanks the want/change columns: want='' change='' overlays=['eyelet at target outer diameter']
+[PASS] an emptied box commits to the em dash instead of the old value: value=0.0 text='—'
+[PASS] thin spots carry a 2-point crossing to draw the distance across: 8 spot(s), all with a crossing=True
+[PASS] a thin mark's rank cannot be misread as part of the measurement: ['#1 · 0.0490 in', '#2 · 0.0490 in', '#3 · 0.0787 in']
+[PASS] thin spots are graded into severity colours, worst the most vivid: 2 colour(s) over 0.0490-0.0881: ['#e6007e', '#e6007e', '#b8a000', '#b8a000', '#b8a000', '#b8a000', '#b8a000', '#b8a000']
+[PASS] a spot that already meets the wanted thickness goes green: #2f9e44
+[PASS] Generate prompts finishes on the report thread without freezing: 4 section(s) came back
+[PASS] Generate prompts produces one section per area: ['1. Font defects', '2. Letter pairs that do not join', '3. Thin areas to thicken', '4. Eyelet size']
+[PASS] the eyelet section is filled once a target is typed: 1237 chars
+[PASS] a clean font leaves the defect section BLANK, not a fake request: 0 chars
+[PASS] every prompt is plain ASCII, so it pastes anywhere: [] non-ASCII
+[PASS] EVERY prompt builder is ASCII, including blocks empty in this run: all four clean with targets supplied
+[PASS] font checker returns a report: 1253 chars, headline='Usable, but check the warnings below'
+[PASS] the letter-pair analysis finishes on the report thread: report arrived: True
+[PASS] the pair sheet zooms out and in: 30%=40px 100%=132px 240%=317px
+[PASS] the zoomed sheet is still 26 columns x 52 rows: 3432x24024px, 26x182 cells
+[PASS] the pair sheet covers every positional junction, one row each: 182 rows, first letter's rows = ['caplower', 'lower', 'firstcaplower', 'firstlower', 'midcaplower', 'midlower', 'lastlower']
+[PASS] a first-letter cell is shaped as 'dda' and judges glyphs 0-1: whole=('D.ini', 'D.e4') first=('D.ini', 'D.e4', 'A.e5') span=(0, 1)
+[PASS] a last-letter cell is shaped as 'Aab' and judges glyphs 1-2: context='Aab' span=(1, 2)
+[PASS] two-, three- and four-letter cells each get their own scale: {'start': 0.027317, 'first': 0.0175, 'last': 0.0175, 'middle': 0.013023}
+[PASS] a middle-of-word cell is shaped inside Aaaa and judges glyphs 1-2: context='Aaaa' span=(1, 2) glyphs=('A.ini', 'A.e0', 'A.e0', 'A.e0')
+[PASS] start-of-word and middle-of-word are kept as separate measurements: start=('A.ini', 'A.e0') mid=('A.ini', 'A.e0', 'A.e0', 'A.e0')
+[PASS] the middle row uses a medial glyph, not the initial (eyelet) one: initial='A.ini' medial='A.e0'
+[PASS] a four-letter cell is drawn at its own smaller scale: 2-letter=0.027317 4-letter=0.013023
+[PASS] flagged pairs are walked in reading order, top to bottom: 0 flagged: []
+[PASS] the flagged count matches the number the header shows: 0 vs 0
+[PASS] the GUI event loop keeps running while a font check is in flight: 496 event-loop turns during the check, report arrived
+[PASS] the button that started a report is re-enabled when it finishes: enabled=True text='Check font'
+[PASS] the health check names the build and reports no problems here: build            e51b440f3a76 | [ok] fonts folder exists | [ok] fonts present (3) | [ok] app folder is writable | [ok] path length under 240 chars
+[PASS] empty name box disables export: zip=False sheet=False
+======================================================================
+selftest: 60/60 passed
+======================================================================

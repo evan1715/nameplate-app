@@ -1,0 +1,11 @@
+FONT REPAIR REQUEST - TGCarrieSO-v2.otf
+
+No repair needed. Sean's nameplate app checked this font (TG Carrie SO v2
+Regular) and found no errors and no warnings, so there is nothing to
+change and no edit to make. Please do not modify this font.
+
+For information only - these are not defects and are not tasks:
+   - The font carries no glyph names: Its post table is format 3.0, so
+     glyphs have no names and tools refer to them as glyph00131 or
+     gid131. The app handles this by using glyph IDs, but font editors
+     will show unhelpful names.

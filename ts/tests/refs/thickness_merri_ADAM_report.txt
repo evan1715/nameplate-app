@@ -1,0 +1,48 @@
+ADAM — 4.069 x 1.020 in
+
+THINNEST PARTS OF THE ARTWORK
+    measured across the stroke at 1036 of 692 points walked around the outline
+
+     #  letter           where          thinnest   typical   font u
+     1  A (A.e5)         lower left       0.0490    0.0490     72.8
+     2  D (D.e0)         lower right      0.0490    0.0506     72.8
+     3  M (M.e0)         upper left       0.0787    0.0787    117.0
+     4  M (M.e0)         top              0.0794    0.0794    118.0
+     5  A (A.e5)         bottom           0.0857    0.0892    127.3
+     6  A (A.ini)        bottom           0.0857    0.0892    127.3
+     7  D (D.e0)         top              0.0858    0.0878    127.5
+     8  A (A.e5)         lower left       0.0881    0.0881    130.9
+    (thinnest/typical in in; 'font u' columns are font units, which is what a font editor works in)
+
+     1  A (A.e5) — lower left
+          0.0490 in (72.8 font units) across, at 1.882, 0.085 in from the bottom-left
+          from 1 reading(s) over about 0.049 in of stroke
+          note: a single reading with nothing beside it to corroborate — a very small feature, so confirm it on screen before acting on it
+     2  D (D.e0) — lower right
+          0.0490 in (72.8 font units) across, at 1.882, 0.085 in from the bottom-left
+          from 2 reading(s) over about 0.052 in of stroke
+     3  M (M.e0) — upper left
+          0.0787 in (117.0 font units) across, at 3.013, 0.971 in from the bottom-left
+          from 1 reading(s) over about 0.079 in of stroke
+          note: a single reading with nothing beside it to corroborate — a very small feature, so confirm it on screen before acting on it
+     4  M (M.e0) — top
+          0.0794 in (118.0 font units) across, at 3.646, 0.971 in from the bottom-left
+          from 1 reading(s) over about 0.079 in of stroke
+          note: a single reading with nothing beside it to corroborate — a very small feature, so confirm it on screen before acting on it
+     5  A (A.e5) — bottom
+          0.0857 in (127.3 font units) across, at 2.165, 0.054 in from the bottom-left
+          from 4 reading(s) over about 0.113 in of stroke
+     6  A (A.ini) — bottom
+          0.0857 in (127.3 font units) across, at 0.624, 0.054 in from the bottom-left
+          from 4 reading(s) over about 0.113 in of stroke
+     7  D (D.e0) — top
+          0.0858 in (127.5 font units) across, at 1.565, 0.976 in from the bottom-left
+          from 183 reading(s) over about 0.199 in of stroke
+     8  A (A.e5) — lower left
+          0.0881 in (130.9 font units) across, at 1.902, 0.055 in from the bottom-left
+          from 1 reading(s) over about 0.088 in of stroke
+          note: a single reading with nothing beside it to corroborate — a very small feature, so confirm it on screen before acting on it
+
+Thickness is measured across the stroke: a ray is cast inward from the edge until it leaves the material.
+'thinnest' is the worst reading in that area and is the number that decides whether it snaps; 'typical' is the middle reading for the same area, so a lone freak reading is visible as one.
+Readings that cross a wedge rather than a stroke — a serif tip, an apex, the end of a swash — are dropped, because thickening the font would not fix them.

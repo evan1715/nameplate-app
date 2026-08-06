@@ -1,0 +1,8 @@
+=== MerriweatherCut3Black-Engrave-v2.ttf
+    family='Merriweather-Cut3 Engrave v2 Black' upem=2000 colr=yes
+    421/421 passed
+==============================================================================
+421/421 checks passed
+==============================================================================
+
+EXIT=0

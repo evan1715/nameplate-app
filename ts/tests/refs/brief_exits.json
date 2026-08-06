@@ -1,0 +1,17 @@
+{
+ "flourish": {
+  "exit": 1,
+  "stderr": "",
+  "stdout": "TGCarrieSOFlourish-v2.otf: NEEDS WORK (<T>s)\n                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      1.4619      0.5000    -65.80%         83.8 -> 28.7         MET\n"
+ },
+ "merri_met": {
+  "exit": 0,
+  "stderr": "",
+  "stdout": "MerriweatherCut3Black-Engrave-v2.ttf: READY (<T>s)\n                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      0.0490      0.0010    -97.96%         72.8 -> 1.5          MET\n"
+ },
+ "merri_unmet": {
+  "exit": 1,
+  "stderr": "",
+  "stdout": "MerriweatherCut3Black-Engrave-v2.ttf: NEEDS WORK (<T>s)\n                                     now      target     change      font units now -> want  verdict\neyelet inner diameter             0.3448      0.4000    +16.02%        512.3 -> 594.4        NOT MET\neyelet wall                       0.1551      0.2000    +28.97%        230.4 -> 297.2        MET\nthinnest part of the letters      0.0490      0.0900    +83.82%         72.8 -> 133.7        NOT MET\nBLOCKING: 11 thin areas are under the target but only the worst 8 are listed - fix these, then re-run; do not treat the list as complete.\n"
+ }
+}

@@ -1,0 +1,371 @@
+{
+  "tool": "nameplate_brief",
+  "font": {
+    "path": "<ROOT>/fonts/MerriweatherCut3Black-Engrave-v2.ttf",
+    "file": "MerriweatherCut3Black-Engrave-v2.ttf",
+    "family": "Merriweather-Cut3 Engrave v2 Black",
+    "upem": 2000,
+    "has_engrave_lines": true
+  },
+  "asked_for": {
+    "cap_height": 1.0,
+    "unit": "in",
+    "basis": "cap",
+    "test_names": [
+      "ADAM",
+      "Adam"
+    ],
+    "eyelet_inner_diameter": null,
+    "eyelet_wall": null,
+    "min_thickness": 0.001
+  },
+  "font_check": {
+    "usable": true,
+    "family": "Merriweather-Cut3 Engrave v2 Black",
+    "upem": 2000,
+    "n_errors": 0,
+    "n_warnings": 0,
+    "findings": [
+      {
+        "severity": "NOTE",
+        "code": "caps-only",
+        "title": "This font is caps-only: lowercase draws the capitals",
+        "what": "Every lowercase character maps to the same glyph as its capital, so 'adam' and 'ADAM' cut identically. Nothing is wrong with the font; it simply has no separate lowercase.",
+        "fix": "Nothing required. Expect the letter-pair sheet's lowercase rows to show capitals, because that is what they are."
+      }
+    ],
+    "facts": [
+      "units per em: 2000",
+      "glyphs: 9571",
+      "outline format: TrueType (glyf)",
+      "no punctuation glyphs (expected): \"'\" '-'",
+      "post table format: 2.0",
+      "COLR: v0  CPAL palettes: 2",
+      "OS/2 sxHeight: 1097",
+      "test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type",
+      "test name 'ADAM' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)",
+      "test name 'Adam' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)",
+      "caps-only font: all 26 lowercase map to the capital glyphs",
+      "winding check: 0 glyph(s) whose counters would cancel in the cut",
+      "letter-join scan: 8788 of 8788 combinations tested, 0 junction(s) disconnected"
+    ]
+  },
+  "pairs": {
+    "flagged": 0,
+    "tested": 5408,
+    "untested": 0,
+    "total": 5408,
+    "budget_hit": false,
+    "budget_s": 30.0,
+    "worst_first": []
+  },
+  "names": [
+    {
+      "name": "ADAM",
+      "width": 4.069313593539704,
+      "height": 1.0195154777927322,
+      "unit": "in",
+      "engrave_lines": 10,
+      "scale_units_per_in": 0.0006729475100942127,
+      "warnings": [],
+      "pieces": 1,
+      "holes": 5,
+      "cuts_as_one_piece": true
+    },
+    {
+      "name": "Adam",
+      "width": 4.069313593539704,
+      "height": 1.0195154777927322,
+      "unit": "in",
+      "engrave_lines": 10,
+      "scale_units_per_in": 0.0006729475100942127,
+      "warnings": [],
+      "pieces": 1,
+      "holes": 5,
+      "cuts_as_one_piece": true
+    }
+  ],
+  "eyelets": [
+    {
+      "side": "left",
+      "unit": "in",
+      "inner_diameter": 0.3447679444134717,
+      "outer_diameter": 0.654924494640144,
+      "wall_avg": 0.15507827511333616,
+      "wall_thinnest": 0.15475898177103606,
+      "roundness": 0.9999454949188604,
+      "centre": [
+        0.32746750434401173,
+        0.5105088616487143
+      ],
+      "font_units": {
+        "inner_diameter": 512.3251653984189,
+        "outer_diameter": 973.217799035254,
+        "wall_avg": 230.44631681841753
+      },
+      "note": ""
+    }
+  ],
+  "thickness": {
+    "unit": "in",
+    "areas_found": 16,
+    "areas_below_target": 0,
+    "spots_shown": 8,
+    "samples_taken": 692,
+    "thinnest": 0.04896175420591811,
+    "thinnest_font_units": 72.75716674999431,
+    "spots": [
+      {
+        "rank": 1,
+        "letter": "A (A.e5)",
+        "glyph": "A.e5",
+        "where": "lower left",
+        "thickness": 0.04896175420591811,
+        "thickness_font_units": 72.75716674999431,
+        "typical": 0.04896175420591811,
+        "at": [
+          1.8817513261797612,
+          0.08480470690720816
+        ],
+        "extent": 0.04896175420591811,
+        "clearance": 0.5,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -97.95758951814858
+      },
+      {
+        "rank": 2,
+        "letter": "D (D.e0)",
+        "glyph": "D.e0",
+        "where": "lower right",
+        "thickness": 0.04902399863453578,
+        "thickness_font_units": 72.84966197092017,
+        "typical": 0.05060108281273534,
+        "at": [
+          1.8817249130949554,
+          0.08478816626619932
+        ],
+        "extent": 0.05224039961619048,
+        "clearance": 0.4987303295957235,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -97.96018271080904
+      },
+      {
+        "rank": 3,
+        "letter": "M (M.e0)",
+        "glyph": "M.e0",
+        "where": "upper left",
+        "thickness": 0.07873485868102288,
+        "thickness_font_units": 117.0,
+        "typical": 0.07873485868102288,
+        "at": [
+          3.01278600269179,
+          0.971399730820996
+        ],
+        "extent": 0.07873485868102288,
+        "clearance": 0.5,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -98.72991452991454
+      },
+      {
+        "rank": 4,
+        "letter": "M (M.e0)",
+        "glyph": "M.e0",
+        "where": "top",
+        "thickness": 0.07940780619111709,
+        "thickness_font_units": 118.0,
+        "typical": 0.07940780619111709,
+        "at": [
+          3.6460296096904443,
+          0.9710632570659489
+        ],
+        "extent": 0.07940780619111709,
+        "clearance": 0.5,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -98.7406779661017
+      },
+      {
+        "rank": 5,
+        "letter": "A (A.e5)",
+        "glyph": "A.e5",
+        "where": "bottom",
+        "thickness": 0.08569593260037406,
+        "thickness_font_units": 127.34415584415585,
+        "typical": 0.08923574631159209,
+        "at": [
+          2.1653768506056528,
+          0.05361512646169444
+        ],
+        "extent": 0.11290108621477302,
+        "clearance": 0.4958360367626208,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -98.83308347356076
+      },
+      {
+        "rank": 6,
+        "letter": "A (A.ini)",
+        "glyph": "A.ini",
+        "where": "bottom",
+        "thickness": 0.08569593260037406,
+        "thickness_font_units": 127.34415584415585,
+        "typical": 0.08923574631159209,
+        "at": [
+          0.6236541049798116,
+          0.05361512646169444
+        ],
+        "extent": 0.11290108621477311,
+        "clearance": 0.4958360367626208,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -98.83308347356076
+      },
+      {
+        "rank": 7,
+        "letter": "D (D.e0)",
+        "glyph": "D.e0",
+        "where": "top",
+        "thickness": 0.08579487634441349,
+        "thickness_font_units": 127.49118624779844,
+        "typical": 0.08781528659106945,
+        "at": [
+          1.5651678030562517,
+          0.9761986444958968
+        ],
+        "extent": 0.19856368839782873,
+        "clearance": 0.49999999999999983,
+        "parallel_walls": true,
+        "meets_target": true,
+        "needs_pct": -98.83442923096524
+      },
+      {
+        "rank": 8,
+        "letter": "A (A.e5)",
+        "glyph": "A.e5",
+        "where": "lower left",
+        "thickness": 0.08809774817239549,
+        "thickness_font_units": 130.9132537841797,
+        "typical": 0.08809774817239549,
+        "at": [
+          1.9017918870394515,
+          0.05481603424770515
+        ],
+        "extent": 0.08809774817239549,
+        "clearance": 0.45185963889794556,
+        "parallel_walls": false,
+        "meets_target": true,
+        "needs_pct": -98.86489720708511
+      }
+    ],
+    "below_target": []
+  },
+  "targets": [
+    {
+      "what": "eyelet inner diameter",
+      "measured": 0.3447679444134717,
+      "target": null,
+      "unit": "in",
+      "verdict": "not judged",
+      "font_units": {
+        "measured": 512.3251653984189,
+        "target": null
+      },
+      "change_pct": null
+    },
+    {
+      "what": "eyelet wall",
+      "measured": 0.15507827511333616,
+      "target": null,
+      "unit": "in",
+      "verdict": "not judged",
+      "font_units": {
+        "measured": 230.44631681841753,
+        "target": null
+      },
+      "change_pct": null
+    },
+    {
+      "what": "thinnest part of the letters",
+      "measured": 0.04896175420591811,
+      "target": 0.001,
+      "unit": "in",
+      "verdict": "MET",
+      "font_units": {
+        "measured": 72.75716674999431,
+        "target": 1.486
+      },
+      "change_pct": -97.95758951814858
+    }
+  ],
+  "prompts": {
+    "font_defects": "",
+    "letter_pairs": "",
+    "eyelet_size": "",
+    "thin_areas": "Every thin area of 'ADAM' is already at or above 0.0010 in (1.5 font units), so the font needs no change for this name at this size."
+  },
+  "verdict": "ready",
+  "report_text": "MerriweatherCut3Black-Engrave-v2.ttf\n  Merriweather-Cut3 Engrave v2 Black\n\nUsable, but check the warnings below\n\n[NOTE] This font is caps-only: lowercase draws the capitals\n    what:  Every lowercase character maps to the same glyph as its capital, so 'adam' and 'ADAM' cut identically. Nothing is wrong with the font; it simply has no separate lowercase.\n    fix:   Nothing required. Expect the letter-pair sheet's lowercase rows to show capitals, because that is what they are.\n\nFont facts:\n  units per em: 2000\n  glyphs: 9571\n  outline format: TrueType (glyf)\n  no punctuation glyphs (expected): \"'\" '-'\n  post table format: 2.0\n  COLR: v0  CPAL palettes: 2\n  OS/2 sxHeight: 1097\n  test names used to probe this font: 'ADAM', 'Adam' - samples the checker shapes to exercise capitals and lowercase, nothing to do with what you will type\n  test name 'ADAM' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)\n  test name 'Adam' at 1.000 in cap height: 4.069 x 1.020 in, 1 piece(s), 5 hole(s), 10 engrave line(s)\n  caps-only font: all 26 lowercase map to the capital glyphs\n  winding check: 0 glyph(s) whose counters would cancel in the cut\n  letter-join scan: 8788 of 8788 combinations tested, 0 junction(s) disconnected",
+  "measured_on": {
+    "name": "ADAM",
+    "cap_height": 1.0,
+    "unit": "in",
+    "basis": "cap",
+    "units_per_in": 0.0006729475100942127
+  },
+  "cap_height_check": {
+    "asked": 1.0,
+    "unit": "in",
+    "basis": "cap",
+    "cap_line_font_units": 1486.0,
+    "cap_line_lands_at": 1.0,
+    "per_letter": {
+      "H": {
+        "ink_top_font_units": 1486.0,
+        "over_cap_line_font_units": 0.0,
+        "ink_height_at_asked_cap": 1.0
+      },
+      "E": {
+        "ink_top_font_units": 1486.0,
+        "over_cap_line_font_units": 0.0,
+        "ink_height_at_asked_cap": 1.0
+      },
+      "I": {
+        "ink_top_font_units": 1486.0,
+        "over_cap_line_font_units": 0.0,
+        "ink_height_at_asked_cap": 1.0
+      },
+      "T": {
+        "ink_top_font_units": 1486.0,
+        "over_cap_line_font_units": 0.0,
+        "ink_height_at_asked_cap": 1.0
+      },
+      "A": {
+        "ink_top_font_units": 1492.0,
+        "over_cap_line_font_units": 6.0,
+        "ink_height_at_asked_cap": 1.0040376850605652
+      },
+      "O": {
+        "ink_top_font_units": 1506.0,
+        "over_cap_line_font_units": 20.0,
+        "ink_height_at_asked_cap": 1.0289367429340512
+      },
+      "J": {
+        "ink_top_font_units": 1486.0,
+        "over_cap_line_font_units": 0.0,
+        "ink_height_at_asked_cap": 1.2604306864064603
+      },
+      "Q": {
+        "ink_top_font_units": 1506.0,
+        "over_cap_line_font_units": 20.0,
+        "ink_height_at_asked_cap": 1.265814266487214
+      }
+    },
+    "warnings": [],
+    "note": "NOT a target — nothing here can fail. The cap LINE is set to the asked height for every name, which is what makes two names match. Individual capitals read OVER that line on purpose (overshoot): a round O and a pointed A both exceed it, a flat H E I T sit on it, and a J or Q hangs below the baseline so its ink is taller still. Do not 'correct' any of that — flattening overshoot damages the font and changes nothing about the size that is cut."
+  },
+  "targets_text": "                                     now      target     change      font units now -> want  verdict\nthinnest part of the letters      0.0490      0.0010    -97.96%         72.8 -> 1.5          MET",
+  "seconds": 5.5
+}

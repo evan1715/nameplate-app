@@ -1,0 +1,220 @@
+{
+ "carrie": {
+  "budget_hit": false,
+  "family": "TG Carrie SO v2 Regular",
+  "groups": [
+   {
+    "key": "lower",
+    "label": "start of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "start",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "caplower",
+    "label": "start of a word: capital + lowercase",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "start",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "caps",
+    "label": "start of a word: capital + capital",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "start",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   },
+   {
+    "key": "midlower",
+    "label": "middle of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "middle",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "midcaplower",
+    "label": "middle of a word: capital + lowercase",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "middle",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "firstlower",
+    "label": "first letter of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "first",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "firstcaplower",
+    "label": "first letter of a word: capital + lowercase",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "first",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "lastlower",
+    "label": "last letter of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "last",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   }
+  ],
+  "n_failed": 0,
+  "n_groups": 8,
+  "n_missing": 0,
+  "n_pairs": 5408,
+  "n_tested": 5408,
+  "n_untested": 0,
+  "upem": 2048
+ },
+ "flourish": {
+  "budget_hit": false,
+  "family": "TG Carrie SO FLOURISH v2 Regular",
+  "groups": [
+   {
+    "key": "lower",
+    "label": "start of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "start",
+    "n_cells": 676,
+    "n_failures": 1,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "caplower",
+    "label": "start of a word: capital + lowercase",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "start",
+    "n_cells": 676,
+    "n_failures": 1,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "caps",
+    "label": "start of a word: capital + capital",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "start",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   },
+   {
+    "key": "midlower",
+    "label": "middle of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "middle",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "midcaplower",
+    "label": "middle of a word: capital + lowercase",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "middle",
+    "n_cells": 676,
+    "n_failures": 1,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "firstlower",
+    "label": "first letter of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "first",
+    "n_cells": 676,
+    "n_failures": 1,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "firstcaplower",
+    "label": "first letter of a word: capital + lowercase",
+    "left_chars": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "mode": "first",
+    "n_cells": 676,
+    "n_failures": 1,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   },
+   {
+    "key": "lastlower",
+    "label": "last letter of a word: lowercase + lowercase",
+    "left_chars": "abcdefghijklmnopqrstuvwxyz",
+    "mode": "last",
+    "n_cells": 676,
+    "n_failures": 0,
+    "n_missing": 0,
+    "n_tested": 676,
+    "n_untested": 0,
+    "right_chars": "abcdefghijklmnopqrstuvwxyz"
+   }
+  ],
+  "n_failed": 5,
+  "n_groups": 8,
+  "n_missing": 0,
+  "n_pairs": 5408,
+  "n_tested": 5408,
+  "n_untested": 0,
+  "upem": 2048
+ }
+}

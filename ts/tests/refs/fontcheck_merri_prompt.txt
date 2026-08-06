@@ -1,0 +1,11 @@
+FONT REPAIR REQUEST - MerriweatherCut3Black-Engrave-v2.ttf
+
+No repair needed. Sean's nameplate app checked this font (Merriweather-
+Cut3 Engrave v2 Black) and found no errors and no warnings, so there is
+nothing to change and no edit to make. Please do not modify this font.
+
+For information only - these are not defects and are not tasks:
+   - This font is caps-only: lowercase draws the capitals: Every
+     lowercase character maps to the same glyph as its capital, so 'adam'
+     and 'ADAM' cut identically. Nothing is wrong with the font; it
+     simply has no separate lowercase.

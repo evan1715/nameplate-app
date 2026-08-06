@@ -1,0 +1,20 @@
+FONT TO EDIT
+  file name    : TGCarrieSO-v2.otf
+  full path    : <ROOT>/fonts/TGCarrieSO-v2.otf
+  family name  : TG Carrie SO v2 Regular
+  unitsPerEm   : 2048
+
+Every size below is in FONT UNITS on this font's 2048-unit em.
+For scale: 1% of the em is 20 units. Do not read the numbers as
+points, pixels, millimetres or percentages.
+
+WHY THIS MATTERS
+  These letters get laser-cut out of one piece of sheet metal. The cutting
+  app unions all the letters of a name into ONE closed path. Wherever two
+  neighbouring letters do not overlap, the union leaves two separate
+  islands and that letter drops out of the sheet as a loose piece.
+
+RESULT: NOTHING TO FIX.
+  All 5408 pairs that were tested have overlapping ink,
+  so every one of them will union into a single cut path.
+  Do not make any changes to this font.

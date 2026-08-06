@@ -1,0 +1,59 @@
+[PASS] #1  cap height is independent of which capital starts the name
+        delivered height of 'A' at 1.000 in cap: ADAM=1.0040, JADAM=1.0040, QADAM=1.0040 (spread 0.000000 in)
+[PASS] #1b  the cap line lands exactly at the requested height, every name
+        4.0693 x 1.0195 in for ADAM; cap line = ADAM=1.000000, JADAM=1.000000, QADAM=1.000000, OLIVIA=1.000000, adam=1.000000
+[PASS] #7  a name cannot break or inject into the exported SVG
+        all four hostile names parse, nothing injected
+[PASS] #5b  lead-in exporters survive length 0 / negative
+        all keys present on the early exit: True
+[PASS] #5b2  runs+closed still accounts for every contour at length 0
+        0+6 vs 6 contours
+[PASS] #3  an absurd lead-in length never cuts through the material
+        worst material cut across 6 abusive settings: 0.000000 (Sophia@1.0in len=10.0 clear=2.0)
+[PASS] #5a/c  no-ink and exotic names never raise an unhandled error
+        all 12 handled (empty, whitespace, zero-width, CJK, emoji)
+[PASS] #5d/#8  height 0 / negative / inf / nan are refused, never written
+        all four refused with a clear error instead of writing junk
+[PASS] #6  three colliding names produce three files, not one
+        3 svg file(s) written: ['Adam..svg', 'Adam_.svg', 'Adam__2.svg']
+[PASS] #9  the CLI refuses a negative sheet gap instead of overlapping names
+        exit=2, sheet written=False, said: --gap -0.5 in makes these names overlap on the sheet: 'ADAM'+'OLIVIA'. Nothing written — i
+[PASS] #4a  a 120-character name finishes well inside a minute
+        <T>s for build + lead-ins
+[PASS] #4b  a 40-name side-by-side sheet with lead-ins finishes inside a minute
+        <T>s for 40 names + arrange + lead-ins
+[PASS] #10a  ADAM's thinnest reads the real 72.76 font units, not 126.2
+        measured 72.76 fu (+0.00% of double-derived truth 72.76), clearance 0.500 -- must be >= 0.47 to be a parallel-walled web rather than a taper
+[PASS] #10b  CHRISTOPHER's thinnest reads the real 18.13 font units, not 120.09
+        measured 18.13 fu (+0.02% of double-derived truth 18.13), clearance 0.500 -- must be >= 0.47 to be a parallel-walled web rather than a taper
+[PASS] #10c  the vertex-anchored pass is what finds the web, not luck
+        with the vertex pass off ADAM reads 127.34 fu (the old over-report); with it on, 72.76
+[PASS] #10d  a long script name's thickness survey stays well under a minute
+        <T>s for the worst shipped case
+[PASS] #11a  the first letter of a name uses a DIFFERENT glyph pair than the same two letters alone
+        'dd' -> ('Dleftring', 'dflourishrightring'), 'dda' -> ('Dleftring', 'd', 'aflourishrightring'); both break (2 and 2 pieces)
+[PASS] #11b  the pair sheet tests every positional junction
+        groups: ['lower', 'caplower', 'caps', 'midlower', 'midcaplower', 'firstlower', 'firstcaplower', 'lastlower']
+[PASS] #11c  the first-letter junction 'dda' is FLAGGED, not silently passed
+        status=gap, context='dda', glyphs=('Dleftring', 'd', 'aflourishrightring')
+[PASS] #11d  join_scan reaches the Capital-initial junction and finishes
+        8788/8788 combos, truncated=False, Dleftring->d found=True
+[PASS] #12  a nested island stays in the material mask, so no lead-in cuts it
+        4 depth-2+ case(s) checked; worst lead cutting real material 0.000000 in (was 0.0807)
+[PASS] #13a  the final letter's counter is not counted as an eyelet
+        kept ['left'], rejected [('right', 35)] (% spread of radius)
+[PASS] #13b  the rejection is explained, not silent
+        report_text names the hole it left out and why
+[PASS] #13c  a genuine eyelet still passes the new gate
+        ADAM: 1 confident eyelet(s)
+[PASS] #14a  the winding check clears all three shipped fonts
+        false positives: none
+[PASS] #14b  a same-direction counter really does cancel in the cut path
+        skia union of outer+same-direction-counter -> 1 contour(s); parity would say 2, so the hole vanishes in metal
+[PASS] #15  an unmeasured pair scan cannot be reported as ready
+        verdict='needs work', untested=5390, blocking=1 line(s)
+==============================================================================
+27/27 regressions fixed
+==============================================================================
+
+EXIT=0

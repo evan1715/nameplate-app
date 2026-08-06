@@ -1,0 +1,97 @@
+FONT TO EDIT
+  file name    : TGCarrieSOFlourish-v2.otf
+  full path    : <ROOT>/fonts/TGCarrieSOFlourish-v2.otf
+  family name  : TG Carrie SO FLOURISH v2 Regular
+  unitsPerEm   : 2048
+
+Every size below is in FONT UNITS on this font's 2048-unit em.
+For scale: 1% of the em is 20 units. Do not read the numbers as
+points, pixels, millimetres or percentages.
+
+WHY THIS MATTERS
+  These letters get laser-cut out of one piece of sheet metal. The cutting
+  app unions all the letters of a name into ONE closed path. Wherever two
+  neighbouring letters do not overlap, the union leaves two separate
+  islands and that letter drops out of the sheet as a loose piece.
+
+FAILING PAIRS: 5 of 5408 tested pairs have a
+gap between the two letters. They are grouped by their LEFT letter,
+because the left letter's exit stroke is usually the single thing that
+has to change to fix the whole group.
+
+--- START OF A WORD: LOWERCASE + LOWERCASE --- 1 of 676 tested pairs failed
+  LEFT LETTER 'd'  (1 failing pair)
+    'd' + 'd'   glyphs: Dleftring -> dflourishrightring
+        gap 0.9 units (0.00042 em) - close it and then overlap: extend by >= 21 units
+
+--- START OF A WORD: CAPITAL + LOWERCASE --- 1 of 676 tested pairs failed
+  LEFT LETTER 'D'  (1 failing pair)
+    'D' + 'd'   glyphs: Dleftring -> dflourishrightring
+        gap 0.9 units (0.00042 em) - close it and then overlap: extend by >= 21 units
+
+--- START OF A WORD: CAPITAL + CAPITAL --- 0 of 676 tested pairs failed
+  none failed in this group.
+
+--- MIDDLE OF A WORD: LOWERCASE + LOWERCASE --- 0 of 676 tested pairs failed
+  none failed in this group.
+
+--- MIDDLE OF A WORD: CAPITAL + LOWERCASE --- 1 of 676 tested pairs failed
+  LEFT LETTER 'D'  (1 failing pair)
+    'D' + 'd'   glyphs: Aleftring -> D -> d -> aflourishrightring
+        gap 1.7 units (0.00084 em) - close it and then overlap: extend by >= 22 units
+
+--- FIRST LETTER OF A WORD: LOWERCASE + LOWERCASE --- 1 of 676 tested pairs failed
+  LEFT LETTER 'd'  (1 failing pair)
+    'd' + 'd'   glyphs: Dleftring -> d -> aflourishrightring
+        gap 1.7 units (0.00084 em) - close it and then overlap: extend by >= 22 units
+
+--- FIRST LETTER OF A WORD: CAPITAL + LOWERCASE --- 1 of 676 tested pairs failed
+  LEFT LETTER 'D'  (1 failing pair)
+    'D' + 'd'   glyphs: Dleftring -> d -> aflourishrightring
+        gap 1.7 units (0.00084 em) - close it and then overlap: extend by >= 22 units
+
+--- LAST LETTER OF A WORD: LOWERCASE + LOWERCASE --- 0 of 676 tested pairs failed
+  none failed in this group.
+
+WHAT TO CHANGE
+  For each failing pair, extend the LEFT glyph's exit stroke (or, where
+  that would distort the letter, the RIGHT glyph's entry stroke) along the
+  natural direction of the stroke until the two outlines OVERLAP by at
+  least 20 font units measured across the join.
+  A hairline touch is NOT enough. The app unions the letters into one cut
+  path, and two outlines that only graze each other can union into a
+  pinch that the laser cuts straight through. Aim for a real overlap.
+  Keep the extension on the stroke's own path and weight so the letter
+  still reads as the same letter - do not add a straight connector bar.
+  Every gap above was measured with this font's own kerning applied, the
+  same way the cutting app shapes a name. Some of these pairs are pushed
+  apart by a positive kern; close them by extending the outline anyway.
+  The spacing is the design and the app depends on it, so do not buy the
+  overlap by re-kerning the pair.
+
+EDIT THE GLYPH THAT IS NAMED, NOT THE BASE LETTER
+  This font uses contextual alternates, so the glyph that actually draws
+  in a pair is often NOT the plain base glyph. The 'glyphs:' line above
+  gives the real shaped glyph names, in order, as the shaper chose them
+  (names like 'g.alt3' or 'bflourishrightring.eng3' are alternates).
+  Make each edit on the glyph named there. Editing the plain base glyph
+  instead changes something nobody sees and leaves the gap exactly as it
+  is. If one alternate is shared by several failing pairs, fixing it once
+  fixes all of them - check before editing the same outline twice.
+
+DO NOT CHANGE
+  - unitsPerEm
+  - cap height, x-height, ascender, descender, or any vertical metric
+  - advance widths and side bearings (the letters must not re-space)
+  - kerning values
+  - eyelet hole sizes, shapes or positions
+  - the set of alternate glyphs, or the feature rules that pick them
+    (calt, liga, rlig, kern) - the same alternate must still be chosen
+    for the same pair after the edit
+  - the colour layers / engrave lines
+  - ANY glyph not named in the list above
+
+HOW IT WILL BE CHECKED
+  Every pair is re-shaped and the two filled outlines are tested for
+  intersection. A pair passes only when the ink actually overlaps, and no
+  pair that passes today may start failing.

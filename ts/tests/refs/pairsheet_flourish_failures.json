@@ -1,0 +1,90 @@
+[
+ {
+  "context": "",
+  "detail": "ink does not touch at Dleftring|dflourishrightring",
+  "gap": 0.86693604353599,
+  "gap_em": 0.0004233086150078076,
+  "glyphs": [
+   "Dleftring",
+   "dflourishrightring"
+  ],
+  "group": "lower",
+  "left": "d",
+  "right": "d",
+  "span": null,
+  "status": "gap"
+ },
+ {
+  "context": "",
+  "detail": "ink does not touch at Dleftring|dflourishrightring",
+  "gap": 0.86693604353599,
+  "gap_em": 0.0004233086150078076,
+  "glyphs": [
+   "Dleftring",
+   "dflourishrightring"
+  ],
+  "group": "caplower",
+  "left": "D",
+  "right": "d",
+  "span": null,
+  "status": "gap"
+ },
+ {
+  "context": "ADda",
+  "detail": "ink does not touch at D|d (shaped inside 'ADda')",
+  "gap": 1.722223814050092,
+  "gap_em": 0.0008409295967041465,
+  "glyphs": [
+   "Aleftring",
+   "D",
+   "d",
+   "aflourishrightring"
+  ],
+  "group": "midcaplower",
+  "left": "D",
+  "right": "d",
+  "span": [
+   1,
+   2
+  ],
+  "status": "gap"
+ },
+ {
+  "context": "dda",
+  "detail": "ink does not touch at Dleftring|d (shaped inside 'dda')",
+  "gap": 1.722223814050288,
+  "gap_em": 0.0008409295967042421,
+  "glyphs": [
+   "Dleftring",
+   "d",
+   "aflourishrightring"
+  ],
+  "group": "firstlower",
+  "left": "d",
+  "right": "d",
+  "span": [
+   0,
+   1
+  ],
+  "status": "gap"
+ },
+ {
+  "context": "Dda",
+  "detail": "ink does not touch at Dleftring|d (shaped inside 'Dda')",
+  "gap": 1.722223814050288,
+  "gap_em": 0.0008409295967042421,
+  "glyphs": [
+   "Dleftring",
+   "d",
+   "aflourishrightring"
+  ],
+  "group": "firstcaplower",
+  "left": "D",
+  "right": "d",
+  "span": [
+   0,
+   1
+  ],
+  "status": "gap"
+ }
+]
