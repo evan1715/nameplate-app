@@ -538,13 +538,25 @@ export function brief(
         ? out.thickness.spots.filter((s: any) => s.meets_target === false).map((s: any) => s.rank)
         : null;
     }
-    // Deliberately NOT given `thicknessSamples`: the Python passes only the path and
-    // the font here, so the prompt re-surveys at the module default. They agree
-    // because brief's own default is that same number, and diverging would make the
-    // prompt quote a different survey than the table above it.
-    out.prompts.thin_areas = minThickness
-      ? TH.claudePrompt(doc, minThickness, fontPath, font)
-      : "";
+    // The Python calls TH.claude_prompt here, which runs the WHOLE survey again just
+    // to render it — the single most expensive thing this tool does, done twice for
+    // one answer. When the samples count is the module default (which is also
+    // brief's default) the second survey has identical inputs to the one just
+    // finished, so its result is identical too and the survey in hand can be
+    // rendered instead. Same bytes out, half the work.
+    //
+    // The fallback is not dead code: a caller that passed --samples something else
+    // gets the Python's exact behaviour, because TH.claude_prompt always re-surveys
+    // at the default and would then legitimately disagree with the table above it.
+    out.prompts.thin_areas = !minThickness
+      ? ""
+      : thicknessSamples === TH.MAX_SAMPLES
+        ? TH.asciiOnly(
+            TH.claudePromptFromSpots(
+              doc, minThickness, surv.spots, fontPath, surv.n_areas, surv.n_below_target,
+            ),
+          )
+        : TH.claudePrompt(doc, minThickness, fontPath, font);
   } catch (exc) {
     out.thickness = { error: excStr(exc) };
     out.prompts.thin_areas = "";
