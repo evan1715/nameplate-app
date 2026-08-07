@@ -48,6 +48,7 @@ passes are ported line for line from `_pathops.pyx`.
 | `tests/fontcheck.ts` (reports and repair prompts, character for character) | — | 24/24 |
 | `tests/pairsheet.ts` (all 5,408 cells per font, plus the prompts) | — | 34/34 |
 | `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 15/15 |
+| `tests/viewmodel.ts` (the window's labels, against the Qt selftest's own strings) | — | 24/24 |
 | `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 61/61 |
 
 Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
@@ -90,6 +91,7 @@ src/thickness.ts  the thin-spot survey, its report and its paste-ready prompt
 src/fontcheck.ts  what is WRONG with a font, and the repair order for it
 src/pairsheet.ts  every two-letter join a font can make, measured
 src/brief.ts      one pass over a font, judged against targets; the exit code IS the answer
+src/viewmodel.ts  everything the window shows, computed with no window
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
 
@@ -412,3 +414,41 @@ Three things this one taught:
 * **`nameplate_brief.py` forced the port order.** It calls `analyse_pairs`, and its
   captured output carries real pair data (`tested: 5408`), so it could not match the
   baseline until `pairsheet.ts` existed. Pairsheet went first for that reason.
+
+## The GUI: the data layer first
+
+`nameplate_gui.py` is 4,404 lines of PySide6 — widgets, three threads and a
+custom-painted canvas. Reading its `--selftest` closely changes what the port looks
+like, though: of its checks, almost all assert on **data and label text** — 
+`ADAM — 4.069 × 1.020 in`, `6 cut contours, 10 engrave lines`, which overlays are
+on, what the eyelet table reads, which junction broke — and only two count pixels in
+a Qt-rendered image.
+
+So the seam between "the app" and "the toolkit" sits exactly there, and that is where
+this port is split, which is also the backend/frontend split asked for:
+
+* **`src/viewmodel.ts`** owns everything up to and including the strings: the font
+  list, the detail line under the picker, the preview build, lead-ins, the thin-area
+  summary, the eyelet table cells, the target overlays and the piece/junction
+  diagnosis. Every path it hands out is in doc units from the artwork's bottom-left,
+  exactly as the Qt worker prepared them, so a renderer only has to flip Y and scale.
+* **The front end** renders those strings and draws those polylines. It holds no
+  measurement logic.
+
+`tests/viewmodel.ts` holds the data layer to the strings the Qt window's own selftest
+recorded — **24/24** — with no browser, no canvas and no display. What it deliberately
+does not cover is those two pixel-counting checks: a different rasteriser paints the
+same geometry and counts differently, and pretending otherwise would be a test that
+asserts the wrong thing.
+
+Two of these checks were wrong when first written, in the direction worth noting —
+they *expected* the wrong value and would have "passed" a broken module if the module
+had agreed with them:
+
+* the cut-only check quoted `7 cut contours, 0 engrave lines`, which the selftest
+  produced from the name **"Carrie"**, not from ADAM;
+* the falls-apart check used `A M` on Merriweather, assuming a non-script font must
+  break — but Merriweather Cut3's letters overlap by design and it cuts as one plate.
+  It now uses `Dda` on the Flourish font, a junction `tests/pairsheet.ts`
+  independently proves is a GAP (`Dleftring -> d`), and asserts both the piece count
+  and the junction named.
