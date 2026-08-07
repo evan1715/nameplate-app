@@ -9,7 +9,7 @@ not re-derived: it is reproduced, and the tests prove it against the same
 ```
 cd ts
 npm install
-npm test                       # canonicalisation + parity + acceptance + export + thickness
+npm test                       # canonicalisation, parity, acceptance, export, fontcheck, thickness
 npm run cli -- --font ../fonts/MerriweatherCut3Black-Engrave-v2.ttf \
     --height 1 --unit in --basis cap --format both --mode per-name --out out ADAM
 ```
@@ -45,7 +45,8 @@ passes are ported line for line from `_pathops.pyx`.
 | `export_tests.py` / `tests/export.ts` | 31/31 | 31/31 |
 | `tests/parity.ts` (new: TS vs Python, value by value) | — | 68/68 |
 | `tests/thickness.ts` (reports compared character for character) | — | 61/61 |
-| `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 58/58 |
+| `tests/fontcheck.ts` (reports and repair prompts, character for character) | — | 24/24 |
+| `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 61/61 |
 
 Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
 Node 22.18+/24 strips TypeScript types natively. That is why the sources import
@@ -83,6 +84,8 @@ src/leadin.ts     laser lead-in lines, merged into their contours
 src/exporters.ts  the SHIPPING exporter: cut order + per-name groups/layers
 src/eyelets.ts    measures the hanging eyelet (ID / OD / wall)
 src/cli.ts        batch export without a GUI
+src/thickness.ts  the thin-spot survey, its report and its paste-ready prompt
+src/fontcheck.ts  what is WRONG with a font, and the repair order for it
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
 
@@ -98,9 +101,9 @@ tests/            the ported suites, plus the TS-vs-Python parity suite
 | `make_assets.py` | **not converted** | Generates the `.ico` and the splash PNG for the Qt build. Both are desktop-window artefacts with nothing to serve here. |
 
 ```
-npx tsx scripts/build_all.ts        # tests, bundle, archive
-npx tsx scripts/verify_release.ts   # drive the archive from a raw extraction
-npx tsx scripts/verify_install.ts   # prove package.json alone is enough
+node scripts/build_all.ts        # tests, bundle, archive
+node scripts/verify_release.ts   # drive the archive from a raw extraction
+node scripts/verify_install.ts   # prove package.json alone is enough
 ```
 
 ## What is NOT converted yet
@@ -116,17 +119,13 @@ shipping path are done and verified, and the measurement/reporting tools are not
 | `nameplate_export.py` | 267 | ✅ `src/exporters.ts` — byte-identical output |
 | `nameplate_eyelets.py` | 538 | ✅ `src/eyelets.ts` |
 | `nameplate_cli.py` | 274 | ✅ `src/cli.ts` |
-| `nameplate_thickness.py` | 1502 | 🟡 `src/thickness.ts` — ported, 50/56 parity (see below) |
-| `nameplate_fontcheck.py` | 1896 | 🟡 `src/fontcheck.ts` — shaping/area layer only; detector, join scan and report writer still to do |
+| `nameplate_thickness.py` | 1502 | ✅ `src/thickness.ts` — reports byte-identical (see below) |
+| `nameplate_fontcheck.py` | 1896 | ✅ `src/fontcheck.ts` — reports and repair prompts byte-identical |
 | `nameplate_pairsheet.py` | 1162 | ⬜ not converted — every letter pair, every position |
 | `nameplate_brief.py` | 730 | ⬜ not converted — the CLI an AI agent drives |
 | `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
 | `regression_tests.py` | 483 | ⬜ not converted — one test per fixed bug |
 | `stress_test.py` | 346 | ⬜ not converted |
-
-`src/cli.ts` already has the hook for `fontcheck`: it imports `./fontcheck.js`
-lazily and falls back to reporting the parse error on its own, so dropping in
-`src/fontcheck.ts` with `checkFont(path, opts).text()` needs no other change.
 
 **The GUI is a framework port, not a language port.** `nameplate_gui.py` is 4,404
 lines of PySide6 widgets, three threads and a custom-painted preview canvas. There
@@ -271,3 +270,65 @@ prints `python nameplate_thickness.py ...`, which would send a reader to a file
 this tree no longer ships, so the TypeScript prints `node src/thickness.ts ...`.
 The test normalises exactly that one token and still requires every argument after
 it to match.
+
+## Fontcheck: ported, byte-identical on the first run
+
+`src/fontcheck.ts` reproduces the defect detector, the winding check, the
+letter-pair join scan, the human report and the paste-ready repair prompt.
+`tests/fontcheck.ts` holds all of it to the Python's captured output, compared
+**character for character** with no tolerance and nothing excluded. **24/24**,
+across all three shipped fonts — including the 9.5 KB Flourish repair prompt with
+its junction coordinates, glyph IDs and contextual-alternate reasoning.
+
+Two things made that possible, and both were bugs found on the way.
+
+### textwrap was not what it looked like
+
+Every line of prose in these reports goes through Python's `textwrap.fill`, and
+`src/pyformat.ts` had a hand-rolled greedy wrapper with a comment explaining that
+it deliberately did *not* split long words, "because a glyph name like
+`eflourishrightring` is one word and splitting it mid-name would make it
+unsearchable."
+
+That was wrong. Python's defaults are `break_long_words=True` and
+`break_on_hyphens=True`: it *does* cut a word longer than the line, and it splits
+hyphenated words into separate chunks so a line may legally end on a hyphen. A
+repair prompt is full of long glyph names and hyphenated compounds, so the
+disagreement would have landed on exactly the lines a font editor acts on.
+
+`wrapText` is now a real port of `_wrap_chunks` and `_handle_long_word`, including
+`wordsep_re`. It is differential-tested against Python across **3,828 cases** —
+828 drawn from the real reference files plus 3,000 fuzzed — and agrees on every
+one. The last disagreement was a single trailing space: when a line is exactly
+full, `_handle_long_word` appends an *empty* string, and Python's single
+trailing-whitespace drop removes that empty string instead of the space before it.
+Skipping the empty append strips the space. That one is now commented in place,
+because it looks like dead code and is not.
+
+### A CLI guard that fired inside the test
+
+`src/cli.ts` decided whether it was the entry point with
+`import.meta.url.endsWith(path.basename(process.argv[1]))`. That is true for *any*
+file with the same basename — so `tests/fontcheck.ts` importing `src/fontcheck.ts`
+made the module believe it had been run directly. The first test run printed the
+CLI usage text and exited 0 without asserting anything. Both files now compare a
+resolved `file://` URL.
+
+### Notes on the port
+
+* Where the Python reaches for fontTools' parsed tables, this reads the few values
+  it needs straight off the table bytes (`Font.rawTable`, `postFormat`,
+  `colrVersion`). The questions being asked are "is this table PRESENT" and "what
+  version is it", and a parser that helpfully synthesises a default answers both
+  wrongly.
+* Glyph names agree exactly. Both fonts that report `post` format 3.0 are CFF, and
+  fontTools and opentype.js both take the real names from the CFF charset — so
+  `Dleftring` really is glyph ID 271 on both sides, which is what the prompt tells
+  an editor to open.
+* `geom.ts` gained `nearestPoints` (jsts `DistanceOp`), returning the pair in
+  shapely's order: the point on `a` first. The instruction depends on that order,
+  because it says which glyph's ink stops where and which glyph's ink it must reach.
+* The join scan is bounded by wall clock, so the reference was captured with a
+  600-second budget against a scan that finishes in about 16 — every combination is
+  tested on both sides and nothing is timing-dependent. All 8,788 combinations, on
+  every font.

@@ -228,6 +228,47 @@ export class Font {
     return this.ot.numGlyphs;
   }
 
+  /**
+   * The raw bytes of a table, or null when the font has no such table.
+   *
+   * fontcheck asks the questions a parsed view cannot answer honestly: whether a
+   * `glyf` or `CFF ` table is PRESENT at all, and the version numbers in `post`
+   * and `COLR`. A parser that helpfully synthesises a default would report a font
+   * as fine when the table it needs is missing, so the table directory is read
+   * directly. An empty table and an absent one are both reported as absent, which
+   * is what `"glyf" in tt` means in fontTools.
+   */
+  rawTable(tag: string): Uint8Array | null {
+    try {
+      const t = this.face.referenceTable(tag);
+      return t && t.length ? t : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * `post` table format as fontTools reports it: 1, 2, 2.5, 3 — or null.
+   *
+   * Format 3.0 is the one that matters: the font then carries no glyph names at
+   * all and every tool invents its own placeholders, so a report has to address
+   * glyphs by id instead.
+   */
+  get postFormat(): number | null {
+    const t = this.rawTable("post");
+    if (!t || t.length < 4) return null;
+    const v = new DataView(t.buffer, t.byteOffset, t.byteLength);
+    // a 16.16 fixed-point version
+    return v.getUint16(0) + v.getUint16(2) / 65536;
+  }
+
+  /** `COLR` table version, or null when there is no colour table. */
+  get colrVersion(): number | null {
+    const t = this.rawTable("COLR");
+    if (!t || t.length < 2) return null;
+    return new DataView(t.buffer, t.byteOffset, t.byteLength).getUint16(0);
+  }
+
   /** Glyph name for an id, for reports. */
   glyphName(gid: number): string {
     return this.glyphOrder[gid] ?? `gid${gid}`;

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "TypeScript port of Sean's Font Prototyping Friend — nameplate cut-file engine",
   "scripts": {
-    "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:thickness",
+    "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:fontcheck && npm run test:thickness",
+    "test:fontcheck": "node tests/fontcheck.ts",
     "test:canonicalisation": "node tests/canonicalisation.ts",
     "test:parity": "node tests/parity.ts",
     "test:acceptance": "node tests/acceptance.ts",

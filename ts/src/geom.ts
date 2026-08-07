@@ -408,6 +408,25 @@ export class SpatialIndex {
   }
 }
 
+/**
+ * `shapely.ops.nearest_points(a, b)` — the closest pair, one point on each.
+ *
+ * Returned in shapely's order: the point on `a` first. A font-repair instruction
+ * depends on that order, because it tells an editor which glyph's ink stops where
+ * and which glyph's ink it has to reach.
+ */
+export function nearestPoints(a: Geometry, b: Geometry): [Point, Point] | null {
+  try {
+    const cs = jsts.operation.distance.DistanceOp.nearestPoints(a, b);
+    return [
+      [cs[0].x, cs[0].y],
+      [cs[1].x, cs[1].y],
+    ];
+  } catch {
+    return null;
+  }
+}
+
 /** `line.project(point)` then `line.interpolate(...)` — the perpendicular foot. */
 export function nearestPointOnLine(line: Geometry, p: Geometry): Point | null {
   try {

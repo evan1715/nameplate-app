@@ -162,14 +162,39 @@ export function padRight(s: string, width: number): string {
 }
 
 /**
+ * Python's `textwrap.wordsep_re`, translated.
+ *
+ * This is the part that makes a naive wrapper disagree with textwrap. It does not
+ * split on whitespace: it splits into whitespace runs, em-dash runs, and words
+ * that may themselves be split AFTER an internal hyphen — so "cut-only" is two
+ * chunks, "cut-" and "only", and a line may legally end on the hyphen.
+ *
+ * Python's `\w` is Unicode-aware and JavaScript's is ASCII-only. That difference
+ * cannot bite here: every string that reaches this function has already been put
+ * through the ASCII flattening the prompts are contractually held to.
+ */
+const WORDSEP_RE = new RegExp(
+  "([\\t\\n\\v\\f\\r ]+" + // any whitespace
+    "|(?<=[\\w!\"'&.,?])-{2,}(?=\\w)" + // em-dash between words
+    "|[^\\t\\n\\v\\f\\r ]+?(?:" + // word, possibly hyphenated
+    "-(?:(?<=[^\\d\\W]{2}-)|(?<=[^\\d\\W]-[^\\d\\W]-))(?=[^\\d\\W]-?[^\\d\\W])" +
+    "|(?=[\\t\\n\\v\\f\\r ]|$)" +
+    "|(?<=[\\w!\"'&.,?])(?=-{2,}\\w)" +
+    "))",
+);
+
+/**
  * Python's `textwrap.wrap(text, width, initial_indent, subsequent_indent)`.
  *
- * Greedy, breaking only on whitespace, with the indent counted inside the width —
- * which is what makes the wrapped notes in a report line up under their label.
- * Long single words are left to overflow rather than split, matching textwrap's
- * default `break_long_words=False`… except that Python's default is True. It is
- * set explicitly here because a glyph name like 'eflourishrightring' is one word
- * and splitting it mid-name would make it unsearchable.
+ * Greedy, with the indent counted inside the width — which is what makes the
+ * wrapped notes in a report line up under their label.
+ *
+ * Ported against textwrap's real defaults, `break_long_words=True` and
+ * `break_on_hyphens=True`, rather than the more obvious "split on spaces". Those
+ * defaults are not cosmetic: a word longer than the line is CUT mid-word by
+ * Python, and a glyph name like `eflourishrightring` in a font-repair prompt is
+ * exactly such a word. Refusing to split it looks tidier and disagrees with the
+ * Python on the one line a font editor is meant to act on.
  */
 export function wrapText(
   text: string,
@@ -177,21 +202,79 @@ export function wrapText(
   initialIndent = "",
   subsequentIndent = "",
 ): string[] {
-  const words = text.split(/\s+/).filter((w) => w);
-  if (words.length === 0) return [];
+  // textwrap splits, then drops the empty strings the capturing group leaves.
+  let chunks = text.split(WORDSEP_RE).filter((c) => c);
+  if (chunks.length === 0) return [];
+  // `_wrap_chunks` consumes from the end, so the list is reversed once up front.
+  chunks.reverse();
+
   const lines: string[] = [];
-  let indent = initialIndent;
-  let cur = "";
-  for (const word of words) {
-    const candidate = cur ? `${cur} ${word}` : word;
-    if (indent.length + candidate.length <= width || cur === "") {
-      cur = candidate;
-    } else {
-      lines.push(indent + cur);
-      indent = subsequentIndent;
-      cur = word;
+  const isSpace = (s: string) => /^[\t\n\v\f\r ]+$/.test(s);
+
+  while (chunks.length) {
+    const indent = lines.length ? subsequentIndent : initialIndent;
+    const room = width - indent.length;
+    // Non-progress guard. When the indent is at least as wide as the line there
+    // is no room for even one character, and the long-word handler can hand back
+    // the chunk it was given; Python spins forever on that input. `_para` never
+    // produces it — the widest indent in this codebase is 22 against a width of
+    // 73 — so the guard costs nothing on real input and turns a hang into a
+    // truncated line on absurd input.
+    const before = chunks.length + chunks.reduce((n, c) => n + c.length, 0);
+
+    // drop_whitespace: a run of spaces never starts a continuation line
+    if (lines.length && chunks.length && isSpace(chunks[chunks.length - 1])) {
+      chunks.pop();
+      if (!chunks.length) break;
     }
+
+    const cur: string[] = [];
+    let curLen = 0;
+    while (chunks.length) {
+      const l = chunks[chunks.length - 1].length;
+      if (curLen + l > room) break;
+      cur.push(chunks.pop() as string);
+      curLen += l;
+    }
+
+    // _handle_long_word: what is left does not fit on ANY line, so cut it
+    if (chunks.length && chunks[chunks.length - 1].length > room) {
+      const spaceLeft = room < 1 ? 1 : room - curLen;
+      const chunk = chunks[chunks.length - 1];
+      let end = spaceLeft;
+      // break_on_hyphens: prefer to cut just after an existing hyphen
+      if (chunk.length > spaceLeft) {
+        const hyphen = chunk.lastIndexOf("-", spaceLeft - 1);
+        if (hyphen > 0 && [...chunk.slice(0, hyphen)].some((c) => c !== "-")) {
+          end = hyphen + 1;
+        }
+      }
+      // Appended UNCONDITIONALLY, exactly as Python does — including when `end`
+      // is 0 and the slice is empty. That empty string is load-bearing: when the
+      // line is already exactly full it becomes the last element, so the single
+      // trailing-whitespace drop below removes IT and leaves the real space
+      // before it in place. Skipping the empty append strips that space instead,
+      // which is the only way this function disagreed with textwrap across 828
+      // differential cases.
+      cur.push(chunk.slice(0, end));
+      chunks[chunks.length - 1] = chunk.slice(end);
+      curLen = cur.reduce((n, c) => n + c.length, 0);
+    }
+
+    // drop_whitespace: and never ends on one either
+    if (cur.length && isSpace(cur[cur.length - 1])) {
+      curLen -= cur[cur.length - 1].length;
+      cur.pop();
+    }
+
+    if (cur.length) lines.push(indent + cur.join(""));
+
+    // textwrap's _split never yields empty chunks; the long-word cut above can
+    // leave one behind, so restore the invariant it relies on.
+    while (chunks.length && chunks[chunks.length - 1] === "") chunks.pop();
+
+    const after = chunks.length + chunks.reduce((n, c) => n + c.length, 0);
+    if (after >= before && !cur.length) break;
   }
-  if (cur) lines.push(indent + cur);
   return lines;
 }
