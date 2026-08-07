@@ -324,6 +324,19 @@ export function prep(g: Geometry): {
     return index;
   };
 
+  // The same idea for `intersects`, which has no point-in-area shortcut: split the
+  // geometry into its components once and index their envelopes. Built lazily for
+  // the same reason, and skipped entirely for a single-part geometry, where there
+  // is nothing to prune.
+  let parts: { items: Geometry[]; index: SpatialIndex } | null | undefined;
+  const components = (): { items: Geometry[]; index: SpatialIndex } | null => {
+    if (parts === undefined) {
+      const items = geoms(g).filter((x) => !isEmpty(x));
+      parts = items.length > 1 ? { items, index: new SpatialIndex(items) } : null;
+    }
+    return parts;
+  };
+
   return {
     contains(p: Geometry) {
       try {
@@ -336,9 +349,28 @@ export function prep(g: Geometry): {
         return false;
       }
     },
+    /**
+     * `intersects`, with the components that cannot reach `p` pruned away.
+     *
+     * This was the last unindexed predicate, and on a forty-name sheet it was 81%
+     * of the lead-in pass: every candidate entry was being tested against the
+     * buffered material of the WHOLE sheet, thirty-nine names of which were
+     * nowhere near it.
+     *
+     * Exact for any argument, unlike `contains`: a geometry intersects a
+     * collection exactly when it intersects at least one member, and a member
+     * whose envelope misses `p` cannot be that member. `contains` gets no such
+     * treatment on purpose — a shape can sit inside a collection's union without
+     * sitting inside any single member — so it keeps the whole-geometry call.
+     */
     intersects(p: Geometry) {
       try {
-        return g.intersects(p);
+        const parts = components();
+        if (!parts) return g.intersects(p);
+        for (const i of parts.index.withinDistance(p, 0)) {
+          if (parts.items[i].intersects(p)) return true;
+        }
+        return false;
       } catch {
         return false;
       }
@@ -457,5 +489,137 @@ export function bufferMitre(g: Geometry, d: number, mitreLimit: number): Geometr
   } catch {
     // a mitred buffer is a presentation choice, not a correctness one
     return buffer(g, d);
+  }
+}
+
+/**
+ * A boundary pre-cut into segments and indexed, for the two queries the thickness
+ * survey makes thousands of times against the SAME geometry.
+ *
+ * WHY THIS EXISTS
+ *   `crossWidth` casts a ray at every sample point and asks the material's boundary
+ *   two questions: where does this ray cross you, and how far are you from this
+ *   point. Both were going through `Geometry.intersection` / `Geometry.distance`,
+ *   which walk every segment of the boundary every time. On a long script name the
+ *   boundary has thousands of segments, and a CPU profile put 69% of a 345-second
+ *   survey inside jsts' overlay machinery for exactly that reason. The Python is not
+ *   cleverer here — GEOS simply indexes internally, and jsts does not.
+ *
+ * WHY THE ANSWERS ARE STILL IDENTICAL
+ *   The index only PRUNES. Every candidate that survives is handed to jsts' own
+ *   `RobustLineIntersector` and `Distance.pointToSegment`, so the arithmetic that
+ *   produces a crossing point or a distance is the same code that produced it
+ *   before — not a re-derivation. Segments the index rejects are ones whose envelope
+ *   cannot reach the query, so they could not have contributed.
+ *
+ *   `crossings` returns points in index order rather than in overlay order. That is
+ *   safe here because its one caller turns them into distances and sorts, and it is
+ *   documented so that stays true.
+ */
+export class IndexedBoundary {
+  private tree: any;
+  private segs: { a: any; b: any }[] = [];
+  private li = new jsts.algorithm.RobustLineIntersector();
+
+  constructor(boundary: Geometry) {
+    this.tree = new jsts.index.strtree.STRtree();
+    for (const g of geoms(boundary)) {
+      let cs: any[];
+      try {
+        cs = g.getCoordinates();
+      } catch {
+        continue;
+      }
+      for (let i = 0; i + 1 < cs.length; i++) {
+        const a = cs[i];
+        const b = cs[i + 1];
+        if (a.x === b.x && a.y === b.y) continue; // a zero-length segment cannot be hit
+        const idx = this.segs.length;
+        this.segs.push({ a, b });
+        const env = new jsts.geom.Envelope(a, b);
+        this.tree.insert(env, idx);
+      }
+    }
+    // STRtree builds lazily on first query; force it once so the cost is not
+    // attributed to whichever sample happens to ask first.
+    try {
+      this.tree.query(new jsts.geom.Envelope(0, 0, 0, 0));
+    } catch {
+      /* an empty tree is fine */
+    }
+  }
+
+  /** Candidate segment indices whose envelope reaches `env`. */
+  private candidates(env: any): number[] {
+    try {
+      const hits = this.tree.query(env);
+      const out: number[] = [];
+      const n = hits.size ? hits.size() : hits.length;
+      for (let i = 0; i < n; i++) out.push(hits.get ? hits.get(i) : hits[i]);
+      return out;
+    } catch {
+      return this.segs.map((_s, i) => i);
+    }
+  }
+
+  /**
+   * Every point where the segment p→q crosses this boundary.
+   *
+   * Order is the index's, not the overlay's — see the class note.
+   */
+  crossings(p: Point, q: Point): Point[] {
+    const C = jsts.geom.Coordinate;
+    const pa = new C(p[0], p[1]);
+    const pb = new C(q[0], q[1]);
+    const env = new jsts.geom.Envelope(pa, pb);
+    const out: Point[] = [];
+    for (const i of this.candidates(env)) {
+      const s = this.segs[i];
+      this.li.computeIntersection(pa, pb, s.a, s.b);
+      if (!this.li.hasIntersection()) continue;
+      const n = this.li.getIntersectionNum();
+      for (let k = 0; k < n; k++) {
+        const c = this.li.getIntersection(k);
+        out.push([c.x, c.y]);
+      }
+    }
+    return out;
+  }
+
+  /**
+   * Shortest distance from a point to this boundary.
+   *
+   * Grows the query window until it holds a candidate, then keeps growing while the
+   * best distance found could still be beaten by something just outside — otherwise
+   * a nearest segment lying diagonally outside the first window would be missed.
+   */
+  distanceTo(p: Point): number {
+    const C = jsts.geom.Coordinate;
+    const pt = new C(p[0], p[1]);
+    if (!this.segs.length) return Infinity;
+    let reach = 0;
+    // seed the reach from the tree's own extent so the first query is not absurd
+    try {
+      const root = this.tree.getRoot?.().getBounds?.();
+      if (root) reach = Math.max(root.getWidth(), root.getHeight()) / 64 || 1;
+    } catch {
+      reach = 1;
+    }
+    if (!(reach > 0)) reach = 1;
+
+    let best = Infinity;
+    for (let guard = 0; guard < 40; guard++) {
+      const env = new jsts.geom.Envelope(pt.x - reach, pt.x + reach, pt.y - reach, pt.y + reach);
+      for (const i of this.candidates(env)) {
+        const s = this.segs[i];
+        const d = jsts.algorithm.Distance.pointToSegment(pt, s.a, s.b);
+        if (d < best) best = d;
+      }
+      // Safe to stop only when the whole window is proven: anything outside it is at
+      // least `reach` away, so a best inside it cannot be beaten.
+      if (best <= reach) return best;
+      reach *= 2;
+    }
+    return best;
   }
 }

@@ -49,6 +49,7 @@ passes are ported line for line from `_pathops.pyx`.
 | `tests/pairsheet.ts` (all 5,408 cells per font, plus the prompts) | — | 34/34 |
 | `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 15/15 |
 | `tests/viewmodel.ts` (the window's labels, against the Qt selftest's own strings) | — | 24/24 |
+| `regression_tests.py` / `tests/regression.ts` (one test per fixed defect) | 27/27 | 27/27 |
 | `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 61/61 |
 
 Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
@@ -130,7 +131,7 @@ shipping path are done and verified, and the measurement/reporting tools are not
 | `nameplate_pairsheet.py` | 1162 | ✅ `src/pairsheet.ts` — analysis byte-identical; the Qt contact sheet goes with the GUI |
 | `nameplate_brief.py` | 730 | ✅ `src/brief.ts` — exit codes and markdown identical; JSON exact but for last-bit floats |
 | `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
-| `regression_tests.py` | 483 | ⬜ not converted — one test per fixed bug |
+| `regression_tests.py` | 483 | ✅ `tests/regression.ts` — 27/27, same reference numbers |
 | `stress_test.py` | 346 | ⬜ not converted |
 
 **The GUI is a framework port, not a language port.** `nameplate_gui.py` is 4,404
@@ -452,3 +453,47 @@ had agreed with them:
   It now uses `Dda` on the Flourish font, a junction `tests/pairsheet.ts`
   independently proves is a GAP (`Dleftring -> d`), and asserts both the piece count
   and the junction named.
+
+## The two performance defects the regression suite caught
+
+Porting `regression_tests.py` was worth it immediately: 25 of its 27 checks passed
+on the first run and the two that failed were **real**, not test artefacts. Both are
+wall-clock budgets the Python meets comfortably and the TypeScript blew through:
+
+| check | budget | Python | TypeScript, before |
+|---|---|---|---|
+| #4b — 40-name sheet with lead-ins | 60s | 10.0s | **396.9s** |
+| #10d — long script name's thickness survey | 30s | 6.9s | **453.8s** |
+
+The cause is the same in both, and it is not the port being naive: **GEOS indexes
+internally and jsts does not.** Three queries were walking every segment or every
+component of a large geometry, every time they were asked.
+
+CPU profiles found each one, and each guess made without a profile was wrong:
+
+1. **The thickness ray cast.** 69% of a 345-second survey sat in jsts' overlay
+   machinery, intersecting each sample's ray against the *entire* boundary.
+   `IndexedBoundary` cuts the boundary into segments once and indexes them; the
+   surviving candidates go through jsts' own `RobustLineIntersector` and
+   `Distance.pointToSegment`, so the arithmetic is the same code as before — the
+   index only prunes. Verified **500/500 bit-identical** on both queries, 143× faster
+   on crossings and 9× on distance. **453.8s → 2.4s**, now faster than the Python.
+
+2. **`prep().intersects`.** `contains` had already been given a point-in-area index;
+   `intersects` had not, and it turned out to be **81%** of the lead-in pass — every
+   candidate entry was tested against the buffered material of the whole sheet,
+   thirty-nine names of which were nowhere near it. Splitting the geometry into
+   components and pruning by envelope is exact for `intersects` (a geometry meets a
+   collection exactly when it meets one member). `contains` deliberately gets no such
+   treatment: a shape can sit inside a collection's union without sitting inside any
+   single member. **396.9s → 25.7s.**
+
+3. A guess that did *not* pay off, kept because it is still correct and cheap: a
+   fast rejection path in `Void.lengthOfLineInside`, proving "this lead-in never
+   enters the material" from the boundary index instead of an overlay. Worth ~8%
+   on its own; the real win was (2).
+
+Every suite was re-run afterwards and **not one number moved** — canonicalisation
+61/61, parity 68/68, acceptance 53/53, export 31/31, fontcheck 24/24, pairsheet
+34/34, viewmodel 24/24, thickness 61/61, brief 15/15, regression 27/27. The thickness
+suite also went from about six minutes to well under one.

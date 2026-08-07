@@ -156,7 +156,23 @@ export const THICK_TOL = 1.5;
  * nearer the gate is a taper into a junction, which you may reasonably choose to
  * leave alone. Judgement belongs to the reader, with the number in front of them.
  */
-export const VERTEX_CEILING = 1.25;
+export let VERTEX_CEILING = 1.25;
+
+/**
+ * Set the vertex-pass ceiling. Exists for ONE regression test.
+ *
+ * `regression_tests.py` proves the vertex-anchored pass is what finds ADAM's thin
+ * web, by disabling it and showing the reading jumps back to the old over-report. It
+ * does that by assigning `TH.VERTEX_CEILING = 0.0`, which Python allows on any
+ * module. An ES module export cannot be assigned from outside, so the same seam has
+ * to be opened deliberately rather than by accident.
+ *
+ * Nothing in the app calls this. If it is ever called outside a test, the survey
+ * silently stops finding short necks — the exact defect that test exists to catch.
+ */
+export function setVertexCeiling(v: number): void {
+  VERTEX_CEILING = v;
+}
 /** Angular buckets: one per DIRECTION, not per distance. */
 export const VERTEX_SECTORS = 16;
 /** Ignore segments this close along the same ring. */
@@ -180,6 +196,17 @@ class Solid {
   readonly prep: ReturnType<typeof G.prep>;
   readonly boundary: G.Geometry;
   /**
+   * The same boundary, pre-cut into segments and indexed.
+   *
+   * crossWidth asks the boundary where a ray crosses it and how far it is from a
+   * point, once per sample, thousands of times over. Unindexed those walk every
+   * segment every time; a CPU profile put 69% of a 345-second survey inside jsts'
+   * overlay machinery doing exactly that. The index only prunes — the surviving
+   * candidates go through jsts' own intersector and distance function — so the
+   * answers are bit-identical, verified 500/500 on both queries.
+   */
+  readonly index: G.IndexedBoundary;
+  /**
    * Absolute slack used for "did the ray really leave the material, or is this the
    * point it started from?".
    *
@@ -198,6 +225,7 @@ class Solid {
     this.material = material;
     this.prep = G.prep(material);
     this.boundary = G.boundary(material);
+    this.index = new G.IndexedBoundary(this.boundary);
     this.eps = Math.max(span * 1e-5, 1e-12);
   }
 }
@@ -460,20 +488,18 @@ function crossWidth(
   }
 
   const far: Point = [p[0] + n[0] * reach, p[1] + n[1] * reach];
-  let hit: G.Geometry;
+  let hits: Point[];
   try {
-    hit = G.intersection(solid.boundary, G.lineString([p, far]));
+    hits = solid.index.crossings(p, far);
   } catch {
     return null; // a self-touching ring here; skip it
   }
-  if (G.isEmpty(hit)) return null;
+  if (hits.length === 0) return null;
 
   const ds: number[] = [];
-  for (const g of G.geoms(hit)) {
-    for (const c of G.coords(g)) {
-      const d = Math.hypot(c[0] - p[0], c[1] - p[1]);
-      if (d > eps * 4) ds.push(d); // not the point we started from
-    }
+  for (const c of hits) {
+    const d = Math.hypot(c[0] - p[0], c[1] - p[1]);
+    if (d > eps * 4) ds.push(d); // not the point we started from
   }
   if (ds.length === 0) return null;
 
@@ -483,10 +509,9 @@ function crossWidth(
     if (solid.prep.contains(G.point(p[0] + n[0] * (d + eps), p[1] + n[1] * (d + eps)))) {
       continue;
     }
-    const mid = G.point(p[0] + (n[0] * d) / 2, p[1] + (n[1] * d) / 2);
     let room: number;
     try {
-      room = G.distance(solid.boundary, mid);
+      room = solid.index.distanceTo([p[0] + (n[0] * d) / 2, p[1] + (n[1] * d) / 2]);
     } catch {
       return null;
     }

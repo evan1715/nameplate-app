@@ -249,10 +249,95 @@ class Void {
   readonly material: G.Geometry;
   readonly prepMaterial: ReturnType<typeof G.prep>;
   private cache = new Map<number, { geom: G.Geometry; prep: ReturnType<typeof G.prep> }>();
+  /**
+   * The material's component polygons, indexed by envelope.
+   *
+   * On a single name this buys little. On a forty-name sheet it is the difference
+   * between 388 seconds and a few: every lead-in candidate was being tested against
+   * the ENTIRE sheet's material, so placing an entry near "Name007" paid to
+   * intersect a segment against the other thirty-nine names as well.
+   *
+   * Prune-only, so the answers do not move. The pieces are the components of a
+   * unioned MultiPolygon and therefore disjoint, which is what makes summing a
+   * length across the surviving candidates the same number as measuring it against
+   * the whole; and a component whose envelope misses the query could not have
+   * contributed to it.
+   */
+  private readonly pieces: G.Geometry[];
+  private readonly index: G.SpatialIndex;
+  /** The material's outline, segment-indexed — see {@link lengthOfLineInside}. */
+  private readonly edge: G.IndexedBoundary;
 
   constructor(material: G.Geometry) {
     this.material = material;
     this.prepMaterial = G.prep(material);
+    this.pieces = G.geoms(material).filter((g) => !G.isEmpty(g));
+    this.index = new G.SpatialIndex(this.pieces);
+    this.edge = new G.IndexedBoundary(G.boundary(material));
+  }
+
+  /**
+   * `length(material ∩ line)` for an open polyline, with the common case answered
+   * without an overlay at all.
+   *
+   * A lead-in that does its job approaches from clear space and stops at the
+   * surface, so almost every candidate tested here lies entirely OUTSIDE the
+   * material and the honest answer is zero. Proving that needs no overlay: if no
+   * segment of the line crosses the material's outline, and the line does not start
+   * inside it, then the line never enters it. Only lines that do touch pay for the
+   * exact measure — and that path is the original computation, unchanged, so the
+   * number this returns is the number it always returned.
+   *
+   * The overlay was costing 388 seconds on a forty-name sheet, almost all of it
+   * spent proving zeroes.
+   */
+  lengthOfLineInside(line: Point[]): number {
+    let touches = false;
+    for (let i = 0; i + 1 < line.length && !touches; i++) {
+      if (this.edge.crossings(line[i], line[i + 1]).length) touches = true;
+    }
+    if (!touches && line.length && !this.containsPoint(G.point(line[0][0], line[0][1]))) {
+      return 0;
+    }
+    return this.lengthInside(G.lineString(line));
+  }
+
+  /** `length(material ∩ g)`, over only the components that can meet `g`. */
+  lengthInside(g: G.Geometry): number {
+    let total = 0;
+    for (const i of this.index.withinDistance(g, 0)) {
+      total += G.length(G.intersection(this.pieces[i], g));
+    }
+    return total;
+  }
+
+  /** `material.contains(point)`, asking only the component that could hold it. */
+  containsPoint(p: G.Geometry): boolean {
+    for (const i of this.index.withinDistance(p, 0)) {
+      if (G.contains(this.pieces[i], p)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * `distance(g, material)`, growing the query window until the best answer found
+   * is proven — anything outside the window is at least `reach` away, so a best
+   * inside it cannot be beaten.
+   */
+  distanceTo(g: G.Geometry): number {
+    if (!this.pieces.length) return Infinity;
+    const bb = G.bounds(this.material);
+    let reach = bb ? Math.max(bb[2] - bb[0], bb[3] - bb[1]) / 64 || 1 : 1;
+    let best = Infinity;
+    for (let guard = 0; guard < 40; guard++) {
+      for (const i of this.index.withinDistance(g, reach)) {
+        const d = G.distance(g, this.pieces[i]);
+        if (d < best) best = d;
+      }
+      if (best <= reach) return best;
+      reach *= 2;
+    }
+    return best;
   }
 
   /** The material grown by `clearance`, and a prepared copy of it. */
@@ -408,9 +493,8 @@ function usableLength(
 /** The strict check: never through the material, pierce never inside it. */
 function verify(line: Point[], voidGeom: Void, tol: number): boolean {
   try {
-    const seg = G.lineString(line);
-    if (G.length(G.intersection(voidGeom.material, seg)) > tol) return false;
-    return !G.contains(voidGeom.material, G.point(line[0][0], line[0][1]));
+    if (voidGeom.lengthOfLineInside(line) > tol) return false;
+    return !voidGeom.containsPoint(G.point(line[0][0], line[0][1]));
   } catch {
     return false;
   }
@@ -493,7 +577,7 @@ function findLeadIn(
     ]);
     let room = 0;
     try {
-      room = G.distance(far, voidGeom.material);
+      room = voidGeom.distanceTo(far);
     } catch {
       room = 0;
     }
