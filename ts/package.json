@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "TypeScript port of Sean's Font Prototyping Friend \u2014 nameplate cut-file engine",
   "scripts": {
-    "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:fontcheck && npm run test:pairsheet && npm run test:thickness",
+    "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:fontcheck && npm run test:pairsheet && npm run test:thickness && npm run test:brief",
     "cli": "node src/cli.ts",
     "test:acceptance": "node tests/acceptance.ts",
+    "test:brief": "node tests/brief.ts",
     "test:canonicalisation": "node tests/canonicalisation.ts",
     "test:export": "node tests/export.ts",
     "test:fontcheck": "node tests/fontcheck.ts",

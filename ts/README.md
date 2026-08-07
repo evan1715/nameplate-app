@@ -9,7 +9,7 @@ not re-derived: it is reproduced, and the tests prove it against the same
 ```
 cd ts
 npm install
-npm test                       # canonicalisation, parity, acceptance, export, fontcheck, pairsheet, thickness
+npm test                       # every suite; brief alone takes ~11 min
 npm run cli -- --font ../fonts/MerriweatherCut3Black-Engrave-v2.ttf \
     --height 1 --unit in --basis cap --format both --mode per-name --out out ADAM
 ```
@@ -47,6 +47,7 @@ passes are ported line for line from `_pathops.pyx`.
 | `tests/thickness.ts` (reports compared character for character) | — | 61/61 |
 | `tests/fontcheck.ts` (reports and repair prompts, character for character) | — | 24/24 |
 | `tests/pairsheet.ts` (all 5,408 cells per font, plus the prompts) | — | 34/34 |
+| `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 15/15 |
 | `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 61/61 |
 
 Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
@@ -88,6 +89,7 @@ src/cli.ts        batch export without a GUI
 src/thickness.ts  the thin-spot survey, its report and its paste-ready prompt
 src/fontcheck.ts  what is WRONG with a font, and the repair order for it
 src/pairsheet.ts  every two-letter join a font can make, measured
+src/brief.ts      one pass over a font, judged against targets; the exit code IS the answer
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
 
@@ -124,7 +126,7 @@ shipping path are done and verified, and the measurement/reporting tools are not
 | `nameplate_thickness.py` | 1502 | ✅ `src/thickness.ts` — reports byte-identical (see below) |
 | `nameplate_fontcheck.py` | 1896 | ✅ `src/fontcheck.ts` — reports and repair prompts byte-identical |
 | `nameplate_pairsheet.py` | 1162 | ✅ `src/pairsheet.ts` — analysis byte-identical; the Qt contact sheet goes with the GUI |
-| `nameplate_brief.py` | 730 | ⬜ not converted — the CLI an AI agent drives |
+| `nameplate_brief.py` | 730 | ✅ `src/brief.ts` — exit codes and markdown identical; JSON exact but for last-bit floats |
 | `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
 | `regression_tests.py` | 483 | ⬜ not converted — one test per fixed bug |
 | `stress_test.py` | 346 | ⬜ not converted |
@@ -367,3 +369,46 @@ Two things worth recording from this one:
   comparing a `JSON.stringify` of an equivalent object fails on key *order* while
   every value matches — which reads as five differing records and is really zero. The
   test compares canonical JSON now.
+
+## Brief: the exit code is the contract, and it matches
+
+`src/brief.ts` runs fontcheck, the full pair sweep, the artwork build, the eyelet
+measurement and the thickness survey in one pass, judges the results against the
+targets it was given, and says so in the exit code — 0 met, 1 work needed, 2
+unusable, 3 tool error. A font-editing loop keys off that number, so it is the first
+thing `tests/brief.ts` asserts. All three captured cases match: `0`, `1`, `1`.
+
+**The markdown is byte-identical** on all three cases — that is the artefact a person
+reads, and it rounds to 3 or 4 decimal places.
+
+**The JSON is exact except in the last bits of a few floats.** Same 260–318 leaves in
+the same ORDER (an agent diffing two runs sees a reordered object as a change), every
+string, boolean and integer identical, and every differing float within a relative
+1e-6. The worst actually measured is 6.4e-7, on a `change_pct` that amplifies its
+inputs; the underlying measurements are ~9.7e-8 and every one traces to the eyelet —
+an inner diameter reading 0.34476797 in against the Python's 0.34476794. Three parts
+in a hundred million, about a nanometre on a 0.34-inch hole, and the same class as
+the documented `Carrie_cap25mm.svg` deviation. It cannot reach the rounded figure the
+markdown prints, which is why that file is compared exactly. The suite prints the
+worst deviation it saw, so a regression shows up as that number growing rather than
+as a silent pass.
+
+Three things this one taught:
+
+* **A control character in a sentinel.** Python renders an integral float as `1.0`
+  and JavaScript renders it as `1`, so `dumpJson` marks those values before
+  serialising. The marker was written with `\x01` around it — and `JSON.stringify`
+  escapes control characters, so the escaped form no longer matched the un-escaped
+  regex and the marker leaked into the output as
+  `"\u0001FLOAT\u00011.0\u0001FLOAT\u0001"` where `1.0` belonged. Anything used as
+  a sentinel has to survive the serialiser it is being hidden from; it is plain ASCII
+  now, with a collision check before substituting. That is twice in this conversion
+  that an invisible character in my own source caused a real bug — the other was a NUL
+  in `pairsheet.ts`.
+* **Normalise in both places or neither.** The thickness prompt's "how it will be
+  checked" line names the tool to re-run. The markdown comparison normalised it; the
+  JSON comparison did not — and `prompts.thin_areas` carries the same prompt as a
+  string, so that one leaf failed while everything around it passed.
+* **`nameplate_brief.py` forced the port order.** It calls `analyse_pairs`, and its
+  captured output carries real pair data (`tested: 5408`), so it could not match the
+  baseline until `pairsheet.ts` existed. Pairsheet went first for that reason.
