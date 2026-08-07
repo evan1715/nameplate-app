@@ -9,7 +9,7 @@ not re-derived: it is reproduced, and the tests prove it against the same
 ```
 cd ts
 npm install
-npm test                       # canonicalisation, parity, acceptance, export, fontcheck, thickness
+npm test                       # canonicalisation, parity, acceptance, export, fontcheck, pairsheet, thickness
 npm run cli -- --font ../fonts/MerriweatherCut3Black-Engrave-v2.ttf \
     --height 1 --unit in --basis cap --format both --mode per-name --out out ADAM
 ```
@@ -46,6 +46,7 @@ passes are ported line for line from `_pathops.pyx`.
 | `tests/parity.ts` (new: TS vs Python, value by value) | — | 68/68 |
 | `tests/thickness.ts` (reports compared character for character) | — | 61/61 |
 | `tests/fontcheck.ts` (reports and repair prompts, character for character) | — | 24/24 |
+| `tests/pairsheet.ts` (all 5,408 cells per font, plus the prompts) | — | 34/34 |
 | `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 61/61 |
 
 Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
@@ -86,6 +87,7 @@ src/eyelets.ts    measures the hanging eyelet (ID / OD / wall)
 src/cli.ts        batch export without a GUI
 src/thickness.ts  the thin-spot survey, its report and its paste-ready prompt
 src/fontcheck.ts  what is WRONG with a font, and the repair order for it
+src/pairsheet.ts  every two-letter join a font can make, measured
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
 
@@ -121,7 +123,7 @@ shipping path are done and verified, and the measurement/reporting tools are not
 | `nameplate_cli.py` | 274 | ✅ `src/cli.ts` |
 | `nameplate_thickness.py` | 1502 | ✅ `src/thickness.ts` — reports byte-identical (see below) |
 | `nameplate_fontcheck.py` | 1896 | ✅ `src/fontcheck.ts` — reports and repair prompts byte-identical |
-| `nameplate_pairsheet.py` | 1162 | ⬜ not converted — every letter pair, every position |
+| `nameplate_pairsheet.py` | 1162 | ✅ `src/pairsheet.ts` — analysis byte-identical; the Qt contact sheet goes with the GUI |
 | `nameplate_brief.py` | 730 | ⬜ not converted — the CLI an AI agent drives |
 | `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
 | `regression_tests.py` | 483 | ⬜ not converted — one test per fixed bug |
@@ -332,3 +334,36 @@ resolved `file://` URL.
   600-second budget against a scan that finishes in about 16 — every combination is
   tested on both sides and nothing is timing-dependent. All 8,788 combinations, on
   every font.
+
+## Pairsheet: the analysis half, byte-identical
+
+`src/pairsheet.ts` reproduces `analyse_pairs` and `claude_prompt`.
+`tests/pairsheet.ts` is **34/34** on both shipped script fonts.
+
+The assertion that matters is not the prompt — it is `pairsheet_*_cells.json`, which
+records the status and em-gap of **all 5,408 cells** per font. A port can look right
+on the five pairs that fail and still have drifted on the thousands it passes, and
+that file is the only thing that would notice. Every cell matches, on both fonts,
+along with the per-group counts, the failing cells verbatim (shaped glyph names,
+context string and cluster span included) and both prompts.
+
+**The Qt contact sheet is deliberately not ported.** `render_sheet`, `_paint_cell`,
+`_render_page` and `sheet_sizes` paint PNG grids with `QPainter`. That is a painting
+layer against a specific toolkit, not analysis, and it belongs with the GUI port and
+its own canvas — so it is left whole rather than half-translated. Everything the
+tests and `brief` consume is in the analysis half.
+
+Two things worth recording from this one:
+
+* **A raw NUL byte in the source.** The Python keys `cells` on the tuple
+  `(left, right)`; a JavaScript `Map` compares object keys by identity, so the pair
+  has to be flattened into a string. My first version wrote the separator as a
+  literal character that turned out to be a NUL: it looked like a space in the
+  editor, made `grep` report the file as binary, and split wrongly wherever it was
+  read back. NUL is still the right *choice* — no letter can contain it — it just has
+  to be written down, so it is now `CELL_KEY_SEP = "\u0000"` with `cellKey` /
+  `splitCellKey` around it and nobody splitting by hand.
+* **`sort_keys=True`.** `capture_baseline.py` writes its JSON with sorted keys, so
+  comparing a `JSON.stringify` of an equivalent object fails on key *order* while
+  every value matches — which reads as five differing records and is really zero. The
+  test compares canonical JSON now.
