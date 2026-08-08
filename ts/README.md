@@ -43,14 +43,14 @@ passes are ported line for line from `_pathops.pyx`.
 
 | Suite | Python | TypeScript |
 |---|---|---|
-| `acceptance_tests.py` / `tests/acceptance.ts` | 53/53 | 53/53 |
+| `acceptance_tests.py` / `tests/acceptance.ts` | 53/53 | 55/55 (+2: the golden PDFs, by page content) |
 | `export_tests.py` / `tests/export.ts` | 31/31 | 31/31 |
 | `tests/parity.ts` (new: TS vs Python, value by value) | — | 68/68 |
 | `tests/thickness.ts` (reports compared character for character) | — | 61/61 |
 | `tests/fontcheck.ts` (reports and repair prompts, character for character) | — | 24/24 |
 | `tests/pairsheet.ts` (all 5,408 cells per font, plus the prompts) | — | 34/34 |
 | `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 15/15 |
-| `tests/viewmodel.ts` (the window's labels, against the Qt selftest's own strings) | — | 24/24 |
+| `tests/viewmodel.ts` (the window's labels, against the Qt selftest's own strings) | — | 28/28 |
 | `regression_tests.py` / `tests/regression.ts` (one test per fixed defect) | 27/27 | 27/27 |
 | `stress_test.py` / `tests/stress.ts` (12 names x 4 heights x 2 units) | 421/421 | 421/421 |
 | `nameplate_gui.py --selftest` / `tests/gui.ts` (the window itself) | 60/60 | 60/60 |
@@ -230,7 +230,7 @@ have drifted together.
 directory holds the baseline exactly as captured **before** the ring set was
 canonicalised (from commit `2e07c61`), and the test compares the two directories to
 pin what moved. It runs no geometry and loads no font — it compares committed text —
-so it is deterministic everywhere and finishes instantly. **58/58.**
+so it is deterministic everywhere and finishes instantly. **61/61.**
 
 What it enforces:
 
@@ -450,7 +450,11 @@ this port is split, which is also the backend/frontend split asked for:
   measurement logic.
 
 `tests/viewmodel.ts` holds the data layer to the strings the Qt window's own selftest
-recorded — **24/24** — with no browser, no canvas and no display.
+recorded — **28/28** — with no browser, no canvas and no display. Four of those
+are not from the reference at all: the thickness report and "Add font…" are
+behind buttons the Python's selftest never presses, both were missing from the
+browser port at first, and a feature nobody tests is a feature that quietly does
+not ship.
 
 Two of these checks were wrong when first written, in the direction worth noting —
 they *expected* the wrong value and would have "passed" a broken module if the module

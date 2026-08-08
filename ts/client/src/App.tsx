@@ -123,8 +123,10 @@ export function App(): React.ReactElement {
     return () => { live = false; };
   }, [fontPath]);
 
-  // ---- the preview, debounced -------------------------------------------- //
+  /** The hidden file input behind "Add font…". */
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // ---- the preview, debounced -------------------------------------------- //
   const buildSeq = useRef(0);
   const rebuild = useCallback(() => {
     if (!fontPath || !currentName) {
