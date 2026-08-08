@@ -118,6 +118,11 @@ tests/            the ported suites, plus the TS-vs-Python parity suite
 | `verify_corel.ps1`, `verify_corel_order.ps1` | **not converted** | These drive CorelDRAW itself over COM to confirm what it actually imported. That is Windows-only automation against an installed, signed-in CorelDRAW; there is no Node binding for it, and the checks are meaningless without the application. The promises they verify (open lead-in paths, pierce points as start nodes, engrave at the bottom of the stack, one group/layer per name) are asserted structurally by `tests/export.ts` and `scripts/verify_release.ts` instead. |
 | `make_assets.py` | **not converted** | Generates the `.ico` and the splash PNG for a PyInstaller `--windowed` build. A browser tab has no splash screen and takes its icon from the page, so neither artefact has anything to attach to. |
 
+`verify_corel.ps1` and `verify_corel_order.ps1` are the only files left in the
+repository that are not TypeScript. Everything else — every `.py`, the
+PyInstaller specs, the Inno Setup script, `requirements.txt`, and the three
+PowerShell scripts that drove Python — is gone, replaced by the files above.
+
 ```
 node scripts/build_all.ts        # tests, bundle, archive
 node scripts/verify_release.ts   # drive the archive from a raw extraction
@@ -255,6 +260,13 @@ a different run than its report text). Pinning against it would have blamed
 canonicalisation for that fix as well.
 
 ### Reproducibility of the oracle itself
+
+(`capture_baseline.py` below is the harness that produced `tests/refs/` from the
+Python. It is gone along with the rest of the Python, and deliberately: the
+references are the *record* of what the Python did, and a directory that can be
+regenerated is a directory that will be, which is exactly what would make the
+comparison circular. What follows is what it did, kept because it explains why
+the files look the way they do.)
 
 The re-capture exposed three values that could never have matched twice, on any
 machine: how many event-loop turns the GUI managed alongside a background check, a
@@ -501,10 +513,10 @@ anything another machine can reach.
 ### The selftest came with it
 
 `tests/gui.ts` is `nameplate_gui.py --selftest` ported check for check: same names,
-same order, same detail strings. **60/60**, and **57 of the 60 detail lines are
+same order, same detail strings. **60/60**, and **56 of the 60 detail lines are
 character-for-character identical to the Qt run's own captured output.**
 
-The three that differ are the three that cannot match, and each is named in the
+The four that differ are the four that cannot match, and each is named in the
 file:
 
 * **the canvas pixel counts** — a different rasteriser on a different-sized canvas.
@@ -516,6 +528,11 @@ file:
   PDFs' decompressed page content, which is identical.
 * **the event-loop turn count** — already scrubbed to `<N>` in the reference,
   because it could never match twice on any machine.
+* **the health check's build line** — the Python tree carried a *committed*
+  `assets/build_manifest.json`, so its selftest always printed a build id. That
+  file stamped source hashes of code that no longer exists, so it is gone;
+  `scripts/make_manifest.ts` writes one at build time and the health surface says
+  "running from source" until then, which is true and is what that line is for.
 
 Four of the checks are genuinely about the window, so they run against the real one:
 a headless Chromium driving the real client over a real server. Those are the checks

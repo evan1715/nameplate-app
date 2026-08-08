@@ -1,5 +1,15 @@
 # BUILD BRIEF — ShineOn Nameplate Cut-File app
 
+> **Historical.** This is the brief the app was originally built from, in
+> Python with a PySide6 desktop window. It is kept verbatim as the record of what
+> was asked for — the file names, the library names and the PyInstaller steps
+> below describe that build, not the one that ships.
+>
+> What ships now is TypeScript on Node with a browser front end. Every promise in
+> this document still holds and is still tested; `ts/README.md` maps each Python
+> module to the file that replaced it and records exactly what matched byte for
+> byte and what could not. `DEVELOPERS.md` is the current orientation.
+
 **Read this whole file before writing code.** The hard part (font shaping, merging the
 letters, pulling the engrave lines, SVG/PDF output) is **already written and tested**
 in `nameplate_core.py`. Your job is the GUI around it and the portable Windows build.

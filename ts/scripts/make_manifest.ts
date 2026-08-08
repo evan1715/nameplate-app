@@ -30,18 +30,37 @@ const OUT = path.join(HERE, "assets", "build_manifest.json");
  * apart.
  *
  * Paths are relative to the `ts/` directory, except the two shipped text files,
- * which live at the repository root alongside the Python original.
+ * which live at the repository root.
  */
 const SOURCES = [
-  "src/skia.ts", "src/geom.ts", "src/pyformat.ts", "src/font.ts", "src/core.ts",
-  "src/layout.ts", "src/leadin.ts", "src/exporters.ts", "src/eyelets.ts",
-  "src/cli.ts",
-  "tests/acceptance.ts", "tests/export.ts", "tests/parity.ts",
+  // the engine
+  "src/skia.ts", "src/geom.ts", "src/pyformat.ts", "src/units.ts", "src/font.ts",
+  "src/core.ts", "src/layout.ts", "src/leadin.ts", "src/exporters.ts",
+  "src/eyelets.ts", "src/cli.ts",
+  // the measurement tools
+  "src/thickness.ts", "src/fontcheck.ts", "src/pairsheet.ts", "src/brief.ts",
+  // the app: the window minus the widgets, and the widgets
+  "src/viewmodel.ts", "src/app.ts", "src/marks.ts", "src/pairgrid.ts",
+  "src/server.ts",
+  "client/index.html", "client/app.css", "client/src/main.tsx",
+  "client/src/App.tsx", "client/src/Preview.tsx", "client/src/PairSheet.tsx",
+  "client/src/widgets.tsx", "client/src/api.ts",
+  // the suites, because a build whose tests disagree with its code is worth
+  // telling apart from one whose tests do not
+  "tests/acceptance.ts", "tests/export.ts", "tests/parity.ts", "tests/gui.ts",
+  "tests/regression.ts", "tests/stress.ts", "tests/thickness.ts",
+  "tests/fontcheck.ts", "tests/pairsheet.ts", "tests/brief.ts",
+  "tests/viewmodel.ts", "tests/canonicalisation.ts",
   "../README_APP.txt", "../INSTALL.txt",
 ] as const;
 
-/** Dependencies whose version changes the geometry, so they belong in the stamp. */
-const DEPS = ["harfbuzzjs", "canvaskit-wasm", "jsts", "opentype.js", "typescript"] as const;
+/**
+ * Dependencies whose version changes what the app produces, so they belong in the
+ * stamp. React is here for the same reason the client sources are: it decides what
+ * the person in front of the window actually sees.
+ */
+const DEPS = ["harfbuzzjs", "canvaskit-wasm", "jsts", "opentype.js", "typescript",
+  "react", "react-dom", "esbuild"] as const;
 
 /** sha256 of a file's bytes, or null when it cannot be read. */
 function sha(p: string): string | null {

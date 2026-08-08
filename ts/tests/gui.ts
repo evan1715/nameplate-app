@@ -31,6 +31,12 @@
  *   * Check 68's event-loop turns. The Python counted `processEvents()` spins;
  *     this counts animation frames, which is the same question asked of a
  *     different loop.
+ *   * The health check's build line. The Python tree carried a committed
+ *     `assets/build_manifest.json`, so its selftest always printed a build id.
+ *     That file stamped source hashes of code that no longer exists, so it is
+ *     gone; `scripts/make_manifest.ts` writes one at build time and the health
+ *     surface says "running from source" until then — which is true, and is what
+ *     that line is for.
  *   Everything else is held to the reference text.
  */
 

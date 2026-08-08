@@ -12,15 +12,16 @@ decides when you are done.**
 ## The one command
 
 ```bash
-python nameplate_brief.py --font <FONT> --cap <H> --unit in \
+node src/brief.ts --font <FONT> --cap <H> --unit in \
     --eyelet-id <ID> --eyelet-wall <WALL> --min-thickness <MIN> \
     --json brief.json --md brief.md
 ```
 
-Run it from `C:\Users\Zack\Documents\Calude Code Apps\nameplate-app`
-(the "Calude" misspelling is real — do not correct it). Python is at
-`C:\Users\Zack\AppData\Local\Programs\Python\Python312\python.exe`; call it by
-full path, because `python` on PATH is a Microsoft Store stub.
+Run it from the `ts` folder inside
+`C:\Users\Zack\Documents\Calude Code Apps\nameplate-app`
+(the "Calude" misspelling is real — do not correct it). It needs Node 22.18 or
+newer — that is the version that runs TypeScript directly, which is why there is
+nothing to build first. `npm install` once, in that folder, before the first run.
 
 **Exit code is the contract:**
 
@@ -140,7 +141,7 @@ join. Two things to look at:
 - **The app itself**, for anything visual — the letter-pair sheet (all 1,352
   two-letter combinations drawn from raw outlines, the font as Illustrator shows
   it), the thin-area overlay, and the eyelet dimensions. Launch it with
-  `python nameplate_gui.py`, pick the font, and use "View every letter pair…"
+  `node src/gui.ts`, pick the font, and use "View every letter pair…"
   and "Generate prompts…". Do this when a pair is flagged and you need to see
   *how* it breaks before deciding which side to edit.
 

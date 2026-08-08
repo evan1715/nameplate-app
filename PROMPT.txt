@@ -1,3 +1,8 @@
+HISTORICAL — this is the prompt the app was originally built from, when it was
+Python with a PySide6 window. It is kept as the record of what was asked for.
+What ships now is TypeScript on Node with a browser front end; see README.txt
+and DEVELOPERS.md.
+
 PASTE THIS TO CLAUDE CODE (with this folder as the working directory)
 ====================================================================
 

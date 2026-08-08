@@ -6,20 +6,31 @@ exported as SVG and PDF for CorelDRAW.
 
 
 RUNNING IT
-  Double-click SeansFontPrototypingFriend.exe
+  Open a Command Prompt in this folder and run:
 
-  No Python, no installer, no admin rights. Copy this whole folder anywhere —
-  another PC, a USB stick, a network share — and it runs from wherever it sits.
-  Keep the folder together: the .exe needs the _internal folder next to it.
+      cd ts
+      npm start
+
+  It prints an address — http://127.0.0.1:8175/ — open that in your browser.
+  Leave the Command Prompt window open while you use it; that window IS the
+  app, and closing it stops it. Full instructions, including the one-time
+  setup, are in INSTALL.txt.
+
+  It needs Node.js. No Python, no installer, no admin rights. Copy this whole
+  folder anywhere — another PC, a USB stick, a network share — and it runs from
+  wherever it sits.
+
+  It listens on 127.0.0.1, which means this computer and nothing else. Nobody
+  on the network can reach it and there is no setting to change that.
 
 
 THE FOLDER
-  SeansFontPrototypingFriend.exe   the app
-  _internal\              its libraries — don't move or delete
+  ts\                     the app itself
   fonts\                  your fonts live here (see below)
   settings.json           remembers your last font and settings; created on
                           first run, safe to delete
   README.txt              this file
+  INSTALL.txt             how to set it up on a new machine
 
 
 FONTS
@@ -50,7 +61,9 @@ USING IT
 
   Preview       Scroll to zoom, drag to pan, double-click to fit. The dashed
                 box is the real artwork size, labelled in your chosen unit.
-                Black = cut, red = engrave.
+                Black = cut, red = engrave. The preview is always on white,
+                whatever theme the rest of the page is in — a cut file is
+                judged against white paper.
 
   Warnings      Amber notes are information, not errors, and never stop an
                 export. "No engrave lines for this name" is normal — some
@@ -248,13 +261,12 @@ CHECKING A FONT
                  Enter do the same, Shift+F3 goes back. The pair you are on gets
                  a purple ring.
 
-                 Zoom out to 30% to see the whole sheet at once, in to 240% to
-                 look closely, or "Fit width" for all 26 columns in the window.
-                 Ctrl+scroll and Ctrl+/Ctrl− work too.
+                 Zoom out to 30% to see the whole sheet at once, or in to 240%
+                 to look closely.
 
 
 PROMPTS FOR CLAUDE
-  "Generate prompts…" at the bottom right collects every paste-ready instruction
+  "Generate prompts" collects every paste-ready instruction
   for the current font into one window, one box per area:
 
       1. Font defects
@@ -275,11 +287,14 @@ PROMPTS FOR CLAUDE
 EXPORTING
   Tick SVG, PDF, or both.
 
-  Export one file per name (.zip)   One file per name inside a zip, named after
-                                    the name (Mary Jane -> Mary_Jane.svg).
-  Export all on one sheet           Every name on a single sheet. Set the
-                                    spacing with "Sheet gap", in your chosen
-                                    unit.
+  One file per name (zip)   One file per name inside a zip, named after the
+                            name (Mary Jane -> Mary_Jane.svg).
+  One sheet                 Every name on a single sheet. Set the spacing with
+                            "Sheet gap", in your chosen unit.
+
+  Both land in your browser's Downloads, and a copy is also written to
+  exports\ inside the app folder — so "where did it go?" always has a path as
+  an answer, not just a browser setting.
 
   Sheet layout   stacked        names top to bottom, aligned on the left
                  side by side   names left to right, aligned on the bottom
@@ -354,20 +369,23 @@ PROMPTS: ONE BLOCK PER ROUND
 
 
 HEALTH CHECK
-  "Health check…" next to the export buttons tells you which build this is (a
-  short id stamped in at build time), where it keeps its files, and whether
-  this machine can actually run it — folder writable, fonts present, path not
-  too long. Copy that text into any bug report; it is the only way to tie a
-  problem to the exact code that produced it.
+  "Health" in the top right tells you which build this is (a short id stamped
+  in at build time), where it keeps its files, and whether this machine can
+  actually run it — folder writable, fonts present, path not too long. Copy
+  that text into any bug report; it is the only way to tie a problem to the
+  exact code that produced it.
 
 
 IF SOMETHING GOES WRONG
-  The app shows the actual error in a dialog rather than failing silently, and
-  writes crash-YYYYMMDD-HHMMSS.txt beside startup.log with the full traceback
-  when something fails inside a worker thread.
+  The app shows the actual error in the amber panel rather than failing
+  silently, and the Command Prompt window it is running in shows the rest.
 
-  No fonts listed     Check that fonts\ sits next to the .exe and holds at
-                      least one .ttf/.otf/.ttc, then click Refresh.
-  Won't start         Make sure the _internal folder is still next to the .exe
-                      and the folder isn't inside a blocked or read-only
-                      location. fonts\ and settings.json must be writable.
+  No fonts listed     Check that fonts\ sits in the app folder and holds at
+                      least one .ttf/.otf/.ttc, then click Refresh. Health
+                      prints the exact folder it is looking in.
+  Page won't load     Look at the Command Prompt window. If it says
+                      "address already in use", the app is already running in
+                      another window. If it says "node is not recognised",
+                      Node.js is not installed — see INSTALL.txt.
+  Won't save settings The app folder is read-only. Move it somewhere under your
+                      user folder. Health says whether it is writable.
