@@ -888,7 +888,11 @@ export function dumpJson(b: Brief): string {
   return text.split(`"${MARK}`).join("").split(`${MARK}"`).join("");
 }
 
-const USAGE = `usage: nameplate_brief.py --font FONT [options]
+// Names the command that actually exists. The Python printed
+// `usage: nameplate_brief.py`, and the usage text is not part of any captured
+// reference — unlike the `tool` field in the JSON, which is a NAME rather than a
+// path and stays `nameplate_brief` so the documents still compare.
+const USAGE = `usage: node src/brief.ts --font FONT [options]
 
 Measure a font against nameplate targets and say whether it is done.
 Exit 0 = every target met, 1 = work needed, 2 = unusable, 3 = tool error.

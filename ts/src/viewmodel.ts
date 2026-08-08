@@ -59,6 +59,24 @@ export interface FontInfo {
   verdict: string;
   /** The whole detail line, assembled: "file · date · mark · verdict". */
   detail: string;
+  /** What the automatic check wants said in the amber panel, already trimmed. */
+  notes: string[];
+}
+
+/**
+ * Messages the engine emits that are NORMAL for these fonts and must not raise an
+ * amber warning.
+ *
+ * Most of Sean's fonts are cut-only by design, so "no engrave lines" is the
+ * expected state, not a problem — and a panel that cries wolf on every font is a
+ * panel nobody reads. The engrave count in the grey line under the preview
+ * already says 0, which is the honest report.
+ */
+export const NOT_A_WARNING = ["no engrave lines"];
+
+/** The notes that survive {@link NOT_A_WARNING}, in the order they were given. */
+export function visibleNotes(notes: readonly string[]): string[] {
+  return notes.filter((n) => !NOT_A_WARNING.some((q) => n.toLowerCase().includes(q)));
 }
 
 /** An overlay the preview draws on top of the artwork. */
@@ -91,7 +109,14 @@ export interface BuildResult {
   leadins: Path2D[];
   pieces: number;
   gap_text: string;
+  /** Everything the engine said, unfiltered. */
   warnings: string[];
+  /**
+   * What the amber panel shows: the warnings worth showing, with the
+   * falls-apart note ahead of them. Assembled here rather than in the front end
+   * so the rule about which warnings are worth showing has one home.
+   */
+  notes: string[];
   thin_text: string;
   thin_spots: TH.ThinSpot[];
   eyelets: EY.Eyelet[];
@@ -169,12 +194,15 @@ export function probeFont(p: string): FontInfo {
       error: `${e?.constructor?.name ?? "Error"}: ${e?.message ?? String(exc)}`,
       n_errors: 0, n_warnings: 0, issues: [], verdict: "",
       detail: `${filename} · ${date} · could not be read`,
+      notes: ["This font could not be read. " +
+        `${e?.constructor?.name ?? "Error"}: ${e?.message ?? String(exc)}`,
+      "Click “Check font” for what to fix in it."],
     };
   }
   const info: FontInfo = {
     path: p, filename, family: font.family, has_colr: Boolean(font.colr?.size),
     ok: true, error: "", n_errors: 0, n_warnings: 0, issues: [], verdict: "",
-    detail: "",
+    detail: "", notes: [],
   };
   try {
     const rep = FC.checkFont(p, { joinScanBudget: 0.0 });
@@ -194,6 +222,19 @@ export function probeFont(p: string): FontInfo {
   }
   const mark = info.has_colr ? "carries engrave lines" : "cut only";
   info.detail = `${filename} · ${date} · ${mark} · ${info.verdict}`;
+
+  // The automatic check speaks up here; the button gives the full report. Four
+  // issues is the cap: past that the panel stops being a summary.
+  const notes: string[] = [];
+  if (info.n_errors) {
+    notes.push(`This font cannot produce a clean cut file: ${info.n_errors} ` +
+      `error(s). Click “Check font” for the list and how to fix each one.`);
+  }
+  notes.push(...info.issues.slice(0, 4));
+  if (info.issues.length > 4) {
+    notes.push(`…and ${info.issues.length - 4} more — see “Check font”.`);
+  }
+  info.notes = visibleNotes(notes);
   return info;
 }
 
@@ -356,6 +397,11 @@ export function build(req: BuildRequest): BuildResult {
     cut, engrave, leadins,
     pieces, gap_text: gapText,
     warnings: [...doc.warnings],
+    notes: visibleNotes(pieces > 1
+      ? [`This name cuts as ${pieces} loose pieces, not one plate. ` +
+        `Gap at: ${gapText}. Click “Check font” for the full letter-join list.`,
+      ...doc.warnings]
+      : doc.warnings),
     thin_text: thinText, thin_spots: thinSpots,
     eyelets, eyelet_rows: rows, wall_at: wallAt,
     overlays,

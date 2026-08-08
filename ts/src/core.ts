@@ -43,10 +43,12 @@ import {
   segments,
   translatePath,
 } from "./skia.ts";
+import { MM_PER_IN, PT_PER_IN } from "./units.ts";
 import { fmtF, pyFloat, pyG } from "./pyformat.ts";
 
-export const MM_PER_IN = 25.4;
-export const PT_PER_IN = 72.0;
+// Re-exported so every existing `import { MM_PER_IN } from "./core.ts"` still
+// reads the same; the definitions moved to a module the browser can import.
+export { MM_PER_IN, MIN_IN, MIN_MM, PT_PER_IN } from "./units.ts";
 /** SVG stroke width; PDF uses width 0 (device hairline). */
 export const HAIRLINE_IN = 0.001;
 /** Curve → polyline steps, for measurement and engrave lines only. */

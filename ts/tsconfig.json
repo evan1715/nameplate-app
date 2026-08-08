@@ -21,5 +21,9 @@
     "rootDir": ".",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"],
+  // The client is typechecked by client/tsconfig.json: it needs the DOM lib and
+  // React's JSX, and this project must NOT have either -- a `document` reference
+  // that compiles here would fail at runtime in Node.
+  "exclude": ["client"]
 }

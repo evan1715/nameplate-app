@@ -17,3 +17,9 @@ crash-*.txt
 # Output written by capture_baseline.py when it runs the GUI selftest: renders,
 # zips and a report that embed wall-clock-dependent numbers. Regenerated, never read.
 _baseline_selftest/
+
+# The same, from the TypeScript port's own selftest (`node ts/tests/gui.ts`).
+_ts_selftest/
+
+# Where the app writes an export before handing it to the browser.
+exports/

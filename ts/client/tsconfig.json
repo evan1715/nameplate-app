@@ -1,0 +1,33 @@
+{
+  // The client is typechecked on its own because it needs the DOM lib and React's
+  // JSX, which the engine's tsconfig must NOT have — a `document` reference that
+  // compiled there would fail at runtime under Node.
+  //
+  // "node" is in `types` anyway, and deliberately: `api.ts` imports its wire types
+  // straight from `app.ts` and `viewmodel.ts` rather than re-declaring them, so a
+  // field renamed on the server stops the client compiling instead of arriving as
+  // `undefined`. Typechecking those files needs Node's types even though every one
+  // of those imports is `import type` and vanishes at build time.
+  //
+  // What stops the client actually CALLING a Node API is not this file: it is
+  // esbuild bundling with `--platform=browser`, which fails the build outright on
+  // an import of `node:fs`. That is a stronger guarantee than a lint rule.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
+  },
+  // ../src/types.d.ts covers the two dependencies that ship no types; without
+// it the engine files this borrows types from do not resolve.
+  "include": ["src/**/*.ts", "src/**/*.tsx", "../src/types.d.ts"]
+}

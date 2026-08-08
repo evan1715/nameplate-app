@@ -9,7 +9,9 @@ not re-derived: it is reproduced, and the tests prove it against the same
 ```
 cd ts
 npm install
+npm start                      # the app: bundles the client, serves 127.0.0.1:8175
 npm test                       # every suite; brief alone takes ~11 min
+npm run typecheck              # engine and client, both projects
 npm run cli -- --font ../fonts/MerriweatherCut3Black-Engrave-v2.ttf \
     --height 1 --unit in --basis cap --format both --mode per-name --out out ADAM
 ```
@@ -50,6 +52,8 @@ passes are ported line for line from `_pathops.pyx`.
 | `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 15/15 |
 | `tests/viewmodel.ts` (the window's labels, against the Qt selftest's own strings) | — | 24/24 |
 | `regression_tests.py` / `tests/regression.ts` (one test per fixed defect) | 27/27 | 27/27 |
+| `stress_test.py` / `tests/stress.ts` (12 names x 4 heights x 2 units) | 421/421 | 421/421 |
+| `nameplate_gui.py --selftest` / `tests/gui.ts` (the window itself) | 60/60 | 60/60 |
 | `tests/canonicalisation.ts` (audits the one change made to the Python) | — | 61/61 |
 
 Node runs these directly — `node tests/parity.ts`, no loader, no build step — because
@@ -93,6 +97,13 @@ src/fontcheck.ts  what is WRONG with a font, and the repair order for it
 src/pairsheet.ts  every two-letter join a font can make, measured
 src/brief.ts      one pass over a font, judged against targets; the exit code IS the answer
 src/viewmodel.ts  everything the window shows, computed with no window
+src/app.ts        the rest of the window that is not a widget: settings, health,
+                  export jobs, prompt blocks, report texts
+src/marks.ts      the mark colours and label text, pure so the browser can have them
+src/units.ts      MM_PER_IN and the height floors, for the same reason
+src/pairgrid.ts   the contact sheet's model: rows, cells, scales, flagged walk
+src/server.ts     the engine behind an HTTP API, and the client that draws it
+client/           the React front end (see "The window, rebuilt in a browser")
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
 
@@ -100,12 +111,12 @@ tests/            the ported suites, plus the TS-vs-Python parity suite
 
 | PowerShell | TypeScript | Notes |
 |---|---|---|
-| `build_all.ps1` | `scripts/build_all.ts` | manifest → all suites → typecheck → esbuild bundle → stage fonts/docs → prove the bundle → tar.gz. Refuses to package if any suite fails, same as the original. |
-| `verify_release.ps1` | `scripts/verify_release.ts` | extracts the archive into a clean folder and drives it with a minimal environment. 21 checks pass; the 15 that exercise the Qt window are reported as SKIP rather than dropped. |
+| `build_all.ps1` | `scripts/build_all.ts` | manifest → suites (including the window's own) → typecheck (both projects) → esbuild bundles for the CLI *and* the app → stage fonts/page/docs → prove both bundles → tar.gz. Refuses to package if any suite fails, same as the original. |
+| `verify_release.ps1` | `scripts/verify_release.ts` | extracts the archive into a clean folder and drives it with a minimal environment — including starting the bundled app **out of the extraction** and driving it over HTTP. The 15 checks that used to be reported as SKIP ("lists fonts", "canvas painted", "pair sheet zooms out and in", …) are now real; nothing is skipped. |
 | `verify_venv.ps1` | `scripts/verify_install.ts` | throwaway directory, `npm install` from `package.json` alone, then the CLI, every module and all three suites inside it. |
 | `make_manifest.py` | `scripts/make_manifest.ts` | content hash of every source + dependency versions → `assets/build_manifest.json`. |
 | `verify_corel.ps1`, `verify_corel_order.ps1` | **not converted** | These drive CorelDRAW itself over COM to confirm what it actually imported. That is Windows-only automation against an installed, signed-in CorelDRAW; there is no Node binding for it, and the checks are meaningless without the application. The promises they verify (open lead-in paths, pierce points as start nodes, engrave at the bottom of the stack, one group/layer per name) are asserted structurally by `tests/export.ts` and `scripts/verify_release.ts` instead. |
-| `make_assets.py` | **not converted** | Generates the `.ico` and the splash PNG for the Qt build. Both are desktop-window artefacts with nothing to serve here. |
+| `make_assets.py` | **not converted** | Generates the `.ico` and the splash PNG for a PyInstaller `--windowed` build. A browser tab has no splash screen and takes its icon from the page, so neither artefact has anything to attach to. |
 
 ```
 node scripts/build_all.ts        # tests, bundle, archive
@@ -113,10 +124,11 @@ node scripts/verify_release.ts   # drive the archive from a raw extraction
 node scripts/verify_install.ts   # prove package.json alone is enough
 ```
 
-## What is NOT converted yet
+## Every Python module, and where it went
 
-Being explicit, because the line count is lopsided: the engine and the whole
-shipping path are done and verified, and the measurement/reporting tools are not.
+Nothing is left. The engine, the shipping path, the measurement tools, the test
+suites and the window are all converted and all verified against the Python's own
+captured output.
 
 | Python module | Lines | Status |
 |---|---|---|
@@ -130,23 +142,12 @@ shipping path are done and verified, and the measurement/reporting tools are not
 | `nameplate_fontcheck.py` | 1896 | ✅ `src/fontcheck.ts` — reports and repair prompts byte-identical |
 | `nameplate_pairsheet.py` | 1162 | ✅ `src/pairsheet.ts` — analysis byte-identical; the Qt contact sheet goes with the GUI |
 | `nameplate_brief.py` | 730 | ✅ `src/brief.ts` — exit codes and markdown identical; JSON exact but for last-bit floats |
-| `nameplate_gui.py` | 4404 | ⬜ not converted — PySide6 window (see below) |
+| `nameplate_gui.py` | 4404 | ✅ `src/viewmodel.ts` + `src/app.ts` + `client/` — 60/60 on its own selftest |
 | `regression_tests.py` | 483 | ✅ `tests/regression.ts` — 27/27, same reference numbers |
-| `stress_test.py` | 346 | ⬜ not converted |
+| `stress_test.py` | 346 | ✅ `tests/stress.ts` — 421/421, byte-identical output |
 
-**The GUI is a framework port, not a language port.** `nameplate_gui.py` is 4,404
-lines of PySide6 widgets, three threads and a custom-painted preview canvas. There
-is no PySide6 for TypeScript, so converting it means choosing a new UI stack
-(Electron, or a browser front end over a local server) and rebuilding the window
-against that stack's own painting and threading model. That is a rewrite decision
-to take deliberately, not something to smuggle into a conversion — so the Python
-GUI is untouched and still runs (`python nameplate_gui.py`, 60/60 on its own
-selftest) against the Python engine, which is also untouched.
-
-The four measurement modules are ordinary ports, and the hard part is already done:
-they need Skia path ops, shapely geometry, font access and Python-exact number
-formatting, and `src/skia.ts`, `src/geom.ts`, `src/font.ts` and `src/pyformat.ts`
-provide all four with the parity already proven.
+**The GUI was a framework port, not a language port**, and that is why it is split
+the way it is — see "The window, rebuilt in a browser" below.
 
 ## Thickness: ported, byte-identical, and what it cost to get there
 
@@ -437,10 +438,7 @@ this port is split, which is also the backend/frontend split asked for:
   measurement logic.
 
 `tests/viewmodel.ts` holds the data layer to the strings the Qt window's own selftest
-recorded — **24/24** — with no browser, no canvas and no display. What it deliberately
-does not cover is those two pixel-counting checks: a different rasteriser paints the
-same geometry and counts differently, and pretending otherwise would be a test that
-asserts the wrong thing.
+recorded — **24/24** — with no browser, no canvas and no display.
 
 Two of these checks were wrong when first written, in the direction worth noting —
 they *expected* the wrong value and would have "passed" a broken module if the module
@@ -453,6 +451,126 @@ had agreed with them:
   It now uses `Dda` on the Flourish font, a junction `tests/pairsheet.ts`
   independently proves is a GAP (`Dleftring -> d`), and asserts both the piece count
   and the junction named.
+
+## The window, rebuilt in a browser
+
+```
+cd ts
+npm start                 # bundles the client, then serves on 127.0.0.1:8175
+```
+
+The React 19 client is `client/`; the process behind it is `src/server.ts`. The
+split is the one the seam above describes and it is not negotiable in either
+direction: the engine reads fonts with HarfBuzz, unions outlines with a WASM Skia
+and writes zips, so it stays in Node; the page draws.
+
+That is the same shape the Qt app had. A worker thread owned its own `Font` cache
+and the widgets only ever saw a finished result — the thread became a process and
+the signal became a `fetch`, and nothing else about the arrangement moved. The
+server keeps the same per-path `Font` cache for the same reason (opening a script
+face costs hundreds of milliseconds and a rebuild happens on every keystroke), and
+`Reload font` still drops it, because picking up an edit made in a font editor
+while the app is open is the entire point of that button.
+
+What runs where:
+
+| | |
+|---|---|
+| `src/viewmodel.ts` | one preview build: paths, numbers, and every label string |
+| `src/app.ts` | settings, health, export jobs, prompt blocks, report texts |
+| `src/pairgrid.ts` | the contact sheet's model — rows, cells, scales, flagged walk |
+| `src/marks.ts`, `src/units.ts` | the pure pieces the browser also needs |
+| `client/` | draws it, and nothing else |
+
+`marks.ts` and `units.ts` exist for one reason: the client needs the thin-area ramp,
+the mark label format and `MM_PER_IN`, and it cannot import the modules those used
+to live in. Copying them into the client instead is the exact drift the Python's own
+comment on `_prompt_sections` warns about — two copies of a rule that must agree,
+with nothing to make them.
+
+The client imports its wire types straight from `viewmodel.ts` and `app.ts` rather
+than re-declaring them, so a field renamed on the server stops the client compiling
+instead of arriving as `undefined`. What stops it *calling* a Node API is not the
+tsconfig but the bundler: `esbuild --platform=browser` fails the build outright on
+an import of `node:fs`.
+
+The server binds 127.0.0.1 and there is no flag to change it. Every route reads and
+writes local files by absolute path, which is right for a desktop app and wrong for
+anything another machine can reach.
+
+### The selftest came with it
+
+`tests/gui.ts` is `nameplate_gui.py --selftest` ported check for check: same names,
+same order, same detail strings. **60/60**, and **57 of the 60 detail lines are
+character-for-character identical to the Qt run's own captured output.**
+
+The three that differ are the three that cannot match, and each is named in the
+file:
+
+* **the canvas pixel counts** — a different rasteriser on a different-sized canvas.
+  The assertion is the Python's (dark ink and red ink both painted, in quantity);
+  the red count happens to come out at 47 on both.
+* **the sheet PDF's byte size** — 27,278 against 27,510. The *inflated content
+  stream is byte-identical*; Node's zlib simply encodes the same bytes 232 bytes
+  smaller. `tests/acceptance.ts` now pins that properly by comparing the golden
+  PDFs' decompressed page content, which is identical.
+* **the event-loop turn count** — already scrubbed to `<N>` in the reference,
+  because it could never match twice on any machine.
+
+Four of the checks are genuinely about the window, so they run against the real one:
+a headless Chromium driving the real client over a real server. Those are the checks
+a Qt-to-browser port would otherwise have quietly dropped — the canvas actually
+painting, a cleared target box committing to an em dash rather than snapping back to
+the number you were deleting, the page staying responsive while a font check is in
+flight, and export disabling itself on an empty name box.
+
+### What it caught
+
+Writing it found one real defect in the new client. A cut-only font — which is most
+of Sean's fonts — raised an amber warning on every build, because the client showed
+the engine's warnings raw.
+
+The engine is right to say "no engrave lines (no COLR table)"; the *panel* is what
+has to stay quiet, and Qt had a `_NOT_A_WARNING` filter saying so. The fix is not in
+the client: `viewmodel.ts` now assembles the panel itself and hands back `notes`
+alongside `warnings`, so the rule about which engine messages are worth showing has
+one home and the test can hold it there. A version of that check written against
+`warnings` would have passed while the real panel cried wolf on most of the fonts
+this shop uses.
+
+Two checks also needed the Python's *sequence* to be read properly rather than
+guessed: the pair-sheet checks run on Merriweather, not the script face selected
+earlier (the reference's `D.ini` glyph names give it away), and the eyelet prompt is
+1,237 characters because the ID box had been cleared two checks earlier and never
+re-typed. Both were wrong at first in the direction that matters — they would have
+"passed" a broken module that happened to agree with them.
+
+## Stress: 1,263 rows, three fonts, zero disagreements
+
+`tests/stress.ts` is `stress_test.py` check for check — S1–S6 on size, L1–L10 on
+lead-ins, twelve names across four heights and both units. Its output is
+byte-identical to `refs/stress.txt`.
+
+A matching summary line is weak evidence for a suite that only prints details on
+failure, so the port was held to a stronger bar: a harness that imports
+`stress_test.py` **unmodified** and dumps all 421 rows, against the same dump from
+the TypeScript, compared field by field. All 421 agree on all three shipped fonts —
+1,263 rows — including every formatted number in every detail string that a passing
+run never prints.
+
+Two Python formatters had to be added for it. `fmtE` is `f"{v:.3e}"` computed from
+the double's exact value with ties to even, like `fmtF`. `pyRound` is `round(v, n)`
+— **not** `Math.round(v * 10**n) / 10**n`, which rounds twice and disagrees near a
+tie. That one is load-bearing: S6 picks the modal glyph top out of `round(top, 3)`
+values, so a value landing on a different double changes which top wins the mode.
+Both are verified against CPython over 4,675 cases.
+
+Three details a tidier port would have got wrong, all commented in place: L6
+compares rounded coordinate *pairs* through a set, and Python hashes `-0.0` and
+`0.0` the same where string keys do not; L10's width fallback is the int `0`, which
+reprs as `0` and not `0.0`; and L7 compares a tuple containing the bbox, which
+JavaScript would compare by identity and pass even if every number in it had
+changed.
 
 ## The two performance defects the regression suite caught
 

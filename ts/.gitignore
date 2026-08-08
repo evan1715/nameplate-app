@@ -8,3 +8,8 @@ dist_bundle/
 # stamped at build time by scripts/make_manifest.ts; embeds a hostname and a
 # timestamp, so tracking it would churn on every build
 assets/build_manifest.json
+
+# esbuild output. `npm start` and `npm run test:gui` both rebuild it from
+# client/src, so a stale committed copy would be worse than none.
+client/bundle.js
+client/bundle.js.map

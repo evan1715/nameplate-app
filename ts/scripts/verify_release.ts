@@ -14,14 +14,14 @@
  *     `--selftest` switch, because a `--windowed` PyInstaller build has no stdout.
  *     A Node CLI has stdout, so the checks that read `selftest_report.txt` read the
  *     command's own output instead. The GUI-feature checks it walked
- *     ("lists fonts", "canvas painted", "pair sheet zooms out and in", …) have no
- *     equivalent yet: those exercise the Qt window, which is not part of this port.
- *     They are listed as SKIP rather than quietly dropped, so the count is honest.
+ *     ("lists fonts", "canvas painted", "pair sheet zooms out and in", …) are now
+ *     real: the archive ships the app as well as the CLI, so this starts the
+ *     bundled server out of the extraction and drives it. Nothing is skipped.
  *
  * Exit code 0 = every check passed.
  */
 
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -33,7 +33,6 @@ const ARCHIVE = path.join(HERE, "dist", "nameplate-ts.tar.gz");
 const STAGE = path.join(os.tmpdir(), "nameplate_release_test");
 
 const failures: string[] = [];
-const skipped: string[] = [];
 let passes = 0;
 
 function check(name: string, ok: boolean, detail = ""): void {
@@ -45,13 +44,6 @@ function check(name: string, ok: boolean, detail = ""): void {
     console.log(`[FAIL] ${name}`);
   }
   if (detail) console.log(`       ${detail}`);
-}
-
-/** A check this port cannot make yet, recorded rather than dropped. */
-function skip(name: string, why: string): void {
-  skipped.push(`${name} -> ${why}`);
-  console.log(`[SKIP] ${name}`);
-  console.log(`       ${why}`);
 }
 
 console.log("=== raw extraction test ===================================");
@@ -207,23 +199,123 @@ console.log("\n=== files the extracted bundle produced ===================");
   }
 }
 
-// ---- the checks that belong to the GUI ------------------------------------ //
-console.log("\n=== checks that need the desktop window ===================");
-for (const feature of [
-  "lists fonts", "preview size label", "canvas painted", "lead-ins appear",
-  "Reload font", "font checker", "a cut-only font does NOT warn",
-  "eyelet toggle fills actual", "wanted eyelet ID draws the target ring",
-  "clearing a target box reads as nothing", "thin mark's rank cannot be misread",
-  "Generate prompts produces one section", "pair sheet zooms out and in",
-  "covers every positional junction", "window screenshot captured",
-]) {
-  skip(`feature exercised: ${feature}`, "the desktop window is not part of this port");
+// ---- the app, started out of the extraction ------------------------------- //
+// The point of this file is "does it run for someone who just unpacked it", and
+// that now includes the window. So the bundled server is started FROM THE
+// EXTRACTION, with no build tree in reach, and driven over HTTP.
+console.log("\n=== the app, served from the extraction ===================");
+{
+  const server = path.join(app, "nameplate-app.mjs");
+  check("the app bundle ships", fs.existsSync(server), server);
+  if (fs.existsSync(server)) {
+    for (const f of ["client/index.html", "client/app.css", "client/bundle.js"]) {
+      check(`the page ships: ${f}`, fs.existsSync(path.join(app, f)));
+    }
+    const proc = spawn(process.execPath, [server, "--port", "0"],
+      { cwd: app, stdio: ["ignore", "pipe", "pipe"] });
+    try {
+      const base = await new Promise<string>((resolve, reject) => {
+        let buf = "";
+        proc.stdout.on("data", (c: Buffer) => {
+          buf += c.toString();
+          const m = /open (http:\/\/127\.0\.0\.1:\d+)\//.exec(buf);
+          if (m) resolve(m[1]);
+        });
+        proc.on("exit", (code) => reject(new Error(`exited before serving (${code})`)));
+        setTimeout(() => reject(new Error("did not start within 60s")), 60_000);
+      });
+      const post = (route: string, body: unknown) =>
+        fetch(`${base}${route}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }).then((r) => r.json());
+
+      const page = await fetch(`${base}/`).then((r) => r.text());
+      check("the page is served", page.includes('id="root"'), `${page.length} bytes`);
+
+      const state = await post("/api/state", {});
+      check("lists fonts", (state.fonts?.length ?? 0) >= 3,
+        `${state.fonts?.length} -> ${state.fonts?.map((f: {family: string}) => f.family).join(", ")}`);
+      const merri = state.fonts.find((f: {family: string}) => f.family.includes("Merriweather"));
+
+      const info = await post("/api/probe", { path: merri.path });
+      check("font checker", String(info.detail).includes("carries engrave lines"), info.detail);
+
+      const built = await post("/api/build",
+        { path: merri.path, text: "ADAM", height: 1, unit: "in", basis: "cap" });
+      check("preview size label", built.size_label === "ADAM — 4.069 × 1.020 in", built.size_label);
+      check("preview counts", built.count_label === "6 cut contours, 10 engrave lines",
+        built.count_label);
+      check("the preview carries geometry to draw",
+        built.cut?.length === 6 && built.engrave?.length === 10,
+        `${built.cut?.length} cut, ${built.engrave?.length} engrave`);
+
+      const lead = await post("/api/build", {
+        path: merri.path, text: "ADAM", height: 1, unit: "in", basis: "cap",
+        lead_in: true, lead_len: 0.1,
+      });
+      check("lead-ins appear", String(lead.count_label).includes("lead-in"), lead.count_label);
+      check("lead-ins do not change the stated size", lead.size_label === built.size_label,
+        lead.size_label);
+
+      const carrie = state.fonts.find((f: {family: string}) => f.family.includes("Carrie SO v2"));
+      const cut = await post("/api/build",
+        { path: carrie.path, text: "Carrie", height: 1, unit: "in", basis: "cap" });
+      check("a cut-only font does NOT warn",
+        !cut.notes.some((n: string) => n.toLowerCase().includes("engrave")),
+        `notes=${JSON.stringify(cut.notes)} counts=${cut.count_label}`);
+
+      const eye = await post("/api/build", {
+        path: merri.path, text: "ADAM", height: 1, unit: "in", basis: "cap",
+        eye_dims: true, eye_target_id: 0.3793,
+      });
+      check("eyelet toggle fills actual", Boolean(eye.eyelet_rows?.id?.actual),
+        JSON.stringify(eye.eyelet_rows?.id));
+      check("wanted eyelet ID draws the target ring",
+        eye.overlays.some((o: {label: string}) => o.label.includes("target inner diameter")),
+        eye.overlays.map((o: {label: string}) => o.label).join(", "));
+
+      const bare = await post("/api/build", {
+        path: merri.path, text: "ADAM", height: 1, unit: "in", basis: "cap", eye_dims: true,
+      });
+      check("clearing a target box reads as nothing",
+        !bare.overlays.length && !bare.eyelet_rows?.id?.want,
+        `overlays=${bare.overlays.length} want=${JSON.stringify(bare.eyelet_rows?.id?.want)}`);
+
+      const thin = await post("/api/build", {
+        path: merri.path, text: "ADAM", height: 1, unit: "in", basis: "cap", thin: true,
+      });
+      check("thin mark's rank cannot be misread",
+        thin.thin_spots.length > 0 && thin.thin_spots.every(
+          (sp: {across: unknown[]}) => sp.across?.length === 2),
+        `${thin.thin_spots.length} spot(s)`);
+
+      const prompts = await post("/api/prompts",
+        { path: merri.path, text: "ADAM", height: 1, unit: "in", basis: "cap" });
+      check("Generate prompts produces one section per area", prompts.length === 4,
+        prompts.map((s: {title: string}) => s.title).join(" | "));
+
+      const sheet = await post("/api/pairsheet", { path: merri.path });
+      check("covers every positional junction", sheet.rows.length === 182 && sheet.cols.length === 26,
+        `${sheet.rows.length} rows x ${sheet.cols.length} cols, cell ${sheet.cell}px`);
+      const zoomed = await post("/api/pairsheet", { path: merri.path, zoom: 0.3 });
+      check("pair sheet zooms out and in", zoomed.cell === 40 && zoomed.cell < sheet.cell,
+        `30%=${zoomed.cell}px 100%=${sheet.cell}px`);
+      const cells = await post("/api/pairsheet/cells",
+        { path: merri.path, r0: 0, r1: 1, c0: 0, c1: 3 });
+      check("the sheet hands the page real outlines to paint",
+        cells.length === 8 && cells.some((c: {glyphs: unknown[]}) => c.glyphs.length > 0),
+        `${cells.length} cells, first shown ${JSON.stringify(cells[0]?.shown)}`);
+    } finally {
+      proc.kill();
+    }
+  }
 }
 
 console.log("\n==========================================================");
 if (failures.length === 0) {
   console.log(`ALL ${passes} CHECKS PASSED — the archive runs from a raw extraction`);
-  if (skipped.length) console.log(`${skipped.length} check(s) skipped (see above)`);
   console.log(`tested at: ${app}`);
   process.exit(0);
 } else {

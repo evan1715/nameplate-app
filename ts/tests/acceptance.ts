@@ -920,6 +920,56 @@ for (const [fname, gen] of goldenCases) {
   check(`golden ${fname}`, `identical to golden (${wantText.length} bytes)`, verdict, ok);
 }
 
+/**
+ * The golden PDFs, compared on their DRAWING rather than on their bytes.
+ *
+ * A PDF's page content is one Flate stream, and Node's zlib and CPython's zlib
+ * emit different-length (both valid) DEFLATE for the same input — the sheet comes
+ * out 232 bytes smaller here. Every byte offset in the xref table then differs
+ * too, so a whole-file comparison reports a difference that no reader can see.
+ *
+ * Inflating first asks the question that matters: is the drawing the same? For
+ * these two files it is, to the byte — same operators, same coordinates, same
+ * order — which is the strongest statement available about a compressed format.
+ */
+function pdfContentStream(bytes: Uint8Array): string {
+  const buf = Buffer.from(bytes);
+  const start = buf.indexOf("stream\n") + "stream\n".length;
+  const end = buf.indexOf("\nendstream", start);
+  return zlib.inflateSync(buf.subarray(start, end)).toString("latin1");
+}
+
+const goldenPdfCases: [string, () => Uint8Array][] = [
+  ["ADAM_cap1in.pdf", () => pdfDocument([dAdam])],
+  ["sheet_ADAM_OLIVIA.pdf", () => pdfSheet([dAdam, dOliv], 0.25)],
+];
+for (const [fname, gen] of goldenPdfCases) {
+  const p = path.join(GOLDEN, fname);
+  if (!fs.existsSync(p)) {
+    check(`golden ${fname}`, "file present", "missing", false);
+    continue;
+  }
+  const want = pdfContentStream(fs.readFileSync(p));
+  const got = pdfContentStream(gen());
+  let verdict: string;
+  let ok: boolean;
+  if (got === want) {
+    verdict = "identical";
+    ok = true;
+  } else {
+    const worst = worstNumericDeviation(got, want);
+    if (worst !== null && worst <= 1e-4) {
+      verdict = `identical text, worst number differs by ${worst} (< 1e-4, geometry-library rounding)`;
+      ok = true;
+    } else {
+      verdict = `DIFFERS (got ${got.length} bytes of content vs ${want.length})`;
+      ok = false;
+    }
+  }
+  check(`golden ${fname}`, `same page content as golden (${want.length} bytes inflated)`,
+    verdict, ok);
+}
+
 console.log("=".repeat(78));
 const nPass = results.filter((r) => r[0]).length;
 console.log(`${nPass}/${results.length} passed`);

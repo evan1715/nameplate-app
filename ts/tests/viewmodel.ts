@@ -16,11 +16,14 @@
  *   display at all.
  */
 
+import * as fs from "node:fs";
 import { readFileSync } from "node:fs";
+import * as os from "node:os";
 import * as path from "node:path";
 import { initSkia } from "../src/skia.ts";
 import { Font } from "../src/font.ts";
 import * as VM from "../src/viewmodel.ts";
+import * as APP from "../src/app.ts";
 
 const REFS = path.join(path.dirname(new URL(import.meta.url).pathname), "refs");
 const ROOT = "/home/user/nameplate-app";
@@ -238,6 +241,69 @@ check(
   "Dleftring\u2192d (0.001 in)",
   broken.gap_text,
 );
+
+// --------------------------------------------------------------------------- //
+//  the two panels the Qt window had behind buttons its selftest never pressed
+//
+//  There is no reference line for either, because the Python's `--selftest` does
+//  not click them — so these assert the CONTRACT rather than a captured string.
+//  They exist because both were missing from the browser port at first, and a
+//  feature nobody tests is a feature that quietly does not ship.
+// --------------------------------------------------------------------------- //
+{
+  const merriPath = path.join(FONTS, "MerriweatherCut3Black-Engrave-v2.ttf");
+
+  // Without a target there is prose and no request: with nothing to aim at there
+  // is no change to ask for, and inventing one produces a repair instruction for
+  // a font that may already be right.
+  const bare = APP.thicknessReport(merriPath, "ADAM", 1.0, "in", "cap");
+  check(
+    "the thickness report measures without a target and asks for nothing",
+    "starts with the size line, no prompt",
+    `${bare.text.startsWith("ADAM — 4.069 x 1.020 in") ? "starts with the size line" : "starts " + JSON.stringify(bare.text.slice(0, 40))}` +
+    `, ${bare.prompt ? "prompt " + bare.prompt.length + " chars" : "no prompt"}`,
+  );
+  const aimed = APP.thicknessReport(merriPath, "ADAM", 1.0, "in", "cap", 0.15);
+  check(
+    "and produces the paste-ready fix once one is typed",
+    "same report, plus a prompt naming the font",
+    `${aimed.text.startsWith("ADAM — 4.069 x 1.020 in") ? "same report" : "DIFFERENT report"}` +
+    `, ${aimed.prompt.includes("MerriweatherCut3Black-Engrave-v2.ttf") ? "plus a prompt naming the font" : "prompt does NOT name the font"}`,
+  );
+
+  // "Add font…" writes into fonts/ so the font travels with the app folder. What
+  // must not happen is a write outside it, or a file that is not a font being
+  // left behind for the picker to trip over.
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "addfont-"));
+  const staged = path.join(tmp, "staged.otf");
+  fs.copyFileSync(path.join(FONTS, "TGCarrieSO-v2.otf"), staged);
+  let added = "";
+  let rejected = "";
+  try {
+    added = APP.addFont("../../escape/../staged.otf", fs.readFileSync(staged));
+    try {
+      APP.addFont("notafont.ttf", Buffer.from("this is not a font"));
+      rejected = "ACCEPTED a non-font";
+    } catch {
+      rejected = fs.existsSync(path.join(APP.FONTS_DIR, "notafont.ttf"))
+        ? "refused but left the file behind"
+        : "refused and left nothing behind";
+    }
+  } finally {
+    if (added) fs.rmSync(added, { force: true });
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+  check(
+    "Add font copies into fonts/, ignoring any path in the name",
+    path.join(APP.FONTS_DIR, "staged.otf"),
+    added,
+  );
+  check(
+    "and a file that is not a font is refused, not left in the folder",
+    "refused and left nothing behind",
+    rejected,
+  );
+}
 
 console.log("=".repeat(78));
 const nOk = results.filter((r) => r[0]).length;

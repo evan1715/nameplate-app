@@ -1,64 +1,88 @@
 Sean's Font Prototyping Friend — INSTALL
 =======================================
 
-There is no installer and nothing to register. The app is a folder. You copy
-the folder, you double-click the .exe. That is the whole install.
+The app is a folder. You copy the folder, you run one command, and it opens in
+your browser. There is no installer and nothing to register.
 
-It needs no Python, no admin rights, and no internet.
+It needs Node.js. No Python, no admin rights, and no internet after the first
+setup.
 
 
 -----------------------------------------------------------------------------
-ON THIS COMPUTER
+WHAT IT NEEDS
 -----------------------------------------------------------------------------
 
-The built app is already here:
+Node.js 22.18 or newer, 64-bit. Node 24 LTS is the one to get.
 
-  C:\Users\Zack\Documents\Calude Code Apps\nameplate-app\dist\SeansFontPrototypingFriend\
+  https://nodejs.org  ->  the LTS download  ->  next, next, finish
 
-1. Copy that SeansFontPrototypingFriend folder somewhere you keep programs,
-   for example:
+To check what you have, open a Command Prompt and type:
+
+      node --version
+
+Anything from v22.18 upward is fine. Older than that will not run this: the
+code is TypeScript, and Node runs TypeScript directly from that version on —
+which is exactly why there is no build step and nothing to compile.
+
+
+-----------------------------------------------------------------------------
+FIRST RUN
+-----------------------------------------------------------------------------
+
+1. Copy the nameplate-app folder somewhere you keep programs, for example
+
        C:\Users\Zack\Documents\SeansFontPrototypingFriend\
-   (Running it straight out of dist\ works too, but dist\ gets replaced every
-   time the app is rebuilt, so anything you put in its fonts\ folder would be
-   overwritten. Copy it out first.)
 
-2. Double-click SeansFontPrototypingFriend.exe
+   Anywhere you can write to is fine. Not C:\Program Files — that folder is
+   read-only for normal users, so the app could not save settings.json or
+   accept new fonts.
 
-3. Optional — right-click the .exe > "Pin to Start", or "Show more options" >
-   "Create shortcut" and drag the shortcut to your Desktop.
-   Make the SHORTCUT, not a copy of the .exe. The .exe cannot run on its own;
-   it needs the _internal folder sitting next to it.
+2. Open a Command Prompt in that folder (Shift+right-click the folder ->
+   "Open PowerShell window here"), then:
+
+       cd ts
+       npm install        <-- once, needs internet; a minute or two
+       npm start
+
+3. It prints the address it is listening on:
+
+       Sean's Font Prototyping Friend
+         open http://127.0.0.1:8175/
+
+   Open that in your browser. Chrome, Edge and Firefox all work.
+
+4. Leave the Command Prompt window open while you use it — that window IS the
+   app. Closing it stops the app. Ctrl+C stops it too.
+
+To make it one double-click, put this in a .bat file next to the folder:
+
+       @echo off
+       cd /d "%~dp0ts"
+       start "" http://127.0.0.1:8175/
+       npm start
+
+`npm install` is only needed once, or after the code changes.
 
 
 -----------------------------------------------------------------------------
 ON ANY OTHER COMPUTER
 -----------------------------------------------------------------------------
 
-1. Copy SeansFontPrototypingFriend.zip to the other PC
-   (USB stick, network share, OneDrive — whatever is easiest).
+Copy the whole folder over — USB stick, network share, OneDrive, whatever is
+easiest — install Node.js on that machine, and run the same two commands.
 
-2. Right-click the zip > Extract All.
-   IMPORTANT: extract it. Do not run the .exe from inside the zip preview —
-   Windows unpacks only the one file and the app will fail to start.
+If the other machine has no internet, copy the ts\node_modules folder across as
+well and skip `npm install`.
 
-3. Open the extracted SeansFontPrototypingFriend folder and double-click
-   SeansFontPrototypingFriend.exe
 
-That is it. Requirements on the target PC: 64-bit Windows 10 or 11, about
-200 MB of disk, and permission to write inside the app's own folder (needed
-for fonts\ and settings.json).
+-----------------------------------------------------------------------------
+IT ONLY LISTENS TO THIS COMPUTER
+-----------------------------------------------------------------------------
 
-FIRST LAUNCH WARNINGS
-  Windows may show "Windows protected your PC" (SmartScreen), because the exe
-  is not code-signed. Click "More info" > "Run anyway". It appears once per
-  machine. If your antivirus quarantines it, allow it — PyInstaller-built exes
-  are a common false positive.
-
-DO NOT
-  * Don't move the .exe out of its folder. It needs _internal\ beside it.
-  * Don't install it into C:\Program Files. That folder is read-only for normal
-    users, so the app could not save settings.json or accept new fonts. Put it
-    somewhere under your user folder, or on a data drive.
+The address is 127.0.0.1, which means this machine and nothing else. Another PC
+on the network cannot reach it, and there is no setting to change that. The app
+reads and writes files on your disk by full path, which is right for a program
+on your own machine and wrong for anything the network can talk to.
 
 
 -----------------------------------------------------------------------------
@@ -68,12 +92,11 @@ ADDING YOUR FONTS
 The app ships with the three production fonts already in place. To add more:
 
   Either  click "Add font…" in the app (it copies the file into fonts\ for you)
-  Or      drop the .ttf/.otf/.ttc into the fonts\ folder next to the .exe and
-          click "Refresh"
+  Or      drop the .ttf/.otf/.ttc into the fonts\ folder and click "Refresh"
 
-Refresh also picks up a replaced font while the app is open — no restart. If
-two files report the same font name, the app uses the newest and shows each
-one's date so you can tell them apart.
+Refresh also picks up a replaced font while the app is open — no restart. Use
+"Reload font" after replacing a font with a new version under the same file
+name; that re-reads the file from disk rather than the copy already in memory.
 
 Because fonts live inside the app folder, they travel with it. Copy the folder
 to another PC and your fonts go too.
@@ -138,70 +161,51 @@ you can assign them to different laser layers. Lines are hairline, no fill.
 IF IT WON'T START
 -----------------------------------------------------------------------------
 
-THE SPLASH SHOWS AND THEN NO WINDOW EVER APPEARS
-  Every launch now writes startup.log next to the .exe (or, if that folder is
-  read-only, in %LOCALAPPDATA%\SeansFontPrototypingFriend\). The last line
-  names the step that failed.
+"node is not recognised"
+  Node.js is not installed, or the Command Prompt was open before you installed
+  it. Close the window, open a new one, and try again.
 
-  1. Open startup.log and read the last few lines.
-  2. For a fuller report, open a Command Prompt in the app folder and run:
+"Unsupported TypeScript syntax" or a syntax error in a .ts file
+  The Node on this machine is older than 22.18. Check with `node --version` and
+  install the current LTS.
 
-         SeansFontPrototypingFriend.exe --diagnose
+"EADDRINUSE" / "address already in use"
+  The app is already running in another window, or something else has port
+  8175. Use that window, or start it on a different port:
 
-     It walks the whole startup one step at a time, logging each, and pops up
-     a box telling you where the file is. Send that file back.
+      node src/server.ts --port 9000
 
-  Common causes, in the order worth checking:
-    * The folder sits too deep. Windows silently drops files past ~260
-      characters of path, so _internal ends up incomplete. Extract to
-      something short like C:\Apps\ and try again.
-    * Antivirus quarantined part of _internal after extraction. Check its
-      history and allow the folder.
-    * The app was run from inside the zip preview instead of being extracted.
-    * Windows 8.1 or older. This build needs 64-bit Windows 10 or 11.
-  startup.log will say which of these it is rather than leaving you guessing.
+"Cannot find module" after copying the folder to another PC
+  ts\node_modules did not come across. Run `npm install` in the ts folder, or
+  copy that folder over as well.
 
-Nothing happens when I double-click it
-  The _internal folder is missing or got separated from the .exe. Re-extract
-  the zip, keeping the folder intact. Check startup.log as above.
-
-"Windows protected your PC"
-  More info > Run anyway. Not code-signed; expected.
-
-No fonts in the dropdown
-  The fonts\ folder isn't next to the .exe, or it's empty. Put at least one
-  .ttf/.otf there and click Refresh.
+The page loads but the font list is empty
+  The fonts\ folder is missing or empty. It sits next to the ts folder, in the
+  app folder itself. Put at least one .ttf/.otf in it and click Refresh. The
+  app's Health button prints where it is looking.
 
 It starts but won't save settings, or "Add font…" fails
-  The folder is read-only. Move the app out of Program Files to somewhere
-  under your user folder.
+  The folder is read-only. Move the app somewhere under your user folder or
+  onto a data drive. Health says whether the folder is writable.
 
-Errors are shown in a dialog with the real message — if you hit one, the text
-in that dialog is what to report.
+Something else
+  Click "Health" in the app. It prints which build this is, where it keeps its
+  files, and whether this machine can run it — that text is what to put in a
+  bug report. The Command Prompt window also shows the real error rather than
+  failing silently.
 
 
 -----------------------------------------------------------------------------
 REBUILDING (only if the code changes)
 -----------------------------------------------------------------------------
 
-From C:\Users\Zack\Documents\Calude Code Apps\nameplate-app :
+From the ts folder:
 
-  python -m PyInstaller --noconfirm --onedir --windowed ^
-      --name SeansFontPrototypingFriend ^
-      --icon assets/icon.ico --splash assets/splash.png ^
-      --add-data "fonts;fonts" --add-data "assets;assets" ^
-      nameplate_gui.py
+  npm test                     every suite; nothing ships until they pass
+  node scripts/build_all.ts    tests -> bundles -> staged folder -> tar.gz
+  node scripts/verify_release.ts
+                               extracts that archive somewhere clean, starts
+                               the app out of it and drives it over HTTP
 
-Then copy fonts\ and README_APP.txt (as README.txt) into
-dist\SeansFontPrototypingFriend\ — PyInstaller puts its own copy of the fonts
-inside _internal, but the app reads the writable fonts\ next to the .exe.
-
-Verify before handing it out:
-  python acceptance_tests.py                    (37 checks)
-  python stress_test.py --font "fonts\<any>.ttf" (size + lead-in matrix)
-  dist\SeansFontPrototypingFriend\SeansFontPrototypingFriend.exe --selftest out
-      ^ drives the real window offscreen and writes out\selftest_report.txt,
-        which is the only way to see inside the windowed exe.
-
-To change the logo: replace assets\logo.png, run `python make_assets.py`, then
-rebuild. That regenerates both the exe icon and the splash screen.
+`build_all.ts` refuses to package if any suite fails, and proves the freshly
+built bundle produces the documented numbers before it writes the archive.

@@ -17,6 +17,7 @@
  *   | `make_manifest.py`           | `scripts/make_manifest.ts`                |
  *   | acceptance/export/regression | `tests/acceptance.ts`, `tests/export.ts`  |
  *   | PyInstaller `--onedir`       | `esbuild` bundle + the WASM assets         |
+ *   | the PySide6 window           | `esbuild` client bundle + `src/server.ts`  |
  *   | `Compress-Archive`           | a `.tar.gz` written with `tar`             |
  *   | Inno Setup                   | skipped — there is no installer to build   |
  *
@@ -27,7 +28,7 @@
  *     regressions were never checked before an installer went out. Both run here.
  */
 
-import { execFileSync, spawnSync } from "node:child_process";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -55,13 +56,23 @@ say("1. tests must pass before anything is built");
 // ALL of them. The PowerShell original used to run the acceptance suite only,
 // which meant the suite proving the CorelDRAW-verified export contract (per-name
 // groups, cut order engrave -> inner -> outline) never ran before packaging.
-for (const suite of ["tests/parity.ts", "tests/acceptance.ts", "tests/export.ts"]) {
+// The window's own selftest is in here too, now that the window is part of the
+// port: it is the only suite that proves the shipped page draws what the engine
+// measured, and shipping without it would repeat the original's mistake one level
+// up.
+run("npm", ["run", "build:client"], 2);
+for (const suite of ["tests/parity.ts", "tests/acceptance.ts", "tests/export.ts",
+  "tests/gui.ts"]) {
   console.log(`  ${suite}`);
   run("node", [suite], 3);
 }
 
 say("2. typecheck");
+// Both projects: the engine and the client are separate tsconfigs on purpose (the
+// client needs the DOM lib and JSX, the engine must not have them), so one
+// invocation checks half the tree.
 run("npx", ["tsc", "--noEmit"], 2);
+run("npx", ["tsc", "-p", "client/tsconfig.json", "--noEmit"], 2);
 
 say("3. clean previous output");
 for (const d of [DIST, path.join(HERE, "dist")]) {
@@ -89,6 +100,19 @@ run(
   2,
 );
 
+say("4b. bundle the app: the server, and the page it serves");
+run(
+  "npx",
+  [
+    "esbuild", "src/server.ts",
+    "--bundle", "--platform=node", "--format=esm", "--target=node22",
+    "--external:canvaskit-wasm", "--external:harfbuzzjs", "--external:jsts",
+    "--external:opentype.js",
+    `--outfile=${path.join(DIST, "nameplate-app.mjs")}`,
+  ],
+  2,
+);
+
 say("5. stage what the bundle needs beside it");
 // The externals above have to travel with the bundle, along with the fonts and the
 // docs — the same "folder you can copy" shape the PowerShell build produced.
@@ -99,6 +123,12 @@ for (const dep of stageDeps) {
   fs.cpSync(from, to, { recursive: true });
 }
 fs.cpSync(path.join(HERE, "..", "fonts"), path.join(DIST, "fonts"), { recursive: true });
+// The page, already bundled by step 1's `build:client`. The server resolves it
+// relative to itself, so it has to sit in a `client/` beside the .mjs.
+fs.mkdirSync(path.join(DIST, "client"), { recursive: true });
+for (const f of ["index.html", "app.css", "bundle.js"]) {
+  fs.copyFileSync(path.join(HERE, "client", f), path.join(DIST, "client", f));
+}
 fs.copyFileSync(path.join(HERE, "..", "README_APP.txt"), path.join(DIST, "README.txt"));
 fs.copyFileSync(path.join(HERE, "..", "INSTALL.txt"), path.join(DIST, "INSTALL.txt"));
 if (fs.existsSync(path.join(HERE, "assets", "build_manifest.json"))) {
@@ -136,6 +166,43 @@ for (const f of ["ADAM.svg", "ADAM.pdf"]) {
   }
 }
 fs.rmSync(proofDir, { recursive: true, force: true });
+
+say("6b. prove the bundled app serves the page and measures a name");
+{
+  const proc = spawn(process.execPath, [path.join(DIST, "nameplate-app.mjs"), "--port", "0"],
+    { cwd: DIST, stdio: ["ignore", "pipe", "pipe"] });
+  try {
+    // The server prints the URL it bound to; that line is also the readiness signal,
+    // so there is nothing to poll and no sleep to guess at.
+    const line = await new Promise<string>((resolve, reject) => {
+      let buf = "";
+      proc.stdout.on("data", (c: Buffer) => {
+        buf += c.toString();
+        const m = /open (http:\/\/127\.0\.0\.1:\d+)\//.exec(buf);
+        if (m) resolve(m[1]);
+      });
+      proc.on("exit", (code) => reject(new Error(`the app exited before serving (${code})`)));
+      setTimeout(() => reject(new Error("the app did not start within 60s")), 60_000);
+    });
+    const page = await fetch(`${line}/`).then((r) => r.text());
+    if (!page.includes('id="root"')) throw new Error("the bundled app did not serve the page");
+    const built = await fetch(`${line}/api/build`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        path: path.join(DIST, "fonts", "MerriweatherCut3Black-Engrave-v2.ttf"),
+        text: "ADAM", height: 1, unit: "in", basis: "cap",
+      }),
+    }).then((r) => r.json());
+    console.log(`    ${built.size_label}  |  ${built.count_label}`);
+    if (built.size_label !== "ADAM — 4.069 × 1.020 in" ||
+      built.count_label !== "6 cut contours, 10 engrave lines") {
+      throw new Error("the bundled app did not produce the documented numbers");
+    }
+  } finally {
+    proc.kill();
+  }
+}
 
 say("7. portable archive");
 fs.mkdirSync(path.join(HERE, "dist"), { recursive: true });

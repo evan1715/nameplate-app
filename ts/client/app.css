@@ -1,0 +1,211 @@
+/*
+ * app.css — the window's look.
+ *
+ * Carries over the two things the Qt stylesheet actually decided: the neon purple
+ * accent everywhere a toolkit would have used blue, and the rule that the preview
+ * is white no matter what the rest of the app is doing. A cut file is judged
+ * against white paper, and a dark preview would show a thin serif as visible when
+ * it is not.
+ */
+
+:root {
+  --neon: #b026ff;
+  --neon-hover: #c558ff;
+  --neon-press: #7b18c4;
+  --ink: #1c1f23;
+  --muted: #6b7177;
+  --line: #dfe3e8;
+  --panel: #f6f7f9;
+  --amber: #8a6d00;
+  --amber-bg: #fff8e1;
+  --bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e6e8ea;
+    --muted: #9aa0a6;
+    --line: #33383d;
+    --panel: #1c1f23;
+    --amber: #ffd479;
+    --amber-bg: #3a2f00;
+    --bg: #131518;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+.titlebar h1 { font-size: 15px; margin: 0; font-weight: 600; }
+.spacer { flex: 1; }
+
+.body { display: flex; flex: 1; min-height: 0; }
+
+.controls {
+  width: 340px;
+  flex: none;
+  overflow-y: auto;
+  padding: 12px;
+  border-right: 1px solid var(--line);
+  background: var(--panel);
+}
+
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 0 0 12px;
+  padding: 10px 12px 12px;
+}
+legend { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+
+label { display: block; margin: 6px 0; }
+.field { display: flex; align-items: center; gap: 8px; }
+.field input { flex: 1; min-width: 0; }
+.suffix { color: var(--muted); width: 2.2em; }
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0 0; }
+.row.radios label { display: inline-flex; align-items: center; gap: 4px; margin: 0; }
+.row.radios input { margin: 0; }
+
+input[type="text"], input[type="number"], select, textarea {
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 7px;
+  width: 100%;
+}
+textarea { resize: vertical; font-family: ui-monospace, "Cascadia Mono", Menlo, monospace; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--neon); outline-offset: -1px; }
+
+button {
+  font: inherit;
+  color: #fff;
+  background: var(--neon);
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: var(--neon-hover); }
+button:active:not(:disabled) { background: var(--neon-press); }
+button:disabled { background: var(--line); color: var(--muted); cursor: default; }
+button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+
+.detail { color: var(--muted); font-size: 12px; margin: 6px 0 0; word-break: break-word; }
+.muted { color: var(--muted); font-size: 12px; }
+
+main { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 12px; gap: 8px; }
+
+.labels { flex: none; }
+.size-label { font-size: 17px; font-weight: 600; }
+.count-label { color: var(--muted); font-size: 13px; min-height: 1.4em; }
+
+.amber {
+  flex: none;
+  background: var(--amber-bg);
+  color: var(--amber);
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+/* Always white: a cut file is judged against white paper. */
+.preview {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  touch-action: none;
+  cursor: grab;
+}
+.preview:active { cursor: grabbing; }
+.preview canvas { display: block; }
+
+.status { flex: none; color: var(--muted); font-size: 12px; min-height: 1.4em; }
+.working { color: var(--neon); }
+
+table.eyelets { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+table.eyelets th, table.eyelets td { text-align: right; padding: 3px 4px; border-bottom: 1px solid var(--line); }
+table.eyelets thead th { color: var(--muted); font-weight: 500; }
+table.eyelets tbody th { text-align: left; font-weight: 500; color: var(--muted); }
+table.eyelets td { font-variant-numeric: tabular-nums; }
+
+/* ---- dialogs ------------------------------------------------------------ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 10;
+}
+.modal {
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 16px;
+  width: min(820px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, .3);
+}
+.modal.wide { width: min(1400px, 100%); }
+.modal header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.modal header h2 { font-size: 15px; margin: 0; flex: 1; }
+
+.prompt-block { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+.prompt-block h3 { font-size: 13px; margin: 0 0 4px; }
+.prompt-block button { margin-top: 6px; }
+
+.toolbar { border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.toolbar .warn { color: var(--amber); }
+.toolbar select { width: auto; }
+
+.sheet-scroll {
+  overflow: auto;
+  max-height: 70vh;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 20;
+  max-width: 420px;
+  padding: 7px 9px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #1c1f23;
+  background: #ffffe1;
+  border: 1px solid #b8b8a0;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.error { color: #d92b2b; }
+
+.target-spin { font-variant-numeric: tabular-nums; }
