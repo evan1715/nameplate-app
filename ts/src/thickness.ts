@@ -63,7 +63,7 @@
  */
 
 import * as path from "node:path";
-import { Document, type Unit } from "./core.ts";
+import { type Basis, Document, type Unit, buildDocument } from "./core.ts";
 import { Font, shape } from "./font.ts";
 import * as G from "./geom.ts";
 import * as LI from "./leadin.ts";
@@ -1702,12 +1702,51 @@ export function claudePromptFromSpots(
   // reader to a file this tree no longer has. Everything after the script name is
   // identical, and the test asserts that.
   L.push(
-    `  node src/thickness.ts ${cmd} "${doc.text}" ${pyG(doc.targetHeight)} ` +
+    `  node src/bin/thickness.ts ${cmd} "${doc.text}" ${pyG(doc.targetHeight)} ` +
       `${u} ${doc.basis} ${pyG(target)}`,
   );
   L.push(`  Every area it lists must read ${req} font units or more, and the artwork`);
   L.push("  size it prints must be unchanged from before the edit.");
   return asciiOnly(L.join("\n"));
+}
+
+/**
+ * The command line the prompt above tells the reader to re-run.
+ *
+ * A port of `nameplate_thickness.py`'s `main()`, argument for argument, because
+ * the "HOW IT WILL BE CHECKED" line names it and an instruction that points at a
+ * command which does not exist is worse than no instruction. Invoked by
+ * `src/bin/thickness.ts`.
+ *
+ * @param argv arguments after the script name
+ * @returns the process exit code: 0 on success, 2 on a usage error
+ */
+export async function main(argv: string[] = process.argv.slice(2)): Promise<number> {
+  const args = [...argv];
+  if (args.length < 2) {
+    process.stdout.write(
+      "usage: node src/bin/thickness.ts <font> <name> " +
+      "[height] [in|mm] [cap|xheight|total] [target_thickness]\n");
+    return 2;
+  }
+  const [path, name] = args;
+  const height = args.length > 2 ? Number(args[2]) : 1.0;
+  const unit = args.length > 3 ? args[3] : "in";
+  const basis = args.length > 4 ? args[4] : "cap";
+  const target = args.length > 5 ? Number(args[5]) : null;
+
+  const { initSkia } = await import("./skia.ts");
+  await initSkia();
+  const font = new Font(path);
+  const doc = buildDocument(font, name, height, unit as Unit, basis as Basis);
+  const sv = survey(doc, target, MAX_SAMPLES, 8, font);
+  process.stdout.write(reportText(doc, target, null, null, sv) + "\n");
+  if (target) {
+    process.stdout.write("\n" + "-".repeat(74) + "\n\n");
+    process.stdout.write(claudePromptFromSpots(
+      doc, target, sv.spots, path, sv.n_areas, sv.n_below_target) + "\n");
+  }
+  return 0;
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * brief.ts — the app's whole opinion of a font, in one command.
  *
- *     node src/brief.ts --font X.ttf --cap 1.0 --unit in \
+ *     node src/bin/brief.ts --font X.ttf --cap 1.0 --unit in \
  *         --eyelet-id 0.375 --eyelet-wall 0.20 --min-thickness 0.10
  *
  * This is the machine-readable face of Sean's Font Prototyping Friend. The GUI
@@ -16,7 +16,7 @@
  *
  * So a font-editing loop is just:
  *
- *     while node src/brief.ts ... ; [ $? -eq 1 ]; do  edit the font  done
+ *     while node src/bin/brief.ts ... ; [ $? -eq 1 ]; do  edit the font  done
  *
  * WHY A SEPARATE TOOL AND NOT A FLAG ON THE GUI
  *     The GUI holds state — a selected font, a typed name, a unit, four toggles. An
@@ -48,7 +48,6 @@
  */
 
 import { basename, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
 import * as fs from "node:fs";
 import { Document, buildDocument, capReference } from "./core.ts";
 import { Font } from "./font.ts";
@@ -892,7 +891,7 @@ export function dumpJson(b: Brief): string {
 // `usage: nameplate_brief.py`, and the usage text is not part of any captured
 // reference — unlike the `tool` field in the JSON, which is a NAME rather than a
 // path and stays `nameplate_brief` so the documents still compare.
-const USAGE = `usage: node src/brief.ts --font FONT [options]
+const USAGE = `usage: node src/bin/brief.ts --font FONT [options]
 
 Measure a font against nameplate targets and say whether it is done.
 Exit 0 = every target met, 1 = work needed, 2 = unusable, 3 = tool error.
@@ -1022,6 +1021,8 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<numb
   return { ready: 0, "needs work": 1, unusable: 2 }[b.verdict as string] ?? 1;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  process.exit(await main());
-}
+// The command-line entry point is `src/bin/brief.ts`, not a guard here.
+// Bundling makes `import.meta.url` identical for every module, so a self-invoking
+// guard fires in EVERY module of a bundle - see src/bin/README.md. The basename
+// trap that guard originally fixed is gone too: a separate entry file cannot be
+// mistaken for another file with the same name.

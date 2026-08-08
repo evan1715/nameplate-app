@@ -69,7 +69,7 @@ const outDir = path.join(STAGE, "out");
 const cli = spawnSync(
   "node",
   [
-    "src/cli.ts",
+    "src/bin/cli.ts",
     "--font", path.join(REPO, "fonts", "MerriweatherCut3Black-Engrave-v2.ttf"),
     "--height", "1", "--unit", "in", "--basis", "cap",
     "--format", "both", "--mode", "per-name", "--out", outDir, "ADAM",

@@ -73,6 +73,11 @@ ts/src/
                     verdict in the exit code.
   cli.ts            batch export without the window
 
+ts/src/bin/         one entry file per command, each of which does nothing but
+                    call a main() from the module beside it. They are separate
+                    files for a reason — read src/bin/README.md before merging
+                    one back into its module.
+
 ts/client/          the React front end. Draws; owns no measurement logic.
 ts/scripts/         build_all, verify_release, verify_install, make_manifest
 ```
@@ -83,7 +88,7 @@ with a comment explaining *why* it exists and what it deliberately does not do.
 
 ---
 
-## Six things that will bite you
+## Seven things that will bite you
 
 **1. `core.ts` is sealed.** `tests/acceptance.ts` compares exported SVGs against
 files in `golden/` **byte for byte**, and the golden PDFs by their inflated page
@@ -118,7 +123,15 @@ same direction as its outer contour cancels in the cut — the letter lasers as 
 solid blob. `windingCheck()` in `fontcheck.ts` exists only to catch that
 divergence. Keep the two models compared, never assume they agree.
 
-**6. jsts does not index and GEOS does.** shapely's calls come back
+**6. A module must not run itself.** Every command's entry point lives in
+`src/bin/`. A self-invoking `if (import.meta.url === ...)` guard inside a module
+is correct under Node and wrong under a bundler, which collapses every module
+into one `import.meta.url` so all of them fire at once. That shipped a build in
+which the app started, ran the font checker's CLI and exited. Nothing in the
+suites bundles anything, so only `scripts/build_all.ts` — which starts what it
+just built and asks it a question — can catch it.
+
+**7. jsts does not index and GEOS does.** shapely's calls come back
 instantaneous on geometry that makes jsts walk every segment. Two wall-clock
 budgets in `tests/regression.ts` exist because of exactly that, and both were
 blown by a naive translation. `geom.ts` has `IndexedBoundary` and an indexed

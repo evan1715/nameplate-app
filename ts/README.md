@@ -22,6 +22,14 @@ Expected from that CLI line, matching the Python original exactly:
 ADAM: 4.069 x 1.020 in  |  6 cut contour(s), 10 engrave line(s)
 ```
 
+The other commands, each with its own entry point under `src/bin/`:
+
+```
+npm run brief      -- --font <font> --cap 1 --min-thickness 0.06   # measures and JUDGES
+npm run fontcheck  -- <font>                                       # what is wrong with it
+node src/bin/thickness.ts <font> <name> 1 in cap 0.15              # where it will snap
+```
+
 ## How the Python libraries map across
 
 | Python | TypeScript | Why this one |
@@ -49,7 +57,7 @@ passes are ported line for line from `_pathops.pyx`.
 | `tests/thickness.ts` (reports compared character for character) | — | 61/61 |
 | `tests/fontcheck.ts` (reports and repair prompts, character for character) | — | 24/24 |
 | `tests/pairsheet.ts` (all 5,408 cells per font, plus the prompts) | — | 34/34 |
-| `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 15/15 |
+| `tests/brief.ts` (exit codes, markdown byte-exact, JSON structure exact) | — | 18/18 |
 | `tests/viewmodel.ts` (the window's labels, against the Qt selftest's own strings) | — | 28/28 |
 | `regression_tests.py` / `tests/regression.ts` (one test per fixed defect) | 27/27 | 27/27 |
 | `stress_test.py` / `tests/stress.ts` (12 names x 4 heights x 2 units) | 421/421 | 421/421 |
@@ -84,18 +92,21 @@ streams, checked against the Python CLI's own output.
 ```
 src/skia.ts       skia-pathops on top of CanvasKit — the union, and its two passes
 src/geom.ts       the shapely calls the engine makes, on jsts
-src/pyformat.ts   Python's %.4f / str(float) / %g, exactly (BigInt, round-half-even)
+src/pyformat.ts   Python's %.4f / str(float) / %g / %e / round(), exactly
+                  (BigInt, round-half-even, on the double's own value)
 src/font.ts       one font file: shaping, outlines, COLR/CPAL, cmap, metrics
 src/core.ts       the engine: shaping -> union -> engrave lines -> SVG/PDF
 src/layout.ts     multi-name sheet arrangement
 src/leadin.ts     laser lead-in lines, merged into their contours
 src/exporters.ts  the SHIPPING exporter: cut order + per-name groups/layers
 src/eyelets.ts    measures the hanging eyelet (ID / OD / wall)
-src/cli.ts        batch export without a GUI
+src/cli.ts        batch export without the window
 src/thickness.ts  the thin-spot survey, its report and its paste-ready prompt
 src/fontcheck.ts  what is WRONG with a font, and the repair order for it
 src/pairsheet.ts  every two-letter join a font can make, measured
 src/brief.ts      one pass over a font, judged against targets; the exit code IS the answer
+src/bin/          the command-line entry points — one file per command, and nothing
+                  else in them (see src/bin/README.md for why they are separate)
 src/viewmodel.ts  everything the window shows, computed with no window
 src/app.ts        the rest of the window that is not a widget: settings, health,
                   export jobs, prompt blocks, report texts
@@ -104,6 +115,7 @@ src/units.ts      MM_PER_IN and the height floors, for the same reason
 src/pairgrid.ts   the contact sheet's model: rows, cells, scales, flagged walk
 src/server.ts     the engine behind an HTTP API, and the client that draws it
 client/           the React front end (see "The window, rebuilt in a browser")
+scripts/          build, verify a release, verify an install, stamp a manifest
 tests/            the ported suites, plus the TS-vs-Python parity suite
 ```
 
@@ -592,6 +604,72 @@ compares rounded coordinate *pairs* through a set, and Python hashes `-0.0` and
 reprs as `0` and not `0.0`; and L7 compares a tuple containing the bbox, which
 JavaScript would compare by identity and pass even if every number in it had
 changed.
+
+## One flaky check, and why it was flaky
+
+`tests/brief.ts` failed once, on a run that was sharing the machine with a server
+I had left up: the Flourish case reported **1** disconnected letter junction where
+the reference has **2**, and 236 lines of markdown then differed.
+
+The port was not wrong. `checkFont`'s letter-join scan is bounded by wall clock,
+`brief` defaults that bound to 25 seconds, and on a busy machine the scan gets cut
+short — a truncated scan finds fewer junctions, and every comparison after that
+point fails as though the two implementations disagreed.
+
+Every reference records a scan that RAN TO COMPLETION ("8788 of 8788 combinations
+tested"), and the budget appears nowhere in the compared document, so the fix is
+free: the suite passes `--join-budget 600` and asserts, before comparing anything,
+that the scan actually finished. Raising the budget cannot change a completed
+scan's answer — it can only stop it being cut short — and a truncated one now
+reports itself as truncated instead of as a disagreement. **18/18.**
+
+A test that fails when the machine is busy is a test that gets ignored, which is
+worse than not having it.
+
+## The defect that only appeared once it was bundled
+
+`build_all.ts` builds the app, then starts it and asks it to measure ADAM. It
+failed: the bundled app printed the FONT CHECKER's usage text and exited 2.
+
+Each CLI module ended with the standard guard —
+
+```ts
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  process.exit(await main());
+}
+```
+
+— which is correct when Node loads each module as its own file, and wrong the
+moment esbuild concatenates them: `import.meta.url` becomes one string for the
+whole bundle, so **every** guard fires. `fontcheck` is reachable from the server
+through `viewmodel.ts`, its `main()` ran, saw the server's `--port`, and exited.
+
+Worth noting how it got that far. The guard had already been fixed once, for a
+different failure mode (a basename match firing inside `tests/fontcheck.ts`), and
+every suite was green — because nothing in the suites bundles anything. The
+build script caught it only because it starts what it just built and asks it a
+question. A build step that merely produces a file would have shipped it.
+
+`src/bin/` is the fix: one entry file per command, each of which does nothing but
+call a `main()` from the module beside it. The library modules now have no side
+effect on import at all, which is what makes them safe to bundle.
+
+Two more things came out of that run:
+
+* **`BASE` counted `..`** where it should have looked. "Two levels up from this
+  file" is right in `ts/src/` and wrong in a bundle at a different depth, so the
+  shipped app pointed its fonts folder at the directory *above* the one it
+  shipped in. It now walks up for the folder that actually holds `fonts/`, which
+  is both true in either layout and the definition SPEC.md uses. `CLIENT_DIR` had
+  the same bug and served a 404 for its own `index.html`.
+* **`nameplate_thickness.py` had a `main()` and `src/thickness.ts` did not.** The
+  paste-ready prompt's "HOW IT WILL BE CHECKED" line names that command, so the
+  one line a font editor is told to re-run pointed at something unrunnable. It is
+  ported now, argument for argument, as `src/bin/thickness.ts`.
+
+`scripts/verify_release.ts` extracts the archive somewhere clean, starts the app
+**out of the extraction** and drives it over HTTP: **42/42**, with the font list
+reading the staged folder rather than the repository's.
 
 ## The two performance defects the regression suite caught
 

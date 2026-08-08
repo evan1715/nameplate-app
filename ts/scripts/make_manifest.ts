@@ -37,6 +37,8 @@ const SOURCES = [
   "src/skia.ts", "src/geom.ts", "src/pyformat.ts", "src/units.ts", "src/font.ts",
   "src/core.ts", "src/layout.ts", "src/leadin.ts", "src/exporters.ts",
   "src/eyelets.ts", "src/cli.ts",
+  // the entry points, which are the only files that decide what a command does
+  "src/bin/cli.ts", "src/bin/brief.ts", "src/bin/fontcheck.ts", "src/bin/server.ts",
   // the measurement tools
   "src/thickness.ts", "src/fontcheck.ts", "src/pairsheet.ts", "src/brief.ts",
   // the app: the window minus the widgets, and the widgets

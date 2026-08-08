@@ -1,7 +1,7 @@
 /**
  * server.ts — the engine behind an HTTP API, plus the client that draws it.
  *
- *     node src/server.ts [--port 8175] [--no-open]
+ *     node src/bin/server.ts [--port 8175] [--no-open]
  *
  * WHY A SERVER AT ALL
  *   The engine reads fonts off disk with HarfBuzz, unions outlines with a WASM
@@ -30,7 +30,7 @@ import * as fs from "node:fs";
 import * as http from "node:http";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { Font } from "./font.ts";
 import { initSkia } from "./skia.ts";
 import * as APP from "./app.ts";
@@ -39,7 +39,15 @@ import * as PS from "./pairsheet.ts";
 import * as VM from "./viewmodel.ts";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const CLIENT_DIR = path.join(HERE, "..", "client");
+/**
+ * Where the page's three files live: beside the bundle when built, and one level
+ * up from `src/` when running from source. Checked rather than assumed, for the
+ * same reason `app.ts` finds its BASE by looking — a bundle is at a different
+ * depth, and the built app served a 404 for its own index.html.
+ */
+const CLIENT_DIR = fs.existsSync(path.join(HERE, "client", "index.html"))
+  ? path.join(HERE, "client")
+  : path.join(HERE, "..", "client");
 
 /**
  * One open `Font` per path, exactly like the Qt preview worker's cache.
@@ -338,14 +346,8 @@ export async function serve(port = 8175): Promise<http.Server> {
   return server;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
-  const argv = process.argv.slice(2);
-  const at = argv.indexOf("--port");
-  const port = at >= 0 ? Number(argv[at + 1]) : 8175;
-  const server = await serve(port);
-  const url = `http://127.0.0.1:${(server.address() as { port: number }).port}/`;
-  console.log(`${APP.APP_NAME}`);
-  console.log(`  open ${url}`);
-  console.log(`  fonts   ${APP.FONTS_DIR}`);
-  console.log(`  settings ${APP.SETTINGS_PATH}`);
-}
+// The command-line entry point is `src/bin/server.ts`, not a guard here.
+// Bundling makes `import.meta.url` identical for every module, so a self-invoking
+// guard fires in EVERY module of a bundle - see src/bin/README.md. The basename
+// trap that guard originally fixed is gone too: a separate entry file cannot be
+// mistaken for another file with the same name.

@@ -243,7 +243,7 @@ function reportDiff(label: string, got: string, want: string): void {
     // ship any more, so the script name is allowed to change — and ONLY the
     // script name. Every argument after it still has to match exactly.
     const norm = (s: string | undefined) =>
-      (s ?? "").replace(/^ {2}(?:python nameplate_thickness\.py|node src\/thickness\.ts) /, "  <TOOL> ");
+      (s ?? "").replace(/^ {2}(?:python nameplate_thickness\.py|node src\/bin\/thickness\.ts) /, "  <TOOL> ");
     if (norm(gl[i]) === norm(wl[i]) && norm(wl[i]).startsWith("  <TOOL> ")) continue;
     nDiff += 1;
     if (firstBad < 0) firstBad = i;

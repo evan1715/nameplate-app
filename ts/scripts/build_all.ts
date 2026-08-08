@@ -89,7 +89,7 @@ fs.mkdirSync(DIST, { recursive: true });
 run(
   "npx",
   [
-    "esbuild", "src/cli.ts",
+    "esbuild", "src/bin/cli.ts",
     "--bundle", "--platform=node", "--format=esm", "--target=node22",
     // The three WASM/UMD dependencies load their own binary assets at runtime and
     // must stay external, or the bundle tries to inline a .wasm file as JavaScript.
@@ -104,7 +104,7 @@ say("4b. bundle the app: the server, and the page it serves");
 run(
   "npx",
   [
-    "esbuild", "src/server.ts",
+    "esbuild", "src/bin/server.ts",
     "--bundle", "--platform=node", "--format=esm", "--target=node22",
     "--external:canvaskit-wasm", "--external:harfbuzzjs", "--external:jsts",
     "--external:opentype.js",

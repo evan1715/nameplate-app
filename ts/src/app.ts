@@ -22,6 +22,7 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { deflateRawSync } from "node:zlib";
 import { Document, buildDocument, pyRepr, safeFilename } from "./core.ts";
 import { Font } from "./font.ts";
@@ -54,10 +55,31 @@ export { MIN_IN, MIN_MM } from "./units.ts";
  *
  * SPEC.md §6: both must be writable and must travel with the app, so this is the
  * app root, never wherever the module happens to have been imported from. In the
- * Python that meant `sys.executable` when frozen; here it is the package root,
- * one level up from `src/`.
+ * Python that meant `sys.executable` when frozen.
+ *
+ * FOUND BY LOOKING, NOT BY COUNTING `..`
+ *   "two levels up from this file" is right in the source tree and wrong in a
+ *   bundle, where every module collapses into one file at a different depth. The
+ *   bundled app pointed its fonts folder at the directory ABOVE the folder it
+ *   shipped in, so a copied release read someone else's fonts or none at all.
+ *   Walking up for the folder that actually holds `fonts/` is true in both, and
+ *   it is also the definition SPEC.md uses.
  */
-export const BASE = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..");
+function findBase(): string {
+  let dir = path.dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 8; i++) {
+    if (fs.existsSync(path.join(dir, "fonts"))) return dir;
+    const up = path.dirname(dir);
+    if (up === dir) break; // reached the filesystem root
+    dir = up;
+  }
+  // Nothing has a fonts/ yet — a fresh checkout, or a first run before
+  // `ensureFontsDir`. Fall back to the source tree's answer so the folder gets
+  // created where it belongs rather than wherever the walk gave up.
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+}
+
+export const BASE = findBase();
 export const FONTS_DIR = path.join(BASE, "fonts");
 export const SETTINGS_PATH = path.join(BASE, "settings.json");
 

@@ -5,8 +5,10 @@
   "scripts": {
     "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:fontcheck && npm run test:gui && npm run test:pairsheet && npm run test:viewmodel && npm run test:thickness && npm run test:brief && npm run test:regression && npm run test:stress",
     "build:client": "esbuild client/src/main.tsx --bundle --format=esm --platform=browser --target=es2022 --jsx=automatic --outfile=client/bundle.js --minify --sourcemap",
-    "start": "npm run build:client && node src/server.ts",
-    "cli": "node src/cli.ts",
+    "start": "npm run build:client && node src/bin/server.ts",
+    "cli": "node src/bin/cli.ts",
+    "brief": "node src/bin/brief.ts",
+    "fontcheck": "node src/bin/fontcheck.ts",
     "test:acceptance": "node tests/acceptance.ts",
     "test:brief": "node tests/brief.ts",
     "test:canonicalisation": "node tests/canonicalisation.ts",

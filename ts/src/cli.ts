@@ -5,11 +5,11 @@
  * Exists so the engine can be tested without a GUI, and so the same logic can be
  * scripted for a batch of orders. Any front end must call the same functions.
  *
- *     node src/cli.ts --font "MerriweatherCut3Black-Engrave-v2.ttf" \
+ *     node src/bin/cli.ts --font "MerriweatherCut3Black-Engrave-v2.ttf" \
  *         --height 1 --unit in --basis cap --format both --mode per-name \
  *         --out ./out ADAM OLIVIA "MARY JANE"
  *
- *     node src/cli.ts --font Carrie.otf --height 25 --unit mm \
+ *     node src/bin/cli.ts --font Carrie.otf --height 25 --unit mm \
  *         --mode sheet --arrange horizontal --format svg --out ./out \
  *         --names-file names.txt
  *
@@ -22,7 +22,6 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { pathToFileURL } from "node:url";
 import { Font } from "./font.ts";
 import {
   buildDocument,
@@ -406,10 +405,6 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<numb
   return 0;
 }
 
-// Run only when invoked directly, so the tests can import `main` instead. Compared
-// as a resolved URL rather than by basename: a basename test also fires when some
-// OTHER file of the same name is the entry point, which silently turned a test run
-// into a CLI run.
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
-  process.exit(await main());
-}
+// The command-line entry point is `src/bin/cli.ts`, not a guard here.
+// Bundling makes `import.meta.url` identical for every module, so a self-invoking
+// guard fires in EVERY module of a bundle — see src/bin/README.md.

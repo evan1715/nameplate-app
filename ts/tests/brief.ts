@@ -38,15 +38,28 @@ const ROOT = "/home/user/nameplate-app";
 const FONTS = path.join(ROOT, "fonts");
 const OUT = mkdtempSync(path.join(tmpdir(), "brief-"));
 
-/** The cases capture_baseline.py recorded, with the same arguments and exit codes. */
+/**
+ * The cases capture_baseline.py recorded, with the same arguments and exit codes.
+ *
+ * `--join-budget` is added to every one of them, and it is not a deviation: the
+ * budget appears nowhere in the compared document, and every reference records a
+ * scan that RAN TO COMPLETION ("8788 of 8788 combinations tested"). What the
+ * default 25 s buys is a scan that completes on an idle machine and truncates on a
+ * busy one — which showed up exactly once, as flourish reporting 1 disconnected
+ * junction where the reference has 2, on a run that was sharing the CPU. A test
+ * that fails when the machine is busy is a test that gets ignored. Raising the
+ * budget cannot change a completed scan's answer; it can only stop it being cut
+ * short.
+ */
+const JOIN_BUDGET = ["--join-budget", "600"];
 const CASES: [string, string, string[]][] = [
   ["merri_met", "MerriweatherCut3Black-Engrave-v2.ttf",
-    ["--cap", "1", "--unit", "in", "--min-thickness", "0.001"]],
+    ["--cap", "1", "--unit", "in", "--min-thickness", "0.001", ...JOIN_BUDGET]],
   ["merri_unmet", "MerriweatherCut3Black-Engrave-v2.ttf",
     ["--cap", "1", "--unit", "in", "--eyelet-id", "0.4", "--eyelet-wall", "0.2",
-      "--min-thickness", "0.09"]],
+      "--min-thickness", "0.09", ...JOIN_BUDGET]],
   ["flourish", "TGCarrieSOFlourish-v2.otf",
-    ["--cap", "25", "--unit", "mm", "--min-thickness", "0.5"]],
+    ["--cap", "25", "--unit", "mm", "--min-thickness", "0.5", ...JOIN_BUDGET]],
 ];
 
 /** How far a float may drift. See the note at the top of the file. */
@@ -89,7 +102,7 @@ function normTool(s: string): string {
   // markdown file and inside the prompt STRING carried in the JSON, whose newlines
   // are real by the time JSON.parse has run.
   return s.replace(
-    /^ {2}(?:python nameplate_thickness\.py|node src\/thickness\.ts) /gm,
+    /^ {2}(?:python nameplate_thickness\.py|node src\/bin\/thickness\.ts) /gm,
     "  <TOOL> ",
   );
 }
@@ -120,6 +133,25 @@ for (const [label, file, extra] of CASES) {
   // --- the exit code, which is the whole point of the tool ---------------- //
   const wantExits = JSON.parse(readFileSync(path.join(REFS, "brief_exits.json"), "utf8"));
   check(`${label} — exit code`, String(wantExits[label].exit), String(code));
+
+  // --- the scan must have finished, or nothing below means anything -------- //
+  // A truncated join scan finds fewer disconnected junctions and every comparison
+  // after this point fails as if the port disagreed with the Python. It does not:
+  // it means the machine was busy. Say which.
+  {
+    const doc = JSON.parse(readFileSync(jsonPath, "utf8"));
+    const fact: string = (doc.font_check?.facts ?? [])
+      .find((f: string) => f.startsWith("letter-join scan:")) ?? "";
+    const m = /(\d+) of (\d+) combinations tested/.exec(fact);
+    check(
+      `${label} — the join scan ran to completion`,
+      "every combination tested",
+      m ? (m[1] === m[2] ? "every combination tested"
+        : `TRUNCATED: ${m[1]} of ${m[2]} — raise --join-budget or free the machine`)
+        : `no scan fact found: ${JSON.stringify(fact)}`,
+      Boolean(m) && m![1] === m![2],
+    );
+  }
 
   // --- the markdown, byte for byte ---------------------------------------- //
   // One substitution: the thickness prompt embedded in the markdown names the tool

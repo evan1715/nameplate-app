@@ -35,7 +35,6 @@
  */
 
 import { basename, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
 import { Document, buildDocument } from "./core.ts";
 import { DEFAULT_FEATURES, Font, shape } from "./font.ts";
 import * as G from "./geom.ts";
@@ -2410,10 +2409,8 @@ export async function main(argv: string[] = process.argv.slice(2)): Promise<numb
   return worst;
 }
 
-// Compared as a resolved URL, not by basename. A basename test says "this module
-// is the entry point" for ANY file with the same name — `tests/fontcheck.ts`
-// importing `src/fontcheck.ts` matched, so the test run printed the CLI usage and
-// exited before asserting anything.
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  process.exit(await main());
-}
+// The command-line entry point is `src/bin/fontcheck.ts`, not a guard here.
+// Bundling makes `import.meta.url` identical for every module, so a self-invoking
+// guard fires in EVERY module of a bundle - see src/bin/README.md. The basename
+// trap that guard originally fixed is gone too: a separate entry file cannot be
+// mistaken for another file with the same name.

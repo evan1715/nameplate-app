@@ -16,8 +16,8 @@
  *   check flipping.
  *
  *   Two of them cannot be reproduced exactly and say so where they are:
- *   #6 and #9 drive the CLI as a subprocess, and this runs `src/cli.ts` rather than
- *   `nameplate_cli.py`.
+ *   #6 and #9 drive the CLI as a subprocess, and this runs `src/bin/cli.ts` rather
+ *   than `nameplate_cli.py`.
  */
 
 import { execFileSync } from "node:child_process";
@@ -270,14 +270,14 @@ let info0: ReturnType<typeof LI.leadInReport>;
 
 // --------------------------------------------------------------------------- //
 // #6 the CLI must not overwrite one order with another
-//    Drives src/cli.ts, where the Python drove nameplate_cli.py.
+//    Drives src/bin/cli.ts, where the Python drove nameplate_cli.py.
 // --------------------------------------------------------------------------- //
 {
   const tmp = fs.mkdtempSync(path.join(tmpdir(), "sfpf_reg_"));
   try {
     execFileSync(
       process.execPath,
-      [path.join(HERE, "ts", "src", "cli.ts"), "--font", MERRI, "--height", "1",
+      [path.join(HERE, "ts", "src", "bin", "cli.ts"), "--font", MERRI, "--height", "1",
         "--format", "svg", "--out", tmp, "Adam!", "Adam?", "Adam."],
       { encoding: "utf8", timeout: 300_000, stdio: "pipe" },
     );
@@ -303,7 +303,7 @@ let info0: ReturnType<typeof LI.leadInReport>;
   try {
     execFileSync(
       process.execPath,
-      [path.join(HERE, "ts", "src", "cli.ts"), "--font", MERRI, "--height", "1",
+      [path.join(HERE, "ts", "src", "bin", "cli.ts"), "--font", MERRI, "--height", "1",
         "--mode", "sheet", "--gap", "-0.5", "--format", "svg", "--out", tmp2,
         "ADAM", "OLIVIA"],
       { encoding: "utf8", timeout: 300_000, stdio: "pipe" },
