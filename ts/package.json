@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "TypeScript port of Sean's Font Prototyping Friend \u2014 nameplate cut-file engine",
   "scripts": {
-    "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:fontcheck && npm run test:pairsheet && npm run test:viewmodel && npm run test:thickness && npm run test:brief && npm run test:regression",
+    "test": "npm run test:canonicalisation && npm run test:parity && npm run test:acceptance && npm run test:export && npm run test:fontcheck && npm run test:pairsheet && npm run test:viewmodel && npm run test:thickness && npm run test:brief && npm run test:regression && npm run test:stress",
     "cli": "node src/cli.ts",
     "test:acceptance": "node tests/acceptance.ts",
     "test:brief": "node tests/brief.ts",
@@ -13,6 +13,7 @@
     "test:pairsheet": "node tests/pairsheet.ts",
     "test:parity": "node tests/parity.ts",
     "test:regression": "node tests/regression.ts",
+    "test:stress": "node tests/stress.ts --font ../fonts/MerriweatherCut3Black-Engrave-v2.ttf",
     "test:thickness": "node tests/thickness.ts",
     "test:viewmodel": "node tests/viewmodel.ts",
     "typecheck": "tsc --noEmit"

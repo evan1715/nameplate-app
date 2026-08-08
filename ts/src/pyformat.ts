@@ -44,6 +44,22 @@ function pow10(n: number): bigint {
   return 10n ** BigInt(n);
 }
 
+/** A finite double as an exact rational — the same decomposition, one step on. */
+function ratio(v: number): { num: bigint; den: bigint } {
+  const { mantissa, exponent } = decompose(v);
+  if (exponent >= 0) return { num: mantissa << BigInt(exponent), den: 1n };
+  return { num: mantissa, den: 1n << BigInt(-exponent) };
+}
+
+/** `num / den` rounded to an integer, ties to even. Both must be positive. */
+function roundHalfEven(num: bigint, den: bigint): bigint {
+  let q = num / den;
+  const twice = (num % den) * 2n;
+  if (twice > den) q += 1n;
+  else if (twice === den && q % 2n === 1n) q += 1n;
+  return q;
+}
+
 /**
  * Python's `f"{v:.{digits}f}"` — fixed-point with round-half-to-even, computed
  * from the double's exact value.
@@ -138,6 +154,63 @@ export function pyG(v: number, precision = 6): string {
   let out = fmtF(v, Math.max(0, p - 1 - exp));
   if (out.includes(".")) out = out.replace(/0+$/, "").replace(/\.$/, "");
   return out;
+}
+
+/**
+ * Python's `f"{v:.{digits}e}"` — scientific notation, ties to even, exponent
+ * always signed and at least two digits (`1.235e-09`, `0.000e+00`).
+ *
+ * Computed from the double's exact value for the same reason `fmtF` is: the
+ * tolerance lines in the stress suite print `{spread:.3e}`, and a spread that is
+ * exactly zero must render `0.000e+00` rather than something JavaScript's
+ * `toExponential` happens to produce for a denormal near it.
+ *
+ * @param v      the number
+ * @param digits digits after the decimal point in the mantissa
+ */
+export function fmtE(v: number, digits: number): string {
+  if (Number.isNaN(v)) return "nan";
+  if (!Number.isFinite(v)) return v > 0 ? "inf" : "-inf";
+
+  const sign = v < 0 || Object.is(v, -0) ? "-" : "";
+  const abs = Math.abs(v);
+  const point = (s: string) => (digits > 0 ? s.slice(0, 1) + "." + s.slice(1) : s);
+
+  if (abs === 0) return `${sign}${point("0".repeat(digits + 1))}e+00`;
+
+  const { num, den } = ratio(abs);
+  /** `abs * 10^k`, rounded to an integer. */
+  const scaled = (k: number): bigint =>
+    k >= 0 ? roundHalfEven(num * pow10(k), den) : roundHalfEven(num, den * pow10(-k));
+
+  // Math.log10 can be off by one at a power of ten, and rounding the mantissa can
+  // carry it up to 10.000 — so the guess is corrected against the exact value
+  // rather than trusted. Both loops run at most once.
+  let exp = Math.floor(Math.log10(abs));
+  let digitsOut = scaled(digits - exp);
+  while (digitsOut < pow10(digits)) digitsOut = scaled(digits - --exp);
+  while (digitsOut >= pow10(digits + 1)) digitsOut = scaled(digits - ++exp);
+
+  const e = (exp < 0 ? "-" : "+") + String(Math.abs(exp)).padStart(2, "0");
+  return `${sign}${point(digitsOut.toString())}e${e}`;
+}
+
+/**
+ * Python's `round(v, digits)` — the exact value rounded to `digits` decimal
+ * places with ties to even, then back to the nearest double.
+ *
+ * Not `Math.round(v * 10 ** digits) / 10 ** digits`: that scales through a second
+ * rounding error, so it disagrees with Python on values that sit near a tie. This
+ * matters where a rounded number is COMPARED rather than printed — the x-height
+ * check picks the modal glyph top out of `round(top, 3)` values, and one value
+ * landing on a different double changes which top wins the mode.
+ *
+ * @param v      the number
+ * @param digits decimal places; may be 0
+ */
+export function pyRound(v: number, digits = 0): number {
+  if (!Number.isFinite(v)) return v;
+  return Number(fmtF(v, digits));
 }
 
 /**
